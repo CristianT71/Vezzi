@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Venta } from 'src/venta/entities/venta.entity';
+import { Pago } from 'src/pago/entities/pago.entity';
 
 @Entity()
 export class Cliente {
@@ -19,4 +21,10 @@ export class Cliente {
 
   @Column({ type: 'boolean', default: true })
   activo: boolean;
+
+  @OneToMany(() => Venta, (venta) => venta.cliente)
+  ventas: Venta[];
+
+  @OneToMany(() => Pago, (pago) => pago.cliente)
+  pagos: Pago[];
 }

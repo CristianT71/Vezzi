@@ -1,5 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Categoria } from 'src/categoria/entities/categoria.entity';
+import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
+import { HistorialStock } from 'src/historial-stock/entities/historial-stock.entity';
 
 @Entity()
 export class Producto {
@@ -30,4 +32,10 @@ export class Producto {
 
   @Column({ type: 'boolean', default: true })
   activo: boolean;
+
+  @OneToMany(() => DetalleVenta, (detalleVenta) => detalleVenta.producto)
+  detalles_venta: DetalleVenta[];
+
+  @OneToMany(() => HistorialStock, (historialStock) => historialStock.producto)
+  historial_stock: HistorialStock[];
 }

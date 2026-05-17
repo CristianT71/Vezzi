@@ -1,5 +1,7 @@
 import { Rol } from "src/rol/entities/rol.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Venta } from 'src/venta/entities/venta.entity';
+import { Pago } from 'src/pago/entities/pago.entity';
 
 @Entity()
 export class Usuario {
@@ -23,4 +25,10 @@ export class Usuario {
     @ManyToOne(() => Rol, (rol) => rol.usuarios, {nullable: false, eager: true})
     @JoinColumn({name: 'id_rol'})
     rol: Rol;
+
+    @OneToMany(() => Venta, (venta) => venta.usuario)
+    ventas: Venta[];
+
+    @OneToMany(() => Pago, (pago) => pago.usuario)
+    pagos: Pago[];
 }

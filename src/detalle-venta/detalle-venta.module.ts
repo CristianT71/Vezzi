@@ -4,10 +4,11 @@ import { DetalleVentaController } from './detalle-venta.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DetalleVenta } from './entities/detalle-venta.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
+import { Venta } from 'src/venta/entities/venta.entity';
 
 @Module({
   controllers: [DetalleVentaController],
   providers: [DetalleVentaService],
-  imports: [TypeOrmModule.forFeature([DetalleVenta, Producto])],
+  imports: [TypeOrmModule.forFeature([DetalleVenta, Producto, Venta])],
 })
 export class DetalleVentaModule {}
