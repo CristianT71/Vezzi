@@ -20,4 +20,3 @@ export class Cliente {
   @Column({ type: 'boolean', default: true })
   activo: boolean;
 }
-export class Cliente {}
