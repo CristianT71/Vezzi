@@ -31,4 +31,3 @@ export class Producto {
   @Column({ type: 'boolean', default: true })
   activo: boolean;
 }
-export class Producto {}
