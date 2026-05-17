@@ -17,4 +17,4 @@ export class CreateClienteDto {
   @IsOptional()
   activo: boolean;
 }
-export class CreateClienteDto {}
+

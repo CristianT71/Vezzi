@@ -35,4 +35,3 @@ export class CreateProductoDto {
   @IsOptional()
   activo: boolean;
 }
-export class CreateProductoDto {}
