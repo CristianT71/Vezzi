@@ -1,4 +1,3 @@
-@Injectable()
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
