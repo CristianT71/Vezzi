@@ -5,19 +5,30 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
+import { Rol } from 'src/rol/entities/rol.entity';
 
 @Injectable()
 export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
+    @InjectRepository(Rol)
+    private readonly rolRepository: Repository<Rol>,
   ){}
   async create(createUsuarioDto: CreateUsuarioDto) {
     try{
+      const rol = await this.rolRepository.findOneBy({ id: createUsuarioDto.id_rol });
+
+      if (!rol) {
+        throw new NotFoundException(`Rol con id ${createUsuarioDto.id_rol} no existe`);
+      }
+
       const passwordHash = await hash(createUsuarioDto.password, 10);
+      const { id_rol, ...usuarioData } = createUsuarioDto;
       const usuario = this.usuarioRepository.create({
-        ...createUsuarioDto,
+        ...usuarioData,
         password: passwordHash,
+        rol,
       });
       return await this.usuarioRepository.save(usuario);
     } catch(error){
@@ -43,9 +54,21 @@ export class UsuarioService {
       updateUsuarioDto.password = await hash(updateUsuarioDto.password, 10);
     }
 
+    let rol: Rol | null = null;
+    if (updateUsuarioDto.id_rol) {
+      rol = await this.rolRepository.findOneBy({ id: updateUsuarioDto.id_rol });
+
+      if (!rol) {
+        throw new NotFoundException(`Rol con id ${updateUsuarioDto.id_rol} no existe`);
+      }
+    }
+
+    const { id_rol, ...usuarioData } = updateUsuarioDto;
+
     const usuario = await this.usuarioRepository.preload({
       id,
-      ...updateUsuarioDto,
+      ...usuarioData,
+      ...(rol && { rol }),
     });
     if (!usuario) {
       throw new NotFoundException(`Usuario con id ${id} no existe`);

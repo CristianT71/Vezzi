@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength, MinLength } from "class-validator";
 
 export class CreateUsuarioDto {
 
@@ -19,4 +19,8 @@ export class CreateUsuarioDto {
         @IsBoolean()
         @IsOptional()
         activo: boolean;
+
+        @IsUUID()
+        @IsNotEmpty()
+        id_rol: string;
 }

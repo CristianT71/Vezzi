@@ -15,7 +15,7 @@ export class RolService {
   async create(createRolDto: CreateRolDto) {
     try {
       const rol = this.rolRepository.create(createRolDto)
-      await this.rolRepository.save(rol)
+      return await this.rolRepository.save(rol)
     } catch (error){
       console.log(error)
       throw new InternalServerErrorException('Error: No se puede crear el rol')

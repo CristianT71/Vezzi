@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Usuario } from "src/usuario/entities/usuario.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Rol {
@@ -13,4 +14,9 @@ export class Rol {
 
     @Column({type: 'boolean', default: true})
     activo: boolean;
+
+    //relaciones
+
+    @OneToMany(() => Usuario, (usuario) => usuario.rol)
+    usuarios: Usuario[];
 }
