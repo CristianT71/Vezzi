@@ -1,26 +1,73 @@
-import { Injectable } from '@nestjs/common';
+@Injectable()
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Producto } from './entities/producto.entity';
+import { Repository } from 'typeorm';
+import { Categoria } from 'src/categoria/entities/categoria.entity';
 
 @Injectable()
 export class ProductoService {
-  create(createProductoDto: CreateProductoDto) {
-    return 'This action adds a new producto';
+  constructor(
+    @InjectRepository(Producto)
+    private readonly productoRepository: Repository<Producto>,
+    @InjectRepository(Categoria)
+    private readonly categoriaRepository: Repository<Categoria>,
+  ) {}
+
+  async create(createProductoDto: CreateProductoDto) {
+    try {
+      const categoria = await this.categoriaRepository.findOneBy({ id: createProductoDto.id_categoria });
+      if (!categoria) {
+        throw new NotFoundException(`Categoria con id ${createProductoDto.id_categoria} no existe`);
+      }
+      const { id_categoria, ...productoData } = createProductoDto as any;
+      const producto = this.productoRepository.create({ ...productoData, categoria });
+      return await this.productoRepository.save(producto);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: No se pudo crear el producto');
+    }
   }
 
-  findAll() {
-    return `This action returns all producto`;
+  async findAll() {
+    return this.productoRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} producto`;
+  async findOne(id: number) {
+    const producto = await this.productoRepository.findOneBy({ id });
+    if (!producto) {
+      throw new NotFoundException(`Producto con id ${id} no existe`);
+    }
+    return producto;
   }
 
-  update(id: number, updateProductoDto: UpdateProductoDto) {
-    return `This action updates a #${id} producto`;
+  async update(id: number, updateProductoDto: UpdateProductoDto) {
+    let categoria;
+    if ((updateProductoDto as any).id_categoria) {
+      categoria = await this.categoriaRepository.findOneBy({ id: (updateProductoDto as any).id_categoria });
+      if (!categoria) {
+        throw new NotFoundException(`Categoria con id ${(updateProductoDto as any).id_categoria} no existe`);
+      }
+    }
+    const { id_categoria, ...productoData } = updateProductoDto as any;
+    const producto = await this.productoRepository.preload({ id, ...(productoData as any), ...(categoria && { categoria }) });
+    if (!producto) {
+      throw new NotFoundException(`Producto con id ${id} no existe`);
+    }
+    try {
+      await this.productoRepository.save(producto);
+      return producto;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: no se pudo actualizar el producto');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} producto`;
+  async remove(id: number) {
+    const producto = await this.findOne(id);
+    await this.productoRepository.remove(producto);
+    return 'Producto eliminado exitosamente';
   }
 }
