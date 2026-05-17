@@ -1,26 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Usuario } from './entities/usuario.entity';
+import { Repository } from 'typeorm';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsuarioService {
-  create(createUsuarioDto: CreateUsuarioDto) {
-    return 'This action adds a new usuario';
+  constructor(
+    @InjectRepository(Usuario)
+    private readonly usuarioRepository: Repository<Usuario>,
+  ){}
+  async create(createUsuarioDto: CreateUsuarioDto) {
+    try{
+      const passwordHash = await hash(createUsuarioDto.password, 10);
+      const usuario = this.usuarioRepository.create({
+        ...createUsuarioDto,
+        password: passwordHash,
+      });
+      return await this.usuarioRepository.save(usuario);
+    } catch(error){
+      console.log(error);
+      throw new InternalServerErrorException('Error: No se pudo crear el usuario')
+    } 
   }
 
-  findAll() {
-    return `This action returns all usuario`;
+  async findAll() {
+    return this.usuarioRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  async findOne(id: string) {
+    const usuario = await this.usuarioRepository.findOneBy( {id} );
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no existe`)
+    }
+    return usuario;
   }
 
-  update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    return `This action updates a #${id} usuario`;
+  async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
+    if (updateUsuarioDto.password){
+      updateUsuarioDto.password = await hash(updateUsuarioDto.password, 10);
+    }
+
+    const usuario = await this.usuarioRepository.preload({
+      id,
+      ...updateUsuarioDto,
+    });
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no existe`);
+    }
+    try {
+      await this.usuarioRepository.save(usuario)
+      return usuario;
+    } catch (error){
+      console.log(error)
+      throw new InternalServerErrorException('Error: no se pudo actualizar el usuario')
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usuario`;
+  async remove(id: string) {
+    const usuario = await this.findOne(id);
+    await this.usuarioRepository.remove(usuario);
+    return 'Usuario eliminado exitosamente'
   }
 }
