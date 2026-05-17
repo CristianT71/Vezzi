@@ -1,24 +1,73 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { DetalleVenta } from './entities/detalle-venta.entity';
+import { Producto } from 'src/producto/entities/producto.entity';
+import { CreateDetalleVentaDto } from './dto/create-detalle-venta.dto';
+import { UpdateDetalleVentaDto } from './dto/update-detalle-venta.dto';
 
 @Injectable()
 export class DetalleVentaService {
-  create() {
-    return 'This action adds a new detalle-venta';
+  constructor(
+    @InjectRepository(DetalleVenta)
+    private readonly detalleRepo: Repository<DetalleVenta>,
+    @InjectRepository(Producto)
+    private readonly productoRepo: Repository<Producto>,
+  ) {}
+
+  async create(createDto: CreateDetalleVentaDto) {
+    try {
+      const producto = await this.productoRepo.findOneBy({ id: createDto.id_producto });
+      if (!producto) {
+        throw new NotFoundException(`Producto con id ${createDto.id_producto} no existe`);
+      }
+      const subtotal = (createDto.cantidad * Number(createDto.precio_unitario)).toFixed(2);
+      const detalle = this.detalleRepo.create({
+        id_venta: createDto.id_venta,
+        producto,
+        cantidad: createDto.cantidad,
+        precio_unitario: createDto.precio_unitario,
+        subtotal,
+      } as any);
+      return await this.detalleRepo.save(detalle);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: no se pudo crear el detalle de venta');
+    }
   }
 
   findAll() {
-    return `This action returns all detalle-venta`;
+    return this.detalleRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} detalle-venta`;
+  async findOne(id: number) {
+    const det = await this.detalleRepo.findOneBy({ id });
+    if (!det) throw new NotFoundException(`DetalleVenta con id ${id} no existe`);
+    return det;
   }
 
-  update(id: number) {
-    return `This action updates a #${id} detalle-venta`;
+  async update(id: number, updateDto: UpdateDetalleVentaDto) {
+    let producto;
+    if ((updateDto as any).id_producto) {
+      producto = await this.productoRepo.findOneBy({ id: (updateDto as any).id_producto });
+      if (!producto) throw new NotFoundException(`Producto con id ${(updateDto as any).id_producto} no existe`);
+    }
+    const { id_producto, ...rest } = updateDto as any;
+    const subtotal = rest.cantidad && rest.precio_unitario ? (rest.cantidad * Number(rest.precio_unitario)).toFixed(2) : undefined;
+    const detalle = await this.detalleRepo.preload({ id, ...(rest as any), ...(producto && { producto }), ...(subtotal && { subtotal }) });
+    if (!detalle) throw new NotFoundException(`DetalleVenta con id ${id} no existe`);
+    try {
+      await this.detalleRepo.save(detalle);
+      return detalle;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: no se pudo actualizar el detalle de venta');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} detalle-venta`;
+  async remove(id: number) {
+    const det = await this.findOne(id);
+    await this.detalleRepo.remove(det);
+    return 'DetalleVenta eliminado exitosamente';
   }
 }
