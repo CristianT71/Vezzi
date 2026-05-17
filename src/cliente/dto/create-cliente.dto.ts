@@ -17,4 +17,3 @@ export class CreateClienteDto {
   @IsOptional()
   activo: boolean;
 }
-

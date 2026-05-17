@@ -14,4 +14,3 @@ export class Categoria {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   fecha_creacion: Date;
 }
-
