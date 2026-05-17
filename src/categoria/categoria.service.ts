@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
+@Injectable()
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Categoria } from './entities/categoria.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriaService {
-  create(createCategoriaDto: CreateCategoriaDto) {
-    return 'This action adds a new categoria';
+  constructor(
+    @InjectRepository(Categoria)
+    private readonly categoriaRepository: Repository<Categoria>,
+  ) {}
+
+  async create(createCategoriaDto: CreateCategoriaDto) {
+    try {
+      const categoria = this.categoriaRepository.create(createCategoriaDto as any);
+      return await this.categoriaRepository.save(categoria);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: No se pudo crear la categoria');
+    }
   }
 
-  findAll() {
-    return `This action returns all categoria`;
+  async findAll() {
+    return this.categoriaRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} categoria`;
+  async findOne(id: number) {
+    const categoria = await this.categoriaRepository.findOneBy({ id });
+    if (!categoria) {
+      throw new NotFoundException(`Categoria con id ${id} no existe`);
+    }
+    return categoria;
   }
 
-  update(id: number, updateCategoriaDto: UpdateCategoriaDto) {
-    return `This action updates a #${id} categoria`;
+  async update(id: number, updateCategoriaDto: UpdateCategoriaDto) {
+    const categoria = await this.categoriaRepository.preload({ id, ...(updateCategoriaDto as any) });
+    if (!categoria) {
+      throw new NotFoundException(`Categoria con id ${id} no existe`);
+    }
+    try {
+      await this.categoriaRepository.save(categoria);
+      return categoria;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: no se pudo actualizar la categoria');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} categoria`;
+  async remove(id: number) {
+    const categoria = await this.findOne(id);
+    await this.categoriaRepository.remove(categoria);
+    return 'Categoria eliminada exitosamente';
   }
 }
