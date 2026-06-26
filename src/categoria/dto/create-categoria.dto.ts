@@ -10,4 +10,4 @@ export class CreateCategoriaDto {
   @IsOptional()
   descripcion: string;
 }
-export class CreateCategoriaDto {}
+

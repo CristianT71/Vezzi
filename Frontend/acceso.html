@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso | VEZZI POS</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="layout">
+    <section class="hero">
+      <div>
+        <div class="brand">
+          <div class="logo">VZ</div>
+          <span>VEZZI POS · Prototipo funcional en HTML</span>
+        </div>
+
+        <h1>Punto de venta web para administrar tu negocio</h1>
+        <p class="lead">
+          Esta interfaz está pensada para verse más como un sistema real: acceso por usuario, panel de ventas,
+          productos, clientes, créditos, alertas de stock y reportes rápidos usando tu backend actual.
+        </p>
+
+        <div class="features">
+          <article class="feature">
+            <strong>Venta rápida y venta cliente</strong>
+            <p>Permite cobrar de contado o registrar deuda parcial según el tipo de venta.</p>
+          </article>
+          <article class="feature">
+            <strong>Productos y alertas</strong>
+            <p>Búsqueda por nombre o código, edición rápida y alerta visual cuando el stock es bajo.</p>
+          </article>
+          <article class="feature">
+            <strong>Clientes y créditos</strong>
+            <p>Consulta de saldo pendiente y registro de pagos parciales desde el mismo panel.</p>
+          </article>
+          <article class="feature">
+            <strong>Resumen del día</strong>
+            <p>Ventas totales, utilidad estimada, histórico reciente y alertas clave en un solo lugar.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="warning">
+        <strong>Importante:</strong> tu backend actual no tiene autenticación real con contraseña ni permisos seguros en servidor.
+        Por eso este acceso funciona como <strong>demo de rol en frontend</strong>: entra con un usuario existente y el panel se adapta a su rol.
+      </div>
+    </section>
+
+    <section class="login-card">
+      <h2>Ingresar al sistema</h2>
+      <p class="sub">
+        Selecciona un usuario creado en tu backend. Si el rol es <strong>Administrador</strong> verás módulos completos;
+        si es <strong>Cajero</strong> verás el flujo de ventas sin acciones de borrado visibles.
+      </p>
+
+      <div class="info">
+        Consejo: crea al menos un usuario con rol <strong>Administrador</strong> y otro con rol <strong>Cajero</strong>
+        para probar la diferencia visual de permisos.
+      </div>
+
+      <label for="usuario">Usuario</label>
+      <select id="usuario">
+        <option value="">Cargando usuarios...</option>
+      </select>
+
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" placeholder="Campo visual por ahora" />
+
+      <button id="btnEntrar">Entrar al panel</button>
+      <button class="secondary" id="btnRecargar" type="button">Recargar usuarios</button>
+
+      <div id="mensaje"></div>
+
+      <div class="users-preview" id="usersPreview"></div>
+    </section>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
