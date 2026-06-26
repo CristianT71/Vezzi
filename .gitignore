@@ -56,3 +56,7 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /postgres
+
+# Project files (local only)
+/REQUERIMIENTOS/
+"VEZZI - DIAGRAMA ER.png"
