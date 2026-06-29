@@ -10,6 +10,7 @@ import { DetalleVentaModule } from './detalle-venta/detalle-venta.module';
 import { HistorialStockModule } from './historial-stock/historial-stock.module';
 import { VentaModule } from './venta/venta.module';
 import { PagoModule } from './pago/pago.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PagoModule } from './pago/pago.module';
     PagoModule,
     ProductoModule,
     VentaModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
