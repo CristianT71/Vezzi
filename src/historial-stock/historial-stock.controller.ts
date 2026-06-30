@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { HistorialStockService } from './historial-stock.service';
 import { CreateHistorialStockDto } from './dto/create-historial-stock.dto';
 import { UpdateHistorialStockDto } from './dto/update-historial-stock.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('historial-stock')
+@UseGuards(JwtAuthGuard)
 export class HistorialStockController {
   constructor(private readonly historialStockService: HistorialStockService) {}
 
