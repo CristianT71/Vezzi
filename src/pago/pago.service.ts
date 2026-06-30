@@ -50,7 +50,14 @@ export class PagoService {
         activo: createPagoDto.activo ?? true,
       } as any);
 
-      return await this.pagoRepository.save(pago);
+      const pagoGuardado = await this.pagoRepository.save(pago);
+
+      const deudaActual = Number(cliente.saldo_deuda);
+      cliente.saldo_deuda = (deudaActual - Number(createPagoDto.monto)).toFixed(2);
+      await this.clienteRepository.save(cliente);
+
+      return pagoGuardado;
+
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('Error: no se pudo crear el pago');
