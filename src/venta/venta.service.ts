@@ -30,8 +30,17 @@ export class VentaService {
         throw new NotFoundException(`Usuario con id ${createVentaDto.id_usuario} no existe`);
       }
 
+      const ultimaVenta = await this.ventaRepository.findOne({
+        order: { id: 'DESC' },
+      });
+
+      const siguienteNumero = ultimaVenta
+        ? parseInt(ultimaVenta.numero_venta.split('-')[1]) + 1
+        : 1;
+        const numero_venta = `VZ-${String(siguienteNumero).padStart(6, '0')}`;
+
       const venta = this.ventaRepository.create({
-        numero_venta: createVentaDto.numero_venta,
+        numero_venta,
         cliente,
         usuario,
         fecha_venta: createVentaDto.fecha_venta ? new Date(createVentaDto.fecha_venta) : new Date(),
