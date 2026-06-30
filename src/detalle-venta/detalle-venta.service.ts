@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DetalleVenta } from './entities/detalle-venta.entity';
@@ -6,6 +6,7 @@ import { Producto } from 'src/producto/entities/producto.entity';
 import { Venta } from 'src/venta/entities/venta.entity';
 import { CreateDetalleVentaDto } from './dto/create-detalle-venta.dto';
 import { UpdateDetalleVentaDto } from './dto/update-detalle-venta.dto';
+import { HistorialStock } from 'src/historial-stock/entities/historial-stock.entity';
 
 @Injectable()
 export class DetalleVentaService {
@@ -16,6 +17,9 @@ export class DetalleVentaService {
     private readonly productoRepo: Repository<Producto>,
     @InjectRepository(Venta)
     private readonly ventaRepo: Repository<Venta>,
+
+    @InjectRepository(HistorialStock)
+    private readonly historialRepo: Repository<HistorialStock>,
   ) {}
 
   async create(createDto: CreateDetalleVentaDto) {
@@ -28,6 +32,11 @@ export class DetalleVentaService {
       if (!producto) {
         throw new NotFoundException(`Producto con id ${createDto.id_producto} no existe`);
       }
+
+      if (producto.stock < createDto.cantidad) {
+        throw new BadRequestException(`Stock insuficiente para "${producto.nombre}" Stock actual: ${producto.stock}`);
+      }
+
       const subtotal = (createDto.cantidad * Number(createDto.precio_unitario)).toFixed(2);
       const detalle = this.detalleRepo.create({
         venta,
@@ -36,6 +45,20 @@ export class DetalleVentaService {
         precio_unitario: createDto.precio_unitario,
         subtotal,
       } as any);
+
+      const stockAnterior = producto.stock;
+      producto.stock = stockAnterior - createDto.cantidad;
+      await this.productoRepo.save(producto);
+
+      await this.historialRepo.save({
+        producto,
+        tipo_movimiento: 'salida',
+        cantidad: createDto.cantidad,
+        stock_anterior: stockAnterior,
+        stock_nuevo: producto.stock,
+        observacion: `Venta #${venta.id}`,
+      } as any);
+
       return await this.detalleRepo.save(detalle);
     } catch (error) {
       console.log(error);
