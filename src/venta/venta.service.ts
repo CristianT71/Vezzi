@@ -6,6 +6,7 @@ import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class VentaService {
@@ -57,8 +58,21 @@ export class VentaService {
     }
   }
 
-  findAll() {
-    return this.ventaRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [data, total] = await this.ventaRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

@@ -6,6 +6,7 @@ import { Usuario } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { Rol } from 'src/rol/entities/rol.entity';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class UsuarioService {
@@ -37,8 +38,21 @@ export class UsuarioService {
     } 
   }
 
-  async findAll() {
-    return this.usuarioRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [data, total] = await this.usuarioRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total - limit),
+      },
+    };
   }
 
   async findOne(id: string) {

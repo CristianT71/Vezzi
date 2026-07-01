@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Producto } from './entities/producto.entity';
 import { Repository } from 'typeorm';
 import { Categoria } from 'src/categoria/entities/categoria.entity';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class ProductoService {
@@ -30,8 +31,21 @@ export class ProductoService {
     }
   }
 
-  async findAll() {
-    return this.productoRepository.find();
+  async findAll(paginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10  } = paginacionDto;
+    const [ data, total ] = await this.productoRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

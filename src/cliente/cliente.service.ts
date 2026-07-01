@@ -4,6 +4,7 @@ import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './entities/cliente.entity';
 import { Repository } from 'typeorm';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class ClienteService {
@@ -22,8 +23,21 @@ export class ClienteService {
     }
   }
 
-  async findAll() {
-    return this.clienteRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [ data, total ] = await this.clienteRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      },
+    };
   }
 
   async findOne(id: number) {

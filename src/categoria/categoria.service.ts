@@ -4,6 +4,7 @@ import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria } from './entities/categoria.entity';
 import { Repository } from 'typeorm';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class CategoriaService {
@@ -22,8 +23,21 @@ export class CategoriaService {
     }
   }
 
-  async findAll() {
-    return this.categoriaRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [ data, total ] = await this.categoriaRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

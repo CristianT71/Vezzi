@@ -5,6 +5,7 @@ import { HistorialStock } from './entities/historial-stock.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
 import { CreateHistorialStockDto } from './dto/create-historial-stock.dto';
 import { UpdateHistorialStockDto } from './dto/update-historial-stock.dto';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class HistorialStockService {
@@ -41,8 +42,21 @@ export class HistorialStockService {
     }
   }
 
-  findAll() {
-    return this.historialRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [data, total] = await this.historialRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      }
+    };
   }
 
   async findOne(id: number) {

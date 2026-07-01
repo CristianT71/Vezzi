@@ -7,6 +7,7 @@ import { Venta } from 'src/venta/entities/venta.entity';
 import { CreateDetalleVentaDto } from './dto/create-detalle-venta.dto';
 import { UpdateDetalleVentaDto } from './dto/update-detalle-venta.dto';
 import { HistorialStock } from 'src/historial-stock/entities/historial-stock.entity';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class DetalleVentaService {
@@ -66,8 +67,22 @@ export class DetalleVentaService {
     }
   }
 
-  findAll() {
-    return this.detalleRepo.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [ data, total ] = await this.detalleRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { RolService } from './rol.service';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Controller('rol')
 @UseGuards(JwtAuthGuard)
@@ -15,8 +16,8 @@ export class RolController {
   }
 
   @Get()
-  findAll() {
-    return this.rolService.findAll();
+  findAll(@Query() PaginacionDto: PaginacionDto) {
+    return this.rolService.findAll(PaginacionDto);
   }
 
   @Get(':id')

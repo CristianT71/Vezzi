@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Controller('usuario')
 @UseGuards(JwtAuthGuard)
@@ -15,8 +16,8 @@ export class UsuarioController {
   }
 
   @Get()
-  findAll() {
-    return this.usuarioService.findAll();
+  findAll(@Query() PaginacionDto: PaginacionDto) {
+    return this.usuarioService.findAll(PaginacionDto);
   }
 
   @Get(':id')

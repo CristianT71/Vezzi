@@ -7,6 +7,7 @@ import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 import { CreatePagoDto } from './dto/create-pago.dto';
 import { UpdatePagoDto } from './dto/update-pago.dto';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class PagoService {
@@ -64,8 +65,21 @@ export class PagoService {
     }
   }
 
-  findAll() {
-    return this.pagoRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10} = PaginacionDto;
+    const [data, total] = await this.pagoRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        TotalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

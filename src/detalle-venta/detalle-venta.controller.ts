@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { DetalleVentaService } from './detalle-venta.service';
 import { CreateDetalleVentaDto } from './dto/create-detalle-venta.dto';
 import { UpdateDetalleVentaDto } from './dto/update-detalle-venta.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Controller('detalle-venta')
 @UseGuards(JwtAuthGuard)
@@ -15,8 +16,8 @@ export class DetalleVentaController {
   }
 
   @Get()
-  findAll() {
-    return this.detalleVentaService.findAll();
+  findAll(@Query() PaginacionDto: PaginacionDto) {
+    return this.detalleVentaService.findAll(PaginacionDto);
   }
 
   @Get(':id')
