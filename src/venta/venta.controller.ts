@@ -39,4 +39,9 @@ export class VentaController {
   restaurar(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.restaurar(id);
   }
+
+  @Post(':id/calcular-total')
+  calcularTotal(@Param('id', ParseIntPipe) id: number) {
+    return this.ventaService.calcularTotal(id);
+  }
 }

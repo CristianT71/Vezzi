@@ -7,6 +7,7 @@ import { Usuario } from 'src/usuario/entities/usuario.entity';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
+import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
 
 @Injectable()
 export class VentaService {
@@ -17,6 +18,8 @@ export class VentaService {
     private readonly clienteRepository: Repository<Cliente>,
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
+    @InjectRepository(DetalleVenta)
+    private readonly detalleVentaRepository: Repository<DetalleVenta>,
   ) {}
 
   async create(createVentaDto: CreateVentaDto) {
@@ -46,7 +49,7 @@ export class VentaService {
         usuario,
         fecha_venta: createVentaDto.fecha_venta ? new Date(createVentaDto.fecha_venta) : new Date(),
         impuesto: createVentaDto.impuesto,
-        total: createVentaDto.total,
+        total: 0,
         estado: createVentaDto.estado ?? 'EMITIDA',
         activo: createVentaDto.activo ?? true,
       } as any);
@@ -137,5 +140,17 @@ export class VentaService {
     }
     await this.ventaRepository.restore(id);
     return 'Venta restaurada exitosamente';
+  }
+
+  async calcularTotal(id: number) {
+    const detalles = await this.detalleVentaRepository.find({
+      where: { venta: { id }},
+    });
+
+    const total = detalles.reduce((sum, det) => sum + Number(det.subtotal), 0);
+
+    await this.ventaRepository.update(id, { total: total.toFixed(2) as any});
+
+    return total.toFixed(2);
   }
 }
