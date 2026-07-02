@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,6 +19,10 @@ export class RolService {
       return await this.rolRepository.save(rol)
     } catch (error){
       console.log(error)
+      const pgError = error as any;
+      if (pgError.code === '23505'){
+        throw new BadRequestException('El rol ya existe');
+      }
       throw new InternalServerErrorException('Error: No se puede crear el rol')
     }
   }

@@ -1,8 +1,9 @@
 import { Rol } from "src/rol/entities/rol.entity";
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Venta } from 'src/venta/entities/venta.entity';
 import { Pago } from 'src/pago/entities/pago.entity';
 
+@Unique(['nombre_usuario'])
 @Entity()
 export class Usuario {
     @PrimaryGeneratedColumn('uuid')

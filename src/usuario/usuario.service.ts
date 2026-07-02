@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,6 +34,10 @@ export class UsuarioService {
       return await this.usuarioRepository.save(usuario);
     } catch(error){
       console.log(error);
+      const pgError = error as any;
+      if (pgError.code === '23505') {
+        throw new BadRequestException('El nombre de usuario ya existe')
+      }
       throw new InternalServerErrorException('Error: No se pudo crear el usuario')
     } 
   }

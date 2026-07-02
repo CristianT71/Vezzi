@@ -1,6 +1,8 @@
-import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Producto } from 'src/producto/entities/producto.entity';
 
+
+@Unique(['nombre'])
 @Entity()
 export class Categoria {
   @PrimaryGeneratedColumn()

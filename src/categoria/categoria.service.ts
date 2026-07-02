@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,6 +19,10 @@ export class CategoriaService {
       return await this.categoriaRepository.save(categoria);
     } catch (error) {
       console.log(error);
+      const pgError = error as any
+      if (pgError.code === '23505') {
+        throw new BadRequestException('La categoria ya existe');
+      }
       throw new InternalServerErrorException('Error: No se pudo crear la categoria');
     }
   }
