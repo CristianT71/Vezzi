@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Venta } from './entities/venta.entity';
 import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
@@ -61,6 +61,7 @@ export class VentaService {
   async findAll(PaginacionDto: PaginacionDto) {
     const { page = 1, limit = 10 } = PaginacionDto;
     const [data, total] = await this.ventaRepository.findAndCount({
+      where: { deletedAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -76,7 +77,7 @@ export class VentaService {
   }
 
   async findOne(id: number) {
-    const venta = await this.ventaRepository.findOneBy({ id });
+    const venta = await this.ventaRepository.findOneBy({ id, deletedAt: IsNull() });
     if (!venta) {
       throw new NotFoundException(`Venta con id ${id} no existe`);
     }
@@ -124,8 +125,17 @@ export class VentaService {
   }
 
   async remove(id: number) {
-    const venta = await this.findOne(id);
-    await this.ventaRepository.remove(venta);
+    await this.findOne(id);
+    await this.ventaRepository.softDelete(id);
     return 'Venta eliminada exitosamente';
+  }
+
+  async restaurar(id: number) {
+    const venta = await this.ventaRepository.findOneBy({ id });
+    if (!venta) {
+      throw new NotFoundException(`Venta con id ${id} no existe`);
+    }
+    await this.ventaRepository.restore(id);
+    return 'Venta restaurada exitosamente';
   }
 }

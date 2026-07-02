@@ -3,7 +3,7 @@ import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria } from './entities/categoria.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
@@ -26,6 +26,7 @@ export class CategoriaService {
   async findAll(PaginacionDto: PaginacionDto) {
     const { page = 1, limit = 10 } = PaginacionDto;
     const [ data, total ] = await this.categoriaRepository.findAndCount({
+      where: { deleteAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     })
@@ -41,7 +42,7 @@ export class CategoriaService {
   }
 
   async findOne(id: number) {
-    const categoria = await this.categoriaRepository.findOneBy({ id });
+    const categoria = await this.categoriaRepository.findOneBy({ id, deleteAt: IsNull() });
     if (!categoria) {
       throw new NotFoundException(`Categoria con id ${id} no existe`);
     }
@@ -64,7 +65,16 @@ export class CategoriaService {
 
   async remove(id: number) {
     const categoria = await this.findOne(id);
-    await this.categoriaRepository.remove(categoria);
+    await this.categoriaRepository.softDelete(categoria);
     return 'Categoria eliminada exitosamente';
   }
+
+  async restaurar(id: number) {
+    const categoria = await this.categoriaRepository.findOneBy({ id });
+    if (!categoria) {
+      throw new NotFoundException(`Categoria con id ${id} no existe`);
+    }
+    await this.categoriaRepository.restore(id);
+    return 'Categoria restaurado exitosamente';
+}
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { DetalleVenta } from './entities/detalle-venta.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
 import { Venta } from 'src/venta/entities/venta.entity';
@@ -70,6 +70,7 @@ export class DetalleVentaService {
   async findAll(PaginacionDto: PaginacionDto) {
     const { page = 1, limit = 10 } = PaginacionDto;
     const [ data, total ] = await this.detalleRepo.findAndCount({
+      where: { deletedAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -86,7 +87,7 @@ export class DetalleVentaService {
   }
 
   async findOne(id: number) {
-    const det = await this.detalleRepo.findOneBy({ id });
+    const det = await this.detalleRepo.findOneBy({ id, deletedAt: IsNull() });
     if (!det) throw new NotFoundException(`DetalleVenta con id ${id} no existe`);
     return det;
   }
@@ -118,8 +119,17 @@ export class DetalleVentaService {
   }
 
   async remove(id: number) {
-    const det = await this.findOne(id);
-    await this.detalleRepo.remove(det);
+    await this.findOne(id);
+    await this.detalleRepo.softDelete(id);
     return 'DetalleVenta eliminado exitosamente';
+  }
+
+  async restaurar(id: number) {
+    const det = await this.detalleRepo.findOneBy({ id });
+    if (!det) {
+      throw new NotFoundException(`DetalleVenta con id ${id} no existe`);
+    }
+    await this.detalleRepo.restore(id);
+    return 'DetalleVenta restaurado exitosamente';
   }
 }

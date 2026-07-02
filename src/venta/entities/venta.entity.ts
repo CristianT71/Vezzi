@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
@@ -34,6 +34,9 @@ export class Venta {
 
 	@Column({ type: 'boolean', default: true })
 	activo: boolean;
+
+	@DeleteDateColumn()
+	deletedAt?: Date;
 
 	@OneToMany(() => DetalleVenta, (detalleVenta) => detalleVenta.venta)
 	detalles_venta: DetalleVenta[];

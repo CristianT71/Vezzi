@@ -34,4 +34,9 @@ export class DetalleVentaController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.detalleVentaService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.detalleVentaService.restaurar(id);
+  }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Venta } from 'src/venta/entities/venta.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
 
@@ -29,4 +29,7 @@ export class DetalleVenta {
 
   @Column({ type: 'boolean', default: true })
   activo: boolean;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

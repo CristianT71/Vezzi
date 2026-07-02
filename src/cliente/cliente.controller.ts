@@ -34,4 +34,9 @@ export class ClienteController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.clienteService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.clienteService.restaurar(id);
+}
 }

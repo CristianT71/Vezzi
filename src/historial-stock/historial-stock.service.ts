@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { HistorialStock } from './entities/historial-stock.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
 import { CreateHistorialStockDto } from './dto/create-historial-stock.dto';
@@ -45,6 +45,7 @@ export class HistorialStockService {
   async findAll(PaginacionDto: PaginacionDto) {
     const { page = 1, limit = 10 } = PaginacionDto;
     const [data, total] = await this.historialRepository.findAndCount({
+      where: { deletedAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -60,7 +61,7 @@ export class HistorialStockService {
   }
 
   async findOne(id: number) {
-    const historial = await this.historialRepository.findOneBy({ id });
+    const historial = await this.historialRepository.findOneBy({ id, deletedAt: IsNull() });
     if (!historial) {
       throw new NotFoundException(`HistorialStock con id ${id} no existe`);
     }
@@ -101,8 +102,17 @@ export class HistorialStockService {
   }
 
   async remove(id: number) {
-    const historial = await this.findOne(id);
-    await this.historialRepository.remove(historial);
+    await this.findOne(id);
+    await this.historialRepository.softDelete(id);
     return 'HistorialStock eliminado exitosamente';
+  }
+
+  async restaurar(id: number) {
+    const historial = await this.historialRepository.findOneBy({ id });
+    if (!historial) {
+      throw new NotFoundException(`HistorialStock con id ${id} no existe`);
+    }
+    await this.historialRepository.restore(id);
+    return 'HistorialStock restaurado exitosamente';
   }
 }

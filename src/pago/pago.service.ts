@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Pago } from './entities/pago.entity';
 import { Venta } from 'src/venta/entities/venta.entity';
 import { Cliente } from 'src/cliente/entities/cliente.entity';
@@ -68,6 +68,7 @@ export class PagoService {
   async findAll(PaginacionDto: PaginacionDto) {
     const { page = 1, limit = 10} = PaginacionDto;
     const [data, total] = await this.pagoRepository.findAndCount({
+      where: { deletedAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -77,13 +78,13 @@ export class PagoService {
         total,
         page,
         limit,
-        TotalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit),
       },
     };
   }
 
   async findOne(id: number) {
-    const pago = await this.pagoRepository.findOneBy({ id });
+    const pago = await this.pagoRepository.findOneBy({ id, deletedAt: IsNull() });
     if (!pago) {
       throw new NotFoundException(`Pago con id ${id} no existe`);
     }
@@ -140,8 +141,17 @@ export class PagoService {
   }
 
   async remove(id: number) {
-    const pago = await this.findOne(id);
-    await this.pagoRepository.remove(pago);
+    await this.findOne(id);
+    await this.pagoRepository.softDelete(id);
     return 'Pago eliminado exitosamente';
+  }
+
+  async restaurar(id: number) {
+    const pago = await this.pagoRepository.findOneBy({ id });
+    if (!pago) {
+      throw new NotFoundException(`Pago con id ${id} no existe`);
+    }
+    await this.pagoRepository.restore(id);
+    return 'Pago restaurado exitosamente';
   }
 }

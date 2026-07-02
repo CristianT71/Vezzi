@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Producto } from 'src/producto/entities/producto.entity';
 
 @Entity()
@@ -28,6 +28,9 @@ export class HistorialStock {
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
 	fecha_movimiento: Date;
 
-	@Column({ type: 'boolean', default: true })
-	activo: boolean;
+  @Column({ type: 'boolean', default: true })
+  activo: boolean;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

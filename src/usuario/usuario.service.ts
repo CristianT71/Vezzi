@@ -3,7 +3,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { Rol } from 'src/rol/entities/rol.entity';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
@@ -41,6 +41,7 @@ export class UsuarioService {
   async findAll(PaginacionDto: PaginacionDto) {
     const { page = 1, limit = 10 } = PaginacionDto;
     const [data, total] = await this.usuarioRepository.findAndCount({
+      where: { deleteAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     })
@@ -50,13 +51,13 @@ export class UsuarioService {
         total,
         page,
         limit,
-        totalPages: Math.ceil(total - limit),
+        totalPages: Math.ceil(total / limit),
       },
     };
   }
 
   async findOne(id: string) {
-    const usuario = await this.usuarioRepository.findOneBy( {id} );
+    const usuario = await this.usuarioRepository.findOneBy( { id, deleteAt: IsNull()} );
     if (!usuario) {
       throw new NotFoundException(`Usuario con id ${id} no existe`)
     }
@@ -98,7 +99,16 @@ export class UsuarioService {
 
   async remove(id: string) {
     const usuario = await this.findOne(id);
-    await this.usuarioRepository.remove(usuario);
+    await this.usuarioRepository.softDelete(usuario);
     return 'Usuario eliminado exitosamente'
   }
+  
+  async restaurar(id: string) {
+    const usuario = await this.usuarioRepository.findOneBy({ id });
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no existe`);
+    }
+    await this.usuarioRepository.restore(id);
+    return 'Usuario restaurado exitosamente';
+}
 }

@@ -3,7 +3,7 @@ import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Producto } from './entities/producto.entity';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { Categoria } from 'src/categoria/entities/categoria.entity';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
@@ -34,6 +34,7 @@ export class ProductoService {
   async findAll(paginacionDto: PaginacionDto) {
     const { page = 1, limit = 10  } = paginacionDto;
     const [ data, total ] = await this.productoRepository.findAndCount({
+      where: { deletedAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -49,7 +50,7 @@ export class ProductoService {
   }
 
   async findOne(id: number) {
-    const producto = await this.productoRepository.findOneBy({ id });
+    const producto = await this.productoRepository.findOneBy({ id, deletedAt: IsNull() });
     if (!producto) {
       throw new NotFoundException(`Producto con id ${id} no existe`);
     }
@@ -80,7 +81,16 @@ export class ProductoService {
 
   async remove(id: number) {
     const producto = await this.findOne(id);
-    await this.productoRepository.remove(producto);
+    await this.productoRepository.softDelete(producto);
     return 'Producto eliminado exitosamente';
+  }
+
+  async restaurar(id: number) {
+    const producto = await this.productoRepository.findOneBy({ id });
+    if (!producto) {
+      throw new NotFoundException(`Producto con id ${id} no existe`);
+    }
+    await this.productoRepository.restore(id);
+    return 'Producto restaurado exitosamente'
   }
 }

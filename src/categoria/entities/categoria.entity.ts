@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Producto } from 'src/producto/entities/producto.entity';
 
 @Entity()
@@ -11,6 +11,9 @@ export class Categoria {
 
   @Column({ type: 'text', nullable: true })
   descripcion: string;
+
+  @DeleteDateColumn()
+  deleteAt?: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   fecha_creacion: Date;

@@ -34,4 +34,9 @@ export class ProductoController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.productoService.restaurar(id);
+  }
 }

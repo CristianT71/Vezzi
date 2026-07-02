@@ -34,4 +34,9 @@ export class CategoriaController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.categoriaService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriaService.restaurar(id);
+  }
 }

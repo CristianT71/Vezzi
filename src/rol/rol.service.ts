@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Rol } from './entities/rol.entity';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
@@ -26,6 +26,7 @@ export class RolService {
   async findAll(PaginacionDto: PaginacionDto) {
     const { page = 1, limit = 10 } = PaginacionDto;
     const [data, total] = await this.rolRepository.findAndCount({
+      where: { deletedAt: IsNull() },
       skip: (page - 1) * limit,
       take: limit,
     })
@@ -41,7 +42,7 @@ export class RolService {
   }
 
   async findOne(id: string) {
-    const rol = await this.rolRepository.findOneBy({ id })
+    const rol = await this.rolRepository.findOneBy({ id, deletedAt: IsNull() })
     if(!rol) {
       throw new NotFoundException(`Rol con id ${id} no existe`)
     }
@@ -66,8 +67,17 @@ export class RolService {
   }
 
   async remove(id: string) {
-    const rol = await this.findOne(id)
-    await this.rolRepository.remove(rol)
+    await this.findOne(id)
+    await this.rolRepository.softDelete(id)
     return 'Rol eliminado con exito'
+  }
+
+  async restaurar(id: string) {
+    const rol = await this.rolRepository.findOneBy({ id })
+    if (!rol) {
+      throw new NotFoundException(`Rol con id ${id} no existe`)
+    }
+    await this.rolRepository.restore(id)
+    return 'Rol restaurado exitosamente'
   }
 }

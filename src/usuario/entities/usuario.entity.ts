@@ -1,5 +1,5 @@
 import { Rol } from "src/rol/entities/rol.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Venta } from 'src/venta/entities/venta.entity';
 import { Pago } from 'src/pago/entities/pago.entity';
 
@@ -19,6 +19,9 @@ export class Usuario {
 
     @Column({type: 'boolean', default: true})
     activo: boolean;
+
+    @DeleteDateColumn()
+    deleteAt: Date;
 
     //relaciones
 

@@ -34,4 +34,9 @@ export class RolController {
   remove(@Param('id') id: string) {
     return this.rolService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id') id: string) {
+    return this.rolService.restaurar(id);
+  }
 }

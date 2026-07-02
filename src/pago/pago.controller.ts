@@ -34,4 +34,9 @@ export class PagoController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.pagoService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.pagoService.restaurar(id);
+  }
 }

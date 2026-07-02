@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Venta } from 'src/venta/entities/venta.entity';
 import { Pago } from 'src/pago/entities/pago.entity';
 
@@ -21,6 +21,9 @@ export class Cliente {
 
   @Column({ type: 'boolean', default: true })
   activo: boolean;
+
+  @DeleteDateColumn()
+  deleteAt?: Date;
 
   @OneToMany(() => Venta, (venta) => venta.cliente)
   ventas: Venta[];

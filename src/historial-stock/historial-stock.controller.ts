@@ -34,4 +34,9 @@ export class HistorialStockController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.historialStockService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.historialStockService.restaurar(id);
+  }
 }

@@ -34,4 +34,9 @@ export class VentaController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.remove(id);
   }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.ventaService.restaurar(id);
+  }
 }
