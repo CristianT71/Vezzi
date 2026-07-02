@@ -11,6 +11,7 @@ import { HistorialStockModule } from './historial-stock/historial-stock.module';
 import { VentaModule } from './venta/venta.module';
 import { PagoModule } from './pago/pago.module';
 import { AuthModule } from './auth/auth.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from './auth/auth.module';
     ProductoModule,
     VentaModule,
     AuthModule,
+    SeedModule,
   ],
   controllers: [],
   providers: [],
