@@ -91,28 +91,28 @@ export class VentaService {
     let cliente;
     let usuario;
 
-    if ((updateVentaDto as any).id_cliente) {
-      cliente = await this.clienteRepository.findOneBy({ id: (updateVentaDto as any).id_cliente });
+    if (updateVentaDto.id_cliente) {
+      cliente = await this.clienteRepository.findOneBy({ id: updateVentaDto.id_cliente });
       if (!cliente) {
-        throw new NotFoundException(`Cliente con id ${(updateVentaDto as any).id_cliente} no existe`);
+        throw new NotFoundException(`Cliente con id ${updateVentaDto.id_cliente} no existe`);
       }
     }
 
-    if ((updateVentaDto as any).id_usuario) {
-      usuario = await this.usuarioRepository.findOneBy({ id: (updateVentaDto as any).id_usuario });
+    if (updateVentaDto.id_usuario) {
+      usuario = await this.usuarioRepository.findOneBy({ id: updateVentaDto.id_usuario });
       if (!usuario) {
-        throw new NotFoundException(`Usuario con id ${(updateVentaDto as any).id_usuario} no existe`);
+        throw new NotFoundException(`Usuario con id ${updateVentaDto.id_usuario} no existe`);
       }
     }
 
-    const { id_cliente, id_usuario, fecha_venta, ...ventaData } = updateVentaDto as any;
+    const { id_cliente, id_usuario, fecha_venta, ...ventaData } = updateVentaDto;
     const venta = await this.ventaRepository.preload({
       id,
-      ...(ventaData as any),
+      ...ventaData,
       ...(cliente && { cliente }),
       ...(usuario && { usuario }),
       ...(fecha_venta && { fecha_venta: new Date(fecha_venta) }),
-    });
+    } as any);
 
     if (!venta) {
       throw new NotFoundException(`Venta con id ${id} no existe`);
@@ -149,7 +149,7 @@ export class VentaService {
 
     const total = detalles.reduce((sum, det) => sum + Number(det.subtotal), 0);
 
-    await this.ventaRepository.update(id, { total: total.toFixed(2) as any});
+    await this.ventaRepository.update(id, { total: total.toFixed(2) });
 
     return total.toFixed(2);
   }

@@ -15,7 +15,11 @@ export class CategoriaService {
 
   async create(createCategoriaDto: CreateCategoriaDto) {
     try {
-      const categoria = this.categoriaRepository.create(createCategoriaDto as any);
+      const categoria = this.categoriaRepository.create({
+        nombre: createCategoriaDto.nombre,
+        descripcion: createCategoriaDto.descripcion,
+        activo: createCategoriaDto.activo ?? true,
+    });
       return await this.categoriaRepository.save(categoria);
     } catch (error) {
       console.log(error);
@@ -54,7 +58,7 @@ export class CategoriaService {
   }
 
   async update(id: number, updateCategoriaDto: UpdateCategoriaDto) {
-    const categoria = await this.categoriaRepository.preload({ id, ...(updateCategoriaDto as any) });
+    const categoria = await this.categoriaRepository.preload(updateCategoriaDto);
     if (!categoria) {
       throw new NotFoundException(`Categoria con id ${id} no existe`);
     }

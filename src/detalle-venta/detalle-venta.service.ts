@@ -95,19 +95,19 @@ export class DetalleVentaService {
   async update(id: number, updateDto: UpdateDetalleVentaDto) {
     let venta;
     let producto;
-    if ((updateDto as any).id_venta) {
-      venta = await this.ventaRepo.findOneBy({ id: (updateDto as any).id_venta });
+    if (updateDto.id_venta) {
+      venta = await this.ventaRepo.findOneBy({ id: updateDto.id_venta });
       if (!venta) {
-        throw new NotFoundException(`Venta con id ${(updateDto as any).id_venta} no existe`);
+        throw new NotFoundException(`Venta con id ${updateDto.id_venta} no existe`);
       }
     }
-    if ((updateDto as any).id_producto) {
-      producto = await this.productoRepo.findOneBy({ id: (updateDto as any).id_producto });
-      if (!producto) throw new NotFoundException(`Producto con id ${(updateDto as any).id_producto} no existe`);
+    if (updateDto.id_producto) {
+      producto = await this.productoRepo.findOneBy({ id: updateDto.id_producto });
+      if (!producto) throw new NotFoundException(`Producto con id ${updateDto.id_producto} no existe`);
     }
-    const { id_producto, id_venta, ...rest } = updateDto as any;
+    const { id_producto, id_venta, ...rest } = updateDto;
     const subtotal = rest.cantidad && rest.precio_unitario ? (rest.cantidad * Number(rest.precio_unitario)).toFixed(2) : undefined;
-    const detalle = await this.detalleRepo.preload({ id, ...(rest as any), ...(venta && { venta }), ...(producto && { producto }), ...(subtotal && { subtotal }) });
+    const detalle = await this.detalleRepo.preload({ id, ...rest, ...(venta && { venta }), ...(producto && { producto }), ...(subtotal && { subtotal }) } as any);
     if (!detalle) throw new NotFoundException(`DetalleVenta con id ${id} no existe`);
     try {
       await this.detalleRepo.save(detalle);

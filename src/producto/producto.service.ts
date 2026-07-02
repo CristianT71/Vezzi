@@ -22,8 +22,8 @@ export class ProductoService {
       if (!categoria) {
         throw new NotFoundException(`Categoria con id ${createProductoDto.id_categoria} no existe`);
       }
-      const { id_categoria, ...productoData } = createProductoDto as any;
-      const producto = this.productoRepository.create({ ...productoData, categoria });
+      const { id_categoria, ...productoData } = createProductoDto;
+      const producto = this.productoRepository.create({ ...productoData, categoria } as any);
       return await this.productoRepository.save(producto);
     } catch (error) {
       console.log(error);
@@ -59,14 +59,14 @@ export class ProductoService {
 
   async update(id: number, updateProductoDto: UpdateProductoDto) {
     let categoria;
-    if ((updateProductoDto as any).id_categoria) {
-      categoria = await this.categoriaRepository.findOneBy({ id: (updateProductoDto as any).id_categoria });
+    if (updateProductoDto.id_categoria) {
+      categoria = await this.categoriaRepository.findOneBy({ id: updateProductoDto.id_categoria });
       if (!categoria) {
-        throw new NotFoundException(`Categoria con id ${(updateProductoDto as any).id_categoria} no existe`);
+        throw new NotFoundException(`Categoria con id ${updateProductoDto.id_categoria} no existe`);
       }
     }
-    const { id_categoria, ...productoData } = updateProductoDto as any;
-    const producto = await this.productoRepository.preload({ id, ...(productoData as any), ...(categoria && { categoria }) });
+    const { id_categoria, ...productoData } = updateProductoDto;
+    const producto = await this.productoRepository.preload({ id, ...productoData, ...(categoria && { categoria }) } as any);
     if (!producto) {
       throw new NotFoundException(`Producto con id ${id} no existe`);
     }

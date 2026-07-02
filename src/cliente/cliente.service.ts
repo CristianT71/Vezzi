@@ -15,7 +15,11 @@ export class ClienteService {
 
   async create(createClienteDto: CreateClienteDto) {
     try {
-      const cliente = this.clienteRepository.create(createClienteDto as any);
+      const cliente = this.clienteRepository.create({
+        nombre: createClienteDto.nombre,
+        telefono: createClienteDto.telefono,
+        activo: createClienteDto.activo ?? true,
+      });
       return await this.clienteRepository.save(cliente);
     } catch (error) {
       console.log(error);
@@ -50,7 +54,7 @@ export class ClienteService {
   }
 
   async update(id: number, updateClienteDto: UpdateClienteDto) {
-    const cliente = await this.clienteRepository.preload({ id, ...(updateClienteDto as any) });
+    const cliente = await this.clienteRepository.preload({ id, ...updateClienteDto } as any);
     if (!cliente) {
       throw new NotFoundException(`Cliente con id ${id} no existe`);
     }

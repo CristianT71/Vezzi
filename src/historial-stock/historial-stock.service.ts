@@ -70,17 +70,17 @@ export class HistorialStockService {
 
   async update(id: number, updateHistorialStockDto: UpdateHistorialStockDto) {
     let producto;
-    if ((updateHistorialStockDto as any).id_producto) {
-      producto = await this.productoRepository.findOneBy({ id: (updateHistorialStockDto as any).id_producto });
+    if (updateHistorialStockDto.id_producto) {
+      producto = await this.productoRepository.findOneBy({ id: updateHistorialStockDto.id_producto });
       if (!producto) {
-        throw new NotFoundException(`Producto con id ${(updateHistorialStockDto as any).id_producto} no existe`);
+        throw new NotFoundException(`Producto con id ${updateHistorialStockDto.id_producto} no existe`);
       }
     }
 
-    const { id_producto, ...historialData } = updateHistorialStockDto as any;
+    const { id_producto, ...historialData } = updateHistorialStockDto;
     const historial = await this.historialRepository.preload({
       id,
-      ...(historialData as any),
+      ...historialData,
       ...(producto && { producto }),
     });
 
@@ -89,8 +89,8 @@ export class HistorialStockService {
     }
 
     try {
-      if ((historialData as any).stock_nuevo && producto) {
-        producto.stock = (historialData as any).stock_nuevo;
+      if (historialData.stock_nuevo && producto) {
+        producto.stock = historialData.stock_nuevo;
         await this.productoRepository.save(producto);
       }
       await this.historialRepository.save(historial);

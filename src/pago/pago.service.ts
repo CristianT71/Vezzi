@@ -96,36 +96,36 @@ export class PagoService {
     let cliente;
     let usuario;
 
-    if ((updatePagoDto as any).id_venta) {
-      venta = await this.ventaRepository.findOneBy({ id: (updatePagoDto as any).id_venta });
+    if (updatePagoDto.id_venta) {
+      venta = await this.ventaRepository.findOneBy({ id: updatePagoDto.id_venta });
       if (!venta) {
-        throw new NotFoundException(`Venta con id ${(updatePagoDto as any).id_venta} no existe`);
+        throw new NotFoundException(`Venta con id ${updatePagoDto.id_venta} no existe`);
       }
     }
 
-    if ((updatePagoDto as any).id_cliente) {
-      cliente = await this.clienteRepository.findOneBy({ id: (updatePagoDto as any).id_cliente });
+    if (updatePagoDto.id_cliente) {
+      cliente = await this.clienteRepository.findOneBy({ id: updatePagoDto.id_cliente });
       if (!cliente) {
-        throw new NotFoundException(`Cliente con id ${(updatePagoDto as any).id_cliente} no existe`);
+        throw new NotFoundException(`Cliente con id ${updatePagoDto.id_cliente} no existe`);
       }
     }
 
-    if ((updatePagoDto as any).id_usuario) {
-      usuario = await this.usuarioRepository.findOneBy({ id: (updatePagoDto as any).id_usuario });
+    if (updatePagoDto.id_usuario) {
+      usuario = await this.usuarioRepository.findOneBy({ id: updatePagoDto.id_usuario });
       if (!usuario) {
-        throw new NotFoundException(`Usuario con id ${(updatePagoDto as any).id_usuario} no existe`);
+        throw new NotFoundException(`Usuario con id ${updatePagoDto.id_usuario} no existe`);
       }
     }
 
-    const { id_venta, id_cliente, id_usuario, fecha_pago, ...pagoData } = updatePagoDto as any;
+    const { id_venta, id_cliente, id_usuario, fecha_pago, ...pagoData } = updatePagoDto;
     const pago = await this.pagoRepository.preload({
       id,
-      ...(pagoData as any),
+      ...pagoData,
       ...(venta && { venta }),
       ...(cliente && { cliente }),
       ...(usuario && { usuario }),
       ...(fecha_pago && { fecha_pago: new Date(fecha_pago) }),
-    });
+    } as any);
 
     if (!pago) {
       throw new NotFoundException(`Pago con id ${id} no existe`);
