@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateCategoriaDto {
   @IsString()
@@ -9,5 +9,9 @@ export class CreateCategoriaDto {
   @IsString()
   @IsOptional()
   descripcion: string;
+
+  @IsBoolean()
+  @IsOptional()
+  activo: boolean;
 }
 

@@ -1,7 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Categoria } from 'src/categoria/entities/categoria.entity';
-import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
-import { HistorialStock } from 'src/historial-stock/entities/historial-stock.entity';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Categoria } from '../../categoria/entities/categoria.entity';
+import { DetalleVenta } from '../../detalle-venta/entities/detalle-venta.entity';
+import { HistorialStock } from '../../historial-stock/entities/historial-stock.entity';
 
 @Entity()
 export class Producto {
@@ -32,6 +32,9 @@ export class Producto {
 
   @Column({ type: 'boolean', default: true })
   activo: boolean;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   @OneToMany(() => DetalleVenta, (detalleVenta) => detalleVenta.producto)
   detalles_venta: DetalleVenta[];

@@ -2,7 +2,7 @@ import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Is
 
 export class CreateVentaDto {
 	@IsString()
-	@IsNotEmpty()
+	@IsOptional()
 	@MaxLength(30)
 	numero_venta: string;
 

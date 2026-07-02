@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Cliente } from 'src/cliente/entities/cliente.entity';
-import { Usuario } from 'src/usuario/entities/usuario.entity';
-import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
-import { Pago } from 'src/pago/entities/pago.entity';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Cliente } from '../../cliente/entities/cliente.entity';
+import { Usuario } from '../../usuario/entities/usuario.entity';
+import { DetalleVenta } from '../../detalle-venta/entities/detalle-venta.entity';
+import { Pago } from '../../pago/entities/pago.entity';
 
 @Entity()
 export class Venta {
@@ -34,6 +34,9 @@ export class Venta {
 
 	@Column({ type: 'boolean', default: true })
 	activo: boolean;
+
+	@DeleteDateColumn()
+	deletedAt?: Date;
 
 	@OneToMany(() => DetalleVenta, (detalleVenta) => detalleVenta.venta)
 	detalles_venta: DetalleVenta[];

@@ -1,8 +1,9 @@
 import { Rol } from "src/rol/entities/rol.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Venta } from 'src/venta/entities/venta.entity';
-import { Pago } from 'src/pago/entities/pago.entity';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Venta } from '../../venta/entities/venta.entity';
+import { Pago } from '../../pago/entities/pago.entity';
 
+@Unique(['nombre_usuario'])
 @Entity()
 export class Usuario {
     @PrimaryGeneratedColumn('uuid')
@@ -19,6 +20,9 @@ export class Usuario {
 
     @Column({type: 'boolean', default: true})
     activo: boolean;
+
+    @DeleteDateColumn()
+    deleteAt: Date;
 
     //relaciones
 

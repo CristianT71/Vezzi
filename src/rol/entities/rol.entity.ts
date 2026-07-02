@@ -1,6 +1,8 @@
 import { Usuario } from "src/usuario/entities/usuario.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
+
+@Unique(['nombre'])
 @Entity()
 export class Rol {
     @PrimaryGeneratedColumn('uuid')
@@ -14,6 +16,9 @@ export class Rol {
 
     @Column({type: 'boolean', default: true})
     activo: boolean;
+
+    @DeleteDateColumn()
+    deletedAt?: Date;
 
     //relaciones
 

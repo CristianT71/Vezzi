@@ -1,11 +1,12 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { Rol } from 'src/rol/entities/rol.entity';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
 export class UsuarioService {
@@ -33,16 +34,34 @@ export class UsuarioService {
       return await this.usuarioRepository.save(usuario);
     } catch(error){
       console.log(error);
+      const pgError = error as any;
+      if (pgError.code === '23505') {
+        throw new BadRequestException('El nombre de usuario ya existe')
+      }
       throw new InternalServerErrorException('Error: No se pudo crear el usuario')
     } 
   }
 
-  async findAll() {
-    return this.usuarioRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [data, total] = await this.usuarioRepository.findAndCount({
+      where: { deleteAt: IsNull() },
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: string) {
-    const usuario = await this.usuarioRepository.findOneBy( {id} );
+    const usuario = await this.usuarioRepository.findOneBy( { id, deleteAt: IsNull()} );
     if (!usuario) {
       throw new NotFoundException(`Usuario con id ${id} no existe`)
     }
@@ -84,7 +103,16 @@ export class UsuarioService {
 
   async remove(id: string) {
     const usuario = await this.findOne(id);
-    await this.usuarioRepository.remove(usuario);
+    await this.usuarioRepository.softDelete(usuario);
     return 'Usuario eliminado exitosamente'
   }
+  
+  async restaurar(id: string) {
+    const usuario = await this.usuarioRepository.findOneBy({ id });
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no existe`);
+    }
+    await this.usuarioRepository.restore(id);
+    return 'Usuario restaurado exitosamente';
+}
 }

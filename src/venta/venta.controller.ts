@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { VentaService } from './venta.service';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Controller('venta')
+@UseGuards(JwtAuthGuard)
 export class VentaController {
   constructor(private readonly ventaService: VentaService) {}
 
@@ -13,8 +16,8 @@ export class VentaController {
   }
 
   @Get()
-  findAll() {
-    return this.ventaService.findAll();
+  findAll(@Query() PaginacionDto: PaginacionDto) {
+    return this.ventaService.findAll(PaginacionDto);
   }
 
   @Get(':id')
@@ -30,5 +33,15 @@ export class VentaController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.remove(id);
+  }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.ventaService.restaurar(id);
+  }
+
+  @Post(':id/calcular-total')
+  calcularTotal(@Param('id', ParseIntPipe) id: number) {
+    return this.ventaService.calcularTotal(id);
   }
 }

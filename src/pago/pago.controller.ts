@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { PagoService } from './pago.service';
 import { CreatePagoDto } from './dto/create-pago.dto';
 import { UpdatePagoDto } from './dto/update-pago.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Controller('pago')
+@UseGuards(JwtAuthGuard)
 export class PagoController {
   constructor(private readonly pagoService: PagoService) {}
 
@@ -13,8 +16,8 @@ export class PagoController {
   }
 
   @Get()
-  findAll() {
-    return this.pagoService.findAll();
+  findAll(@Query() PaginacionDto: PaginacionDto) {
+    return this.pagoService.findAll(PaginacionDto);
   }
 
   @Get(':id')
@@ -30,5 +33,10 @@ export class PagoController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.pagoService.remove(id);
+  }
+
+  @Patch(':id/restaurar')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.pagoService.restaurar(id);
   }
 }

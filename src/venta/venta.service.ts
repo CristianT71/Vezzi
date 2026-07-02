@@ -1,11 +1,13 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Venta } from './entities/venta.entity';
 import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
+import { PaginacionDto } from 'src/common/dto/paginacion.dto';
+import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
 
 @Injectable()
 export class VentaService {
@@ -16,6 +18,8 @@ export class VentaService {
     private readonly clienteRepository: Repository<Cliente>,
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
+    @InjectRepository(DetalleVenta)
+    private readonly detalleVentaRepository: Repository<DetalleVenta>,
   ) {}
 
   async create(createVentaDto: CreateVentaDto) {
@@ -30,13 +34,22 @@ export class VentaService {
         throw new NotFoundException(`Usuario con id ${createVentaDto.id_usuario} no existe`);
       }
 
+      const ultimaVenta = await this.ventaRepository.findOne({
+        order: { id: 'DESC' },
+      });
+
+      const siguienteNumero = ultimaVenta
+        ? parseInt(ultimaVenta.numero_venta.split('-')[1]) + 1
+        : 1;
+        const numero_venta = `VZ-${String(siguienteNumero).padStart(6, '0')}`;
+
       const venta = this.ventaRepository.create({
-        numero_venta: createVentaDto.numero_venta,
+        numero_venta,
         cliente,
         usuario,
         fecha_venta: createVentaDto.fecha_venta ? new Date(createVentaDto.fecha_venta) : new Date(),
         impuesto: createVentaDto.impuesto,
-        total: createVentaDto.total,
+        total: 0,
         estado: createVentaDto.estado ?? 'EMITIDA',
         activo: createVentaDto.activo ?? true,
       } as any);
@@ -48,12 +61,26 @@ export class VentaService {
     }
   }
 
-  findAll() {
-    return this.ventaRepository.find();
+  async findAll(PaginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10 } = PaginacionDto;
+    const [data, total] = await this.ventaRepository.findAndCount({
+      where: { deletedAt: IsNull() },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {
-    const venta = await this.ventaRepository.findOneBy({ id });
+    const venta = await this.ventaRepository.findOneBy({ id, deletedAt: IsNull() });
     if (!venta) {
       throw new NotFoundException(`Venta con id ${id} no existe`);
     }
@@ -64,28 +91,28 @@ export class VentaService {
     let cliente;
     let usuario;
 
-    if ((updateVentaDto as any).id_cliente) {
-      cliente = await this.clienteRepository.findOneBy({ id: (updateVentaDto as any).id_cliente });
+    if (updateVentaDto.id_cliente) {
+      cliente = await this.clienteRepository.findOneBy({ id: updateVentaDto.id_cliente });
       if (!cliente) {
-        throw new NotFoundException(`Cliente con id ${(updateVentaDto as any).id_cliente} no existe`);
+        throw new NotFoundException(`Cliente con id ${updateVentaDto.id_cliente} no existe`);
       }
     }
 
-    if ((updateVentaDto as any).id_usuario) {
-      usuario = await this.usuarioRepository.findOneBy({ id: (updateVentaDto as any).id_usuario });
+    if (updateVentaDto.id_usuario) {
+      usuario = await this.usuarioRepository.findOneBy({ id: updateVentaDto.id_usuario });
       if (!usuario) {
-        throw new NotFoundException(`Usuario con id ${(updateVentaDto as any).id_usuario} no existe`);
+        throw new NotFoundException(`Usuario con id ${updateVentaDto.id_usuario} no existe`);
       }
     }
 
-    const { id_cliente, id_usuario, fecha_venta, ...ventaData } = updateVentaDto as any;
+    const { id_cliente, id_usuario, fecha_venta, ...ventaData } = updateVentaDto;
     const venta = await this.ventaRepository.preload({
       id,
-      ...(ventaData as any),
+      ...ventaData,
       ...(cliente && { cliente }),
       ...(usuario && { usuario }),
       ...(fecha_venta && { fecha_venta: new Date(fecha_venta) }),
-    });
+    } as any);
 
     if (!venta) {
       throw new NotFoundException(`Venta con id ${id} no existe`);
@@ -101,8 +128,29 @@ export class VentaService {
   }
 
   async remove(id: number) {
-    const venta = await this.findOne(id);
-    await this.ventaRepository.remove(venta);
+    await this.findOne(id);
+    await this.ventaRepository.softDelete(id);
     return 'Venta eliminada exitosamente';
+  }
+
+  async restaurar(id: number) {
+    const venta = await this.ventaRepository.findOneBy({ id });
+    if (!venta) {
+      throw new NotFoundException(`Venta con id ${id} no existe`);
+    }
+    await this.ventaRepository.restore(id);
+    return 'Venta restaurada exitosamente';
+  }
+
+  async calcularTotal(id: number) {
+    const detalles = await this.detalleVentaRepository.find({
+      where: { venta: { id }},
+    });
+
+    const total = detalles.reduce((sum, det) => sum + Number(det.subtotal), 0);
+
+    await this.ventaRepository.update(id, { total: total.toFixed(2) });
+
+    return total.toFixed(2);
   }
 }

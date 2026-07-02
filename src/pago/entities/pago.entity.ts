@@ -1,7 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Venta } from 'src/venta/entities/venta.entity';
-import { Cliente } from 'src/cliente/entities/cliente.entity';
-import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Venta } from '../../venta/entities/venta.entity';
+import { Cliente } from '../../cliente/entities/cliente.entity';
+import { Usuario } from '../../usuario/entities/usuario.entity';
 
 @Entity()
 export class Pago {
@@ -37,4 +37,7 @@ export class Pago {
 
 	@Column({ type: 'boolean', default: true })
 	activo: boolean;
+
+	@DeleteDateColumn()
+	deletedAt?: Date;
 }
