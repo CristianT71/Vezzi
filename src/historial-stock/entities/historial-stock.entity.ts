@@ -1,5 +1,5 @@
 import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Producto } from 'src/producto/entities/producto.entity';
+import { Producto } from '../../producto/entities/producto.entity';
 
 @Entity()
 export class HistorialStock {

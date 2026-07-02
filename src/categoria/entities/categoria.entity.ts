@@ -1,5 +1,5 @@
 import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { Producto } from 'src/producto/entities/producto.entity';
+import { Producto } from '../../producto/entities/producto.entity';
 
 
 @Unique(['nombre'])

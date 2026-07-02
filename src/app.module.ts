@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { dataSourceOptions } from './config/data-source';
 import { UsuarioModule } from './usuario/usuario.module';
 import { RolModule } from './rol/rol.module';
 import { ClienteModule } from './cliente/cliente.module';
@@ -17,14 +18,10 @@ import { SeedModule } from './seed/seed.module';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT ?? '5432'),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      ...dataSourceOptions,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
+      migrationsRun: true,
     }),
     UsuarioModule,
     RolModule,
