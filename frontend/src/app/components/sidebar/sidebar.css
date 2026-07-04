@@ -1,6 +1,122 @@
 .sidebar {
+    position: absolute;
     background-color: var(--primary-dark);
     height: 776px;
-    width: 260px;
+    width: 240px;
+    top: 0;
 }
 
+.sidebar-header{
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid;
+    padding: 20px 10px 25px;
+}
+
+.sidebar-header .logo {
+    display: flex;
+    background: var(--primary);
+    font-size: 13px;
+    color: var(--white);
+    width: 33px;
+    height: 33px;
+    border-radius: var(--radius);
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+
+.sidebar-header h2 {
+    font-size: 16px;
+    color: var(--white);
+}
+
+.sidebar-header span {
+    position: relative;
+    font-size: 12px;
+    color: var(--text-secondary);
+    top: 20px;
+    left: -56px;
+}
+
+.menu-principal {
+    padding: 20px 10px;
+}
+
+.menu-principal p {
+    font-size: 11px;
+    font-weight: 600;
+    position: relative;
+    left: 10px;
+}
+
+.menu-principal ul li {
+    height: 40px;
+    display: flex;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    gap: 10px;
+    margin-top: 5px;
+    transition: filter 0.3s ease-in-out;
+    align-items: center;
+    border-radius: var(--radius);
+}
+
+.menu-principal ul li:hover {
+    filter: brightness(1.6);
+    background-color: var(--primary-dark);
+}
+
+.menu-principal ul li ,::before {
+    content: "";
+}
+
+.sidebar-footer {
+    width: 240px;
+    height: 66px;
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    border-top: 1px solid;
+    padding: 20px 20px 25px;
+    left: -2px;
+}
+
+.sidebar-footer .icono-admin {
+    display: flex;
+    font-size: 12px;
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    background-color: var(--text-primary);
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.content-s-fooder p {
+    font-size: 12px;
+    color: var(--white);
+}
+
+.content-s-fooder span {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-left: 5px;
+}
+
+.content-s-fooder .log-out {
+    position: relative;
+    left: 105px;
+    top: -5px;
+    color: red;
+    transition: filter 0.3s ease-in-out;
+}
+
+.content-s-fooder .log-out:hover {
+    filter: brightness(1.6);
+}
