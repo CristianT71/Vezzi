@@ -1,12 +1,13 @@
 .header {
     display: flex;
+    width: calc(100% - 240px);
     height: 80px;
     margin-left: 240px;
     background: var(--white);
     border: 1px solid rgb(225, 225, 225);
     padding: 20px;
     justify-content: space-between;
-    
+    position: fixed;    
 }
 
 .page-title {

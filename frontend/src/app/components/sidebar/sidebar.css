@@ -4,6 +4,7 @@
     height: 776px;
     width: 240px;
     top: 0;
+    position: fixed;
 }
 
 .sidebar-header{
