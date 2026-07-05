@@ -1,0 +1,130 @@
+<main class="dashboard-container">
+
+    <section class="cards">
+        <div class="card">
+            <div class="card-header">
+                <lucide-icon name="shopping-cart" size="18" color="#3B82F6" style="background-color: #EFF6FF;" class="card-icon"></lucide-icon>
+                <span class="badge porcentaje">{{ variacionVentas }}</span>
+            </div>
+            <div class="card-body">
+                <h2 class="card-valor">${{ data.ventasHoy || 0 }}</h2>
+                <p class="card-titulo">Ventas hoy</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <lucide-icon name="users" size="18" color="#B597FA" style="background-color: #F5F3FF;" class="card-icon"></lucide-icon>
+                <span class="badge nuevos">{{ nuevosClientes }}</span>
+            </div>
+            <div class="card-body">
+                <h2 class="card-valor">{{ data.totalClientes || 0 }}</h2>
+                <p class="card-titulo">Clientes</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <lucide-icon name="triangle-alert" size="18" color="#F8BB50" style="background-color: #FFFBEB;" class="card-icon"></lucide-icon>
+                <span class="badge atencion" style="background-color: #FFFBEB; color: #C36B2A;">¡Atención!</span>
+            </div>
+            <div class="card-body">
+                <h2 class="card-valor">{{ data.stockCritico || 0 }} productos</h2>
+                <p class="card-titulo">Stock crítico</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <lucide-icon name="trending-up" size="18" color="#43C99C" style="background-color: #ECFDF5;" class="card-icon"></lucide-icon>
+                <span class="badge trending">{{ variacionIngresos }}</span>
+            </div>
+            <div class="card-body">
+                <h2 class="card-valor">${{ data.ingresosMes || 0 }}</h2>
+                <p class="card-titulo">Ingresos del mes</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="charts-section">
+        <div class="chart-container line-chart">
+            <div class="chart-header">
+                <div class="chart-info">
+                    <h3 class="chart-titulo">Ventas esta semana</h3>
+                    <p class="chart-subtitulo">Ingresos diarios en pesos</p>
+                </div>
+                <span class="date-tag">Jul 2026</span>
+            </div>
+            
+            <ngx-charts-area-chart
+              [results]="ventasSemanaData"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="false"
+              [showXAxisLabel]="false"
+              [showYAxisLabel]="false"
+              [gradient]="true"
+              scheme="cool"
+              [animations]="true"
+              [view]="[775, 200]">
+            </ngx-charts-area-chart>
+
+        </div>
+
+        <div class="chart-container bar-chart">
+            <div class="chart-header">
+                <div class="chart-info">
+                    <h3 class="chart-titulo">Ingresos mensuales</h3>
+                    <p class="chart-subtitulo">Últimos 6 meses</p>
+                </div>
+            </div>
+
+            <ngx-charts-bar-vertical
+              [results]="ingresosMensualesData"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="false"
+              [showXAxisLabel]="false"
+              [showYAxisLabel]="false"
+              [gradient]="true"
+              scheme="cool"
+              [animations]="true"
+              [view]="[358, 200]">
+            </ngx-charts-bar-vertical>
+
+        </div>
+    </section>
+
+    <section class="table-section">
+        <div class="table-header">
+            <h3>Últimas ventas</h3>
+            <a routerLink="/ventas" style="cursor: pointer;">Ver todas <lucide-icon name="ChevronRight" size="16"></lucide-icon></a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Nº Venta</th>
+                        <th>Cliente</th>
+                        <th>Artículos</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let venta of data.ultimasVentas">
+                      <td><a [routerLink]="'/ventas/' + venta.numero_venta" class="table-link">{{ venta.numero_venta }}</a></td>
+                      <td>{{ venta.cliente?.nombre || 'Sin cliente' }}</td>
+                      <td>{{ venta.cantidad_items || 0 }} items</td>
+                      <td class="price">${{ venta.total }}</td>
+                      <td><span class="status" [ngClass]="venta.estado === 'PAGADA' ? 'paid' : venta.estado === 'PENDIENTE' ? 'pending' : 'cancelled'">{{ venta.estado }}</span></td>
+                      <td>{{ venta.fecha_venta | date:'dd/MM/yyyy' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>

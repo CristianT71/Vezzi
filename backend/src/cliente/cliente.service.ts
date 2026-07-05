@@ -3,7 +3,7 @@ import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './entities/cliente.entity';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, MoreThanOrEqual, Repository } from 'typeorm';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Injectable()
@@ -80,5 +80,16 @@ export class ClienteService {
     }
     await this.clienteRepository.restore(id);
     return 'Cliente restaurado exitosamente';
-}
+  }
+
+  async countClientesNuevos(): Promise<number> {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const manana = new Date(hoy);
+    manana.setDate(manana.getDate() + 1);
+    
+    return this.clienteRepository.count({
+      where: { deleteAt: IsNull(), fecha_registro: MoreThanOrEqual(hoy) }, // clientes registrados hoy
+    });
+  }
 }

@@ -20,6 +20,11 @@ export class ClienteController {
     return this.clienteService.findAll(PaginacionDto);
   }
 
+  @Get('clientes-nuevos')
+  async clientesNuevos() {
+    return { total: await this.clienteService.countClientesNuevos() };
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.clienteService.findOne(id);
@@ -38,5 +43,5 @@ export class ClienteController {
   @Patch(':id/restaurar')
   restaurar(@Param('id', ParseIntPipe) id: number) {
     return this.clienteService.restaurar(id);
-}
+  }
 }

@@ -1,1 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+/*ESTILOS PARA VEZZI*/
+
+
+/*Primero estilos globales*/
+
+:root {
+  --primary-dark: #0F172A;
+  --primary: #3B82F6;
+  --success: #10B981;
+  --bg: #F8FAFC;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --white: #FFFFFF;
+  --border: #E2E8F0;
+  --radius: 8px;
+}
+
+/*Reset*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text-primary);
+}
