@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-header">
                 <lucide-icon name="shopping-cart" size="18" color="#3B82F6" style="background-color: #EFF6FF;" class="card-icon"></lucide-icon>
-                <span class="badge porcentaje">+12.5%</span>
+                <span class="badge porcentaje">{{ variacionVentas }}</span>
             </div>
             <div class="card-body">
                 <h2 class="card-valor">${{ data.ventasHoy || 0 }}</h2>
@@ -15,7 +15,7 @@
         <div class="card">
             <div class="card-header">
                 <lucide-icon name="users" size="18" color="#B597FA" style="background-color: #F5F3FF;" class="card-icon"></lucide-icon>
-                <span class="badge nuevos">+3 nuevos</span>
+                <span class="badge nuevos">{{ nuevosClientes }}</span>
             </div>
             <div class="card-body">
                 <h2 class="card-valor">{{ data.totalClientes || 0 }}</h2>
@@ -37,7 +37,7 @@
         <div class="card">
             <div class="card-header">
                 <lucide-icon name="trending-up" size="18" color="#43C99C" style="background-color: #ECFDF5;" class="card-icon"></lucide-icon>
-                <span class="badge trending">+8.2%</span>
+                <span class="badge trending">{{ variacionIngresos }}</span>
             </div>
             <div class="card-body">
                 <h2 class="card-valor">${{ data.ingresosMes || 0 }}</h2>
@@ -56,7 +56,19 @@
                 <span class="date-tag">Jul 2026</span>
             </div>
             
-            <div class="chart-placeholder"><!--Aqui va el gráfico de curva o diagrama lineal --></div>
+            <ngx-charts-area-chart
+              [results]="ventasSemanaData"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="false"
+              [showXAxisLabel]="false"
+              [showYAxisLabel]="false"
+              [gradient]="true"
+              scheme="cool"
+              [animations]="true"
+              [view]="[775, 200]">
+            </ngx-charts-area-chart>
+
         </div>
 
         <div class="chart-container bar-chart">
@@ -66,8 +78,20 @@
                     <p class="chart-subtitulo">Últimos 6 meses</p>
                 </div>
             </div>
-            
-            <div class="chart-placeholder"><!--Aqui va el grafico en barras--></div>
+
+            <ngx-charts-bar-vertical
+              [results]="ingresosMensualesData"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="false"
+              [showXAxisLabel]="false"
+              [showYAxisLabel]="false"
+              [gradient]="true"
+              scheme="cool"
+              [animations]="true"
+              [view]="[358, 200]">
+            </ngx-charts-bar-vertical>
+
         </div>
     </section>
 

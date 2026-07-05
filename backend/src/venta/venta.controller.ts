@@ -20,6 +20,36 @@ export class VentaController {
     return this.ventaService.findAll(PaginacionDto);
   }
 
+  @Get('ventas-hoy')
+  async ventasHoy() {
+    return { total: await this.ventaService.sumVentasHoy() };
+  }
+
+  @Get('ventas-ayer')
+  async ventasAyer() {
+    return { total: await this.ventaService.sumVentasAyer() };
+  }
+
+  @Get('ventas-semana')
+  async ventasSemana() {
+    return this.ventaService.getVentasSemana();
+  }
+
+  @Get('ingresos-mensuales')
+  async ingresosMensuales() {
+    return this.ventaService.getIngresosMensuales();
+  }
+
+  @Get('ingresos-mes')
+  async ingresosMes() {
+    return { total: await this.ventaService.sumIngresosMes() };
+  }
+
+  @Get('ultimas-ventas')
+  async ultimasVentas() {
+    return this.ventaService.findUltimasVentas(5);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.findOne(id);
@@ -44,34 +74,4 @@ export class VentaController {
   calcularTotal(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.calcularTotal(id);
   }
-
-  @Get('ventas-hoy')
-    async ventasHoy() {
-      return { total: await this.ventaService.sumVentasHoy() };
-    }
-
-  @Get('ventas-ayer')
-  async ventasAyer() {
-    return { total: await this.ventaService.sumVentasAyer() };
-  }
-  
-  @Get('ventas-semana')
-  async ventasSemana() {
-    return this.ventaService.getVentasSemana();
-  }
-  
-  @Get('ingresos-mensuales')
-  async ingresosMensuales() {
-    return this.ventaService.getIngresosMensuales();
-  }
-
-  @Get('ingresos-mes')
-    async ingresosMes() {
-      return { total: await this.ventaService.sumIngresosMes() };
-    }
-
-  @Get('ultimas-ventas')
-    async ultimasVentas() {
-      return this.ventaService.findUltimasVentas(5);
-    }
 }

@@ -20,6 +20,11 @@ export class ProductoController {
     return this.productoService.findAll(paginacionDto);
   }
 
+  @Get('stock-critico')
+  async stockCritico() {
+    return { total: await this.productoService.countStockCritico() };
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.findOne(id);
@@ -39,9 +44,4 @@ export class ProductoController {
   restaurar(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.restaurar(id);
   }
-
-  @Get('stock-critico')
-    async stockCritico() {
-      return { total: await this.productoService.countStockCritico() };
-}
 }

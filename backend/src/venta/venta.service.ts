@@ -35,6 +35,7 @@ export class VentaService {
       }
 
       const ultimaVenta = await this.ventaRepository.findOne({
+        where: {},
         order: { id: 'DESC' },
       });
 
