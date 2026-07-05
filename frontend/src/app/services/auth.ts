@@ -11,8 +11,22 @@ export class Auth {
   constructor(private http: HttpClient) {}
 
   login(nombre_usuario: string, password: string): Observable<any> {
-    return this.http.post<{ acces_token: string }>(`${this.apiUrl}/login`, { nombre_usuario, password }).pipe(
-      tap(res => localStorage.setItem('token', res.acces_token))
+    return this.http.post<any>(`${this.apiUrl}/login`, { nombre_usuario, password }).pipe(
+      tap(res => {
+        localStorage.setItem('token', res.access_token);
+        localStorage.setItem('usuario', JSON.stringify(res.usuario));
+      })
     );
   }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario')
+  }
+
+  getUsuario() {
+    const data = localStorage.getItem('usuario');
+    return data ? JSON.parse(data) : null;
+  }
+
 }
