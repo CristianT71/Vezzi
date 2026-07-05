@@ -153,4 +153,46 @@ export class VentaService {
 
     return total.toFixed(2);
   }
+
+
+  async sumVentasHoy(): Promise<number> {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const manana = new Date(hoy);
+    manana.setDate(manana.getDate() + 1);
+
+    const result = await this.ventaRepository
+      .createQueryBuilder('venta')
+      .select('COALESCE(SUM(venta.total), 0)', 'total')
+      .where('venta.deletedAt IS NULL')
+      .andWhere('venta.fecha_venta >= :hoy', { hoy })
+      .andWhere('venta.fecha_venta < :manana', { manana })
+      .getRawOne();
+
+    return Number(result.total);
+  }
+
+  async sumIngresosMes(): Promise<number> {
+    const now = new Date();
+    const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const result = await this.ventaRepository
+      .createQueryBuilder('venta')
+      .select('COALESCE(SUM(venta.total), 0)', 'total')
+      .where('venta.deletedAt IS NULL')
+      .andWhere('venta.fecha_venta >= :inicioMes', { inicioMes })
+      .getRawOne();
+
+    return Number(result.total);
+  }
+
+  async findUltimasVentas(limit: number = 5) {
+    return this.ventaRepository.find({
+      where: { deletedAt: IsNull() },
+      relations: ['cliente'],
+      order: { fecha_venta: 'DESC', id: 'DESC' },
+      take: limit,
+    });
+  }
+
 }

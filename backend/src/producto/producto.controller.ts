@@ -39,4 +39,9 @@ export class ProductoController {
   restaurar(@Param('id', ParseIntPipe) id: number) {
     return this.productoService.restaurar(id);
   }
+
+  @Get('stock-critico')
+    async stockCritico() {
+      return { total: await this.productoService.countStockCritico() };
+}
 }

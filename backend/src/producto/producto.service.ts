@@ -49,6 +49,15 @@ export class ProductoService {
     };
   }
 
+  async countStockCritico(): Promise<number> {
+    const result = await this.productoRepository
+      .createQueryBuilder('producto')
+      .where('producto.deletedAt IS NULL')
+      .andWhere('producto.stock <= producto.stock_minimo')
+      .getCount();
+    return result;
+  }
+
   async findOne(id: number) {
     const producto = await this.productoRepository.findOneBy({ id, deletedAt: IsNull() });
     if (!producto) {

@@ -44,4 +44,19 @@ export class VentaController {
   calcularTotal(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.calcularTotal(id);
   }
+
+  @Get('ventas-hoy')
+    async ventasHoy() {
+      return { total: await this.ventaService.sumVentasHoy() };
+    }
+
+  @Get('ingresos-mes')
+    async ingresosMes() {
+      return { total: await this.ventaService.sumIngresosMes() };
+    }
+
+  @Get('ultimas-ventas')
+    async ultimasVentas() {
+      return this.ventaService.findUltimasVentas(5);
+    }
 }
