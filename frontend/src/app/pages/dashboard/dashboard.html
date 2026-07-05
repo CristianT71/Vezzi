@@ -7,7 +7,7 @@
                 <span class="badge porcentaje">+12.5%</span>
             </div>
             <div class="card-body">
-                <h2 class="card-valor">$ 1.380.000</h2>
+                <h2 class="card-valor">${{ data.ventasHoy || 0 }}</h2>
                 <p class="card-titulo">Ventas hoy</p>
             </div>
         </div>
@@ -18,7 +18,7 @@
                 <span class="badge nuevos">+3 nuevos</span>
             </div>
             <div class="card-body">
-                <h2 class="card-valor">248</h2>
+                <h2 class="card-valor">{{ data.totalClientes || 0 }}</h2>
                 <p class="card-titulo">Clientes</p>
             </div>
         </div>
@@ -29,7 +29,7 @@
                 <span class="badge atencion" style="background-color: #FFFBEB; color: #C36B2A;">¡Atención!</span>
             </div>
             <div class="card-body">
-                <h2 class="card-valor">3 productos</h2>
+                <h2 class="card-valor">{{ data.stockCritico || 0 }} productos</h2>
                 <p class="card-titulo">Stock crítico</p>
             </div>
         </div>
@@ -40,7 +40,7 @@
                 <span class="badge trending">+8.2%</span>
             </div>
             <div class="card-body">
-                <h2 class="card-valor">$ 12.800.000</h2>
+                <h2 class="card-valor">${{ data.ingresosMes || 0 }}</h2>
                 <p class="card-titulo">Ingresos del mes</p>
             </div>
         </div>
@@ -90,45 +90,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><a routerLink="/ventas/V-0041" class="table-link">V-0041</a></td>
-                        <td>María González</td>
-                        <td>3 items</td>
-                        <td class="price">$35.800</td>
-                        <td><span class="status paid">Pagado</span></td>
-                        <td>02/07/2026</td>
-                    </tr>
-                    <tr>
-                        <td><a routerLink="/ventas/V-0040" class="table-link">V-0040</a></td>
-                        <td>Carlos Ruiz</td>
-                        <td>7 items</td>
-                        <td class="price">$87.500</td>
-                        <td><span class="status pending">Pendiente</span></td>
-                        <td>02/07/2026</td>
-                    </tr>
-                    <tr>
-                        <td><a routerLink="/ventas/V-0039" class="table-link">V-0039</a></td>
-                        <td>Ana Torres</td>
-                        <td>2 items</td>
-                        <td class="price">$21.400</td>
-                        <td><span class="status paid">Pagado</span></td>
-                        <td>01/07/2026</td>
-                    </tr>
-                    <tr>
-                        <td><a routerLink="/ventas/V-0038" class="table-link">V-0038</a></td>
-                        <td>Luis Mendoza</td>
-                        <td>12 items</td>
-                        <td class="price">$132.000</td>
-                        <td><span class="status paid">Pagado</span></td>
-                        <td>01/07/2026</td>
-                    </tr>
-                    <tr>
-                        <td><a routerLink="/ventas/V-0037" class="table-link">V-0037</a></td>
-                        <td>Sofía Herrera</td>
-                        <td>4 items</td>
-                        <td class="price">$54.600</td>
-                        <td><span class="status cancelled">Cancelado</span></td>
-                        <td>30/06/2026</td>
+                    <tr *ngFor="let venta of data.ultimasVentas">
+                      <td><a [routerLink]="'/ventas/' + venta.numero_venta" class="table-link">{{ venta.numero_venta }}</a></td>
+                      <td>{{ venta.cliente?.nombre || 'Sin cliente' }}</td>
+                      <td>{{ venta.cantidad_items || 0 }} items</td>
+                      <td class="price">${{ venta.total }}</td>
+                      <td><span class="status" [ngClass]="venta.estado === 'PAGADA' ? 'paid' : venta.estado === 'PENDIENTE' ? 'pending' : 'cancelled'">{{ venta.estado }}</span></td>
+                      <td>{{ venta.fecha_venta | date:'dd/MM/yyyy' }}</td>
                     </tr>
                 </tbody>
             </table>
