@@ -38,5 +38,10 @@ export class ClienteController {
   @Patch(':id/restaurar')
   restaurar(@Param('id', ParseIntPipe) id: number) {
     return this.clienteService.restaurar(id);
-}
+  }
+
+  @Get('clientes-nuevos')
+  async clientesNuevos() {
+    return { total: await this.clienteService.countClientesNuevos() };
+  }
 }

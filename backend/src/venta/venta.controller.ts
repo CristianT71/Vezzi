@@ -50,6 +50,21 @@ export class VentaController {
       return { total: await this.ventaService.sumVentasHoy() };
     }
 
+  @Get('ventas-ayer')
+  async ventasAyer() {
+    return { total: await this.ventaService.sumVentasAyer() };
+  }
+  
+  @Get('ventas-semana')
+  async ventasSemana() {
+    return this.ventaService.getVentasSemana();
+  }
+  
+  @Get('ingresos-mensuales')
+  async ingresosMensuales() {
+    return this.ventaService.getIngresosMensuales();
+  }
+
   @Get('ingresos-mes')
     async ingresosMes() {
       return { total: await this.ventaService.sumIngresosMes() };

@@ -192,7 +192,60 @@ export class VentaService {
       relations: ['cliente'],
       order: { fecha_venta: 'DESC', id: 'DESC' },
       take: limit,
-    });
+      });
+    }
+  
+  async sumVentasAyer(): Promise<number> {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const ayer = new Date(hoy);
+    ayer.setDate(ayer.getDate() - 1);
+  
+    const result = await this.ventaRepository
+      .createQueryBuilder('venta')
+      .select('COALESCE(SUM(venta.total), 0)', 'total')
+      .where('venta.deletedAt IS NULL')
+      .andWhere('venta.fecha_venta >= :ayer', { ayer })
+      .andWhere('venta.fecha_venta < :hoy', { hoy })
+      .getRawOne();
+  
+    return Number(result.total);
+  }
+  
+  async getVentasSemana(): Promise<{ fecha: string; total: number }[]> {
+    const hoy = new Date();
+    const hace7Dias = new Date(hoy);
+    hace7Dias.setDate(hace7Dias.getDate() - 6);
+    hace7Dias.setHours(0, 0, 0, 0);
+  
+    const ventas = await this.ventaRepository
+      .createQueryBuilder('venta')
+      .select("TO_CHAR(venta.fecha_venta, 'YYYY-MM-DD')", 'fecha')
+      .addSelect('COALESCE(SUM(venta.total), 0)', 'total')
+      .where('venta.deletedAt IS NULL')
+      .andWhere('venta.fecha_venta >= :hace7Dias', { hace7Dias })
+      .groupBy('fecha')
+      .orderBy('fecha', 'ASC')
+      .getRawMany();
+  
+    return ventas;
+  }
+  
+  async getIngresosMensuales(): Promise<{ mes: string; total: number }[]> {
+    const hoy = new Date();
+    const hace6Meses = new Date(hoy.getFullYear(), hoy.getMonth() - 5, 1);
+  
+    const ingresos = await this.ventaRepository
+      .createQueryBuilder('venta')
+      .select("TO_CHAR(venta.fecha_venta, 'YYYY-MM')", 'mes')
+      .addSelect('COALESCE(SUM(venta.total), 0)', 'total')
+      .where('venta.deletedAt IS NULL')
+      .andWhere('venta.fecha_venta >= :hace6Meses', { hace6Meses })
+      .groupBy('mes')
+      .orderBy('mes', 'ASC')
+      .getRawMany();
+  
+    return ingresos;
   }
 
 }
