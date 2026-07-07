@@ -1,0 +1,47 @@
+<main class="productos-container">
+    <div class="buscador-filtro">
+        <lucide-icon name="search" size="15" class="search"></lucide-icon>
+        <input type="text" placeholder="Buscar por nombre o código...">
+        <button type="button" class="filtro">Filtrar
+            <lucide-icon name="funnel" size="14" class="funnel"></lucide-icon>
+        </button>
+        <button type="button" class="nuevo">Nuevo producto
+            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
+        </button>
+    </div>
+
+    <section class="tabla">
+        <table class="productos-tabla">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (producto of productos; track producto.id) {
+                  <tr>
+                    <td>{{ producto.codigo }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td style="font-weight: 1000; font-size: 14px;">${{ producto.precio_venta }}</td>
+                    <td>{{ producto.stock }}</td>
+                    <td>
+                      @if (producto.stock <= 0) {
+                        <span class="agotado">Agotado</span>
+                      } @else if (producto.stock <= producto.stock_minimo) {
+                        <span class="bajo-stock">Bajo stock</span>
+                      } @else {
+                        <span class="disponible">Disponible</span>
+                      }
+                    </td>
+                    <td><a routerLink="/editar-producto">Editar</a></td>
+                  </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</main>
