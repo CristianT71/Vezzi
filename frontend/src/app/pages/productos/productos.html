@@ -5,7 +5,7 @@
         <button type="button" class="filtro">Filtrar
             <lucide-icon name="funnel" size="14" class="funnel"></lucide-icon>
         </button>
-        <button type="button" class="nuevo">Nuevo producto
+        <button type="button" class="nuevo" (click)="abrirModal()">Nuevo producto
             <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
         </button>
     </div>
@@ -45,3 +45,52 @@
         </table>
     </section>
 </main>
+
+
+<!--Tarjeta para agregar nuevos productos-->
+@if (mostrarModal) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Nuevo producto</h2>
+        <button class="close-button" (click)="cerrarModal()">×</button>
+      </div>
+      <form (ngSubmit)="crearProducto()">
+        <div class="form-group">
+          <label for="codigo">Código</label>
+          <input id="codigo" [(ngModel)]="nuevoProducto.codigo" name="codigo" placeholder="Ej: P-009" required>
+        </div>
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" [(ngModel)]="nuevoProducto.nombre" name="nombre" placeholder="Ej: Aceite Vegetal 1L" required>
+        </div>
+        <div class="form-group">
+          <label for="categoria">Categoría</label>
+          <select id="categoria" [(ngModel)]="nuevoProducto.id_categoria" name="id_categoria" required>
+            <option value="">Seleccionar</option>
+            @for (cat of categorias; track cat.id) {
+              <option [value]="cat.id">{{ cat.nombre }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="costo">Costo</label>
+          <input type="number" id="costo" [(ngModel)]="nuevoProducto.costo" name="costo" placeholder="0.00" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="precio">Precio</label>
+          <input type="number" id="precio" [(ngModel)]="nuevoProducto.precio_venta" name="precio_venta" placeholder="0.00" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="stock">Stock inicial</label>
+          <input type="number" id="stock" [(ngModel)]="nuevoProducto.stock" name="stock" placeholder="0">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-cancel" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn-submit">Crear producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+          

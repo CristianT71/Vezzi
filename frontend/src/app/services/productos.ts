@@ -10,6 +10,10 @@ export class Productos {
 
   constructor(private http: HttpClient) {}
 
+  create(data: any): Observable<any> {
+      return this.http.post(this.apiUrl, data)
+    }
+
   findAll(page: number = 1, limit: number = 10): Observable<any> {
     return this.http.get(`${this.apiUrl}?page=${page}&limit=${limit}`);
   }
