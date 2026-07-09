@@ -38,7 +38,7 @@
                         <span class="disponible">Disponible</span>
                       }
                     </td>
-                    <td><a routerLink="/editar-producto">Editar</a></td>
+                    <td><button type="button" class="btn-editar" (click)="editarProducto(producto)">Editar</button></td>
                   </tr>
                 }
             </tbody>
@@ -94,3 +94,50 @@
   </div>
 }
           
+
+<!--Tarjeta para editar producto-->
+@if (mostrarModalEditar) {
+  <div class="modal-overlay" (click)="cerrarModalEditar()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Editar producto</h2>
+        <button class="close-button" (click)="cerrarModalEditar()">×</button>
+      </div>
+      <form (ngSubmit)="actualizarProducto()">
+        <div class="form-group">
+          <label for="edit-codigo">Código</label>
+          <input id="edit-codigo" [(ngModel)]="editarProductoData.codigo" name="edit-codigo" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-nombre">Nombre</label>
+          <input id="edit-nombre" [(ngModel)]="editarProductoData.nombre" name="edit-nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-categoria">Categoría</label>
+          <select id="edit-categoria" [(ngModel)]="editarProductoData.id_categoria" name="edit-categoria" required>
+            <option value="">Seleccionar</option>
+            @for (cat of categorias; track cat.id) {
+              <option [value]="cat.id">{{ cat.nombre }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-costo">Costo</label>
+          <input type="number" id="edit-costo" [(ngModel)]="editarProductoData.costo" name="edit-costo" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-precio">Precio</label>
+          <input type="number" id="edit-precio" [(ngModel)]="editarProductoData.precio_venta" name="edit-precio" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-stock">Stock</label>
+          <input type="number" id="edit-stock" [(ngModel)]="editarProductoData.stock" name="edit-stock">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
+          <button type="submit" class="btn btn-submit">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

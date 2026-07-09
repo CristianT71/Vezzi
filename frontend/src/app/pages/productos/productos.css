@@ -112,7 +112,7 @@ td a {
 }
 
 
-/*Estilos agregar producto*/
+/*Estilos agregar producto y editar producto*/
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -183,4 +183,18 @@ td a {
 .btn-submit {
   background: #3b82f6;
   color: #fff;
+}
+
+.btn-editar {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+.btn-editar:hover {
+  color: #2563eb;
 }
