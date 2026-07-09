@@ -18,4 +18,8 @@ export class PaginacionDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsString()
+  categoria?: string;
 }

@@ -17,9 +17,10 @@ export class Productos {
     return this.http.patch(`${this.apiUrl}/${id}`, data);
   }
 
-  findAll(page: number = 1, limit: number = 10, search: string = ''): Observable<any> {
+  findAll(page: number = 1, limit: number = 10, search: string = '', categoria: string = ''): Observable<any> {
     let url = `${this.apiUrl}?page=${page}&limit=${limit}`;
     if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (categoria) url += `&categoria=${categoria}`;
     return this.http.get(url);
   }
 }

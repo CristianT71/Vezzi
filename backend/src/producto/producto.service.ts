@@ -31,14 +31,18 @@ export class ProductoService {
     }
   }
 
-  async findAll(paginacionDto: PaginacionDto) {
-    const { page = 1, limit = 10, search } = paginacionDto;
+    async findAll(paginacionDto: PaginacionDto) {
+    const { page = 1, limit = 10, search, categoria } = paginacionDto;
     const query = this.productoRepository
       .createQueryBuilder('producto')
+      .leftJoinAndSelect('producto.categoria', 'categoria')
       .where('producto.deletedAt IS NULL');
-  
+    
     if (search) {
       query.andWhere('(producto.nombre LIKE :search OR producto.codigo LIKE :search)', { search: `%${search}%` });
+    }
+    if (categoria) {
+      query.andWhere('categoria.id = :categoria', { categoria: Number(categoria) });
     }
   
     const [data, total] = await query

@@ -2,7 +2,7 @@
     <div class="buscador-filtro">
         <lucide-icon name="search" size="15" class="search"></lucide-icon>
         <input type="text" placeholder="Buscar por nombre o código..." [(ngModel)]="termino" (input)="buscar()" name="termino">
-        <button type="button" class="filtro">Filtrar
+        <button type="button" class="filtro" (click)="toggleFiltros()">Filtrar
             <lucide-icon name="funnel" size="14" class="funnel"></lucide-icon>
         </button>
         <button type="button" class="nuevo" (click)="abrirModal()">Nuevo producto
@@ -139,5 +139,19 @@
         </div>
       </form>
     </div>
+  </div>
+}
+
+
+<!--Panel de filtros-->
+@if (mostrarFiltros) {
+  <div class="panel-filtros">
+    <select [(ngModel)]="categoriaFiltro" name="categoriaFiltro">
+      <option value="">Todas las categorías</option>
+      @for (cat of categorias; track cat.id) {
+        <option [value]="cat.id">{{ cat.nombre }}</option>
+      }
+    </select>
+    <button type="button" class="btn-aplicar" (click)="filtrar()">Aplicar</button>
   </div>
 }

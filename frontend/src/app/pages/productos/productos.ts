@@ -17,6 +17,8 @@ export class Productos implements OnInit {
   termino: string = '';
   mostrarModalEditar: boolean = false;
   editarProductoData: any = {};
+  mostrarFiltros: boolean = false;
+  categoriaFiltro: string = '';
   nuevoProducto: any = {
     codigo: '', nombre: '', costo: '', precio_venta: '',
     stock: 0, id_categoria: ''
@@ -36,6 +38,9 @@ export class Productos implements OnInit {
         this.productos = res.data || [];
         this.cdr.detectChanges();
       },
+    });
+    this.http.get<any>('http://localhost:3000/api/categoria?limit=50').subscribe(res => {
+      this.categorias = res.data || [];
     });
   }
 
@@ -117,6 +122,19 @@ export class Productos implements OnInit {
       error: (err) => {
         console.error('Error al actualizar producto', err);
         alert('Error al actualizar producto');
+      },
+    });
+  }
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  filtrar() {
+    this.productosService.findAll(1, 10, this.termino, this.categoriaFiltro).subscribe({
+      next: res => {
+        this.productos = res.data || [];
+        this.cdr.detectChanges();
       },
     });
   }
