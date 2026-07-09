@@ -14,7 +14,9 @@ export class Productos {
       return this.http.post(this.apiUrl, data)
     }
 
-  findAll(page: number = 1, limit: number = 10): Observable<any> {
-    return this.http.get(`${this.apiUrl}?page=${page}&limit=${limit}`);
+  findAll(page: number = 1, limit: number = 10, search: string = ''): Observable<any> {
+    let url = `${this.apiUrl}?page=${page}&limit=${limit}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    return this.http.get(url);
   }
 }

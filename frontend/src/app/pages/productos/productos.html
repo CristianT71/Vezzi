@@ -1,7 +1,7 @@
 <main class="productos-container">
     <div class="buscador-filtro">
         <lucide-icon name="search" size="15" class="search"></lucide-icon>
-        <input type="text" placeholder="Buscar por nombre o código...">
+        <input type="text" placeholder="Buscar por nombre o código..." [(ngModel)]="termino" (input)="buscar()" name="termino">
         <button type="button" class="filtro">Filtrar
             <lucide-icon name="funnel" size="14" class="funnel"></lucide-icon>
         </button>

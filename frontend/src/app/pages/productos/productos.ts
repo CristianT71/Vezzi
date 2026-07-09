@@ -15,6 +15,7 @@ export class Productos implements OnInit {
   productos: any[] = [];
   mostrarModal: boolean = false;
   categorias: any[] = [];
+  termino: string = '';
   nuevoProducto: any = {
     codigo: '', nombre: '', costo: '', precio_venta: '',
     stock: 0, id_categoria: ''
@@ -66,5 +67,14 @@ export class Productos implements OnInit {
         alert('Error al crear producto. Revisa la consola.');
       },
     });
+  }
+
+  buscar() {
+    this.productosService.findAll(1, 10, this.termino).subscribe ({
+      next: res => {
+        this.productos = res.data || [];
+        this.cdr.detectChanges();
+      }
+    })
   }
 }

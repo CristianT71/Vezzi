@@ -32,20 +32,23 @@ export class ProductoService {
   }
 
   async findAll(paginacionDto: PaginacionDto) {
-    const { page = 1, limit = 10  } = paginacionDto;
-    const [ data, total ] = await this.productoRepository.findAndCount({
-      where: { deletedAt: IsNull() },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    const { page = 1, limit = 10, search } = paginacionDto;
+    const query = this.productoRepository
+      .createQueryBuilder('producto')
+      .where('producto.deletedAt IS NULL');
+  
+    if (search) {
+      query.andWhere('(producto.nombre LIKE :search OR producto.codigo LIKE :search)', { search: `%${search}%` });
+    }
+  
+    const [data, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+  
     return {
       data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
     };
   }
 
