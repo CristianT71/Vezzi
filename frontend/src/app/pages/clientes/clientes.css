@@ -1,0 +1,134 @@
+.clientes-container {
+    margin-left: 240px;
+    padding: 105px 25px;
+}
+
+.buscador-filtro {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search {
+    position: absolute;
+    top: 115px;
+    left: 275px;
+    color: var(--text-secondary);
+}
+
+.buscador-filtro input {
+    width: 382px;
+    height: 39px;
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: var(--radius);
+    padding-left: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.filtro {
+    width: 84px;
+    height: 39px;
+    margin-left: -590px;
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: var(--radius);
+    background: var(--white);
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    gap: 5px;
+}
+
+.filtro:hover {
+    filter: brightness(0.9);
+}
+
+
+.nuevo {
+    width: 163px;
+    height: 39px;
+    background: var(--primary);
+    border: none;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    gap: 10px;
+}
+
+.nuevo:hover {
+    filter: brightness(0.9);
+}
+
+.tabla {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: var(--radius);
+    padding: 5px 20px;
+}
+
+thead {
+    width: 100%;
+    height: 40px;
+    font-size: 12px;
+    text-align: left;
+    background-color: #F8FAFC;
+    padding: 20px;
+    color: var(--text-secondary);
+}
+
+tbody td {
+    font-size: 13px;
+}
+
+td {
+    width: 450px;
+    height: 50px;
+    border-bottom: 1px solid whitesmoke;
+}
+
+.bajo-stock {
+  background: #FFFBEB;
+  color: #B45309;
+  padding: 4px 10px;
+  border: 1px solid rgb(228, 228, 228);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+.disponible {
+  background: #ECFDF5;
+  color: #065F46;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(228, 228, 228);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+.agotado {
+  background: #FEF2F2;
+  color: #991B1B;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(228, 228, 228);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+td a {
+    text-decoration: none;
+    color: rgb(6, 6, 184);
+}

@@ -1,1 +1,34 @@
-<p>clientes works!</p>
+<main class="clientes-container">
+    <div class="buscador-filtro">
+        <lucide-icon name="search" size="15" class="search"></lucide-icon>
+        <input type="text" placeholder="Buscar cliente..." [(ngModel)]="termino" (input)="buscar()" name="termino">
+        <button type="button" class="nuevo" (click)="abrirModal()">Nuevo cliente
+            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
+        </button>
+    </div>
+
+    <section class="tabla">
+        <table class="clientes-tabla">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Deuda pendiente</th>
+                    <th>Fecha registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (cliente of clientes; track cliente.id) {
+                  <tr>
+                    <td>{{ cliente.nombre }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>{{ cliente.deuda_pendiente }}</td>
+                    <td>{{ cliente.fecha_registro }}</td>
+                    <td><button type="button" class="btn-acciones">Acciones</button></td>
+                  </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</main>
