@@ -98,16 +98,34 @@ td {
 }
 
 .bajo-stock {
-    width: 100px;
-    background-color: #FFFBEB;
+  background: #FFFBEB;
+  color: #B45309;
+  padding: 4px 10px;
+  border: 1px solid rgb(228, 228, 228);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
 }
-
 .disponible {
-    background-color: #ECFDF5;
+  background: #ECFDF5;
+  color: #065F46;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(228, 228, 228);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
 }
-
 .agotado {
-    background-color: #FEF2F2;
+  background: #FEF2F2;
+  color: #991B1B;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(228, 228, 228);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
 }
 
 td a {
