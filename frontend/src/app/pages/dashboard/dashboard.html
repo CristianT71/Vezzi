@@ -56,19 +56,21 @@
                 <span class="date-tag">Jul 2026</span>
             </div>
             
-            <ngx-charts-area-chart
-              [results]="ventasSemanaData"
-              [xAxis]="true"
-              [yAxis]="true"
-              [legend]="false"
-              [showXAxisLabel]="false"
-              [showYAxisLabel]="false"
-              [gradient]="true"
-              scheme="cool"
-              [animations]="true"
-              [view]="[775, 200]">
-            </ngx-charts-area-chart>
 
+            @if (ventasSemanaData.length > 0) {
+                <ngx-charts-area-chart
+                  [results]="ventasSemanaData"
+                  [xAxis]="true"
+                  [yAxis]="true"
+                  [legend]="false"
+                  [showXAxisLabel]="false"
+                  [showYAxisLabel]="false"
+                  [gradient]="true"
+                  scheme="cool"
+                  [animations]="true"
+                  [view]="[775, 200]">
+                </ngx-charts-area-chart>
+            }
         </div>
 
         <div class="chart-container bar-chart">
@@ -79,19 +81,22 @@
                 </div>
             </div>
 
-            <ngx-charts-bar-vertical
-              [results]="ingresosMensualesData"
-              [xAxis]="true"
-              [yAxis]="true"
-              [legend]="false"
-              [showXAxisLabel]="false"
-              [showYAxisLabel]="false"
-              [gradient]="true"
-              scheme="cool"
-              [animations]="true"
-              [view]="[358, 200]">
-            </ngx-charts-bar-vertical>
 
+            @if (ingresosMensualesData.length > 0) {
+                <ngx-charts-bar-vertical
+                  [results]="ingresosMensualesData"
+                  [xAxis]="true"
+                  [yAxis]="true"
+                  [legend]="false"
+                  [showXAxisLabel]="false"
+                  [showYAxisLabel]="false"
+                  [gradient]="true"
+                  scheme="cool"
+                  [animations]="true"
+                  [view]="[358, 200]">
+                </ngx-charts-bar-vertical>
+            }
+            
         </div>
     </section>
 

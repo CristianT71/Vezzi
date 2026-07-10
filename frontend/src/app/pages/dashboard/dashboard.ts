@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
@@ -20,7 +20,10 @@ export class Dashboard implements OnInit {
   ventasSemanaData: any[] = [];
   ingresosMensualesData: { name: string; value: number }[] = [];
 
-  constructor(private dashboard: DashboardService) {}
+  constructor(
+    private dashboard: DashboardService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.dashboard.getResumen().subscribe(res => {
@@ -37,6 +40,7 @@ export class Dashboard implements OnInit {
         value: Number(v.total)
       }));
       this.calcularBadges();
+      this.cdr.detectChanges();
     });
   }
 

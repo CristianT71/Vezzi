@@ -9,6 +9,7 @@ export const routes: Routes = [
         loadComponent: () => import('./components/layout/layout').then(m => m.Layout),
         children: [
             { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard) },
+            { path: 'productos', loadComponent: () => import('./pages/productos/productos').then(m => m.Productos) },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
     },
