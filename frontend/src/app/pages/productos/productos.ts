@@ -21,7 +21,7 @@ export class Productos implements OnInit {
   categoriaFiltro: string = '';
   nuevoProducto: any = {
     codigo: '', nombre: '', costo: '', precio_venta: '',
-    stock: 0, id_categoria: ''
+    stock: 0, stock_minimo: 0, id_categoria: ''
   };
 
 
@@ -61,6 +61,7 @@ export class Productos implements OnInit {
       costo: Number(this.nuevoProducto.costo),
       precio_venta: Number(this.nuevoProducto.precio_venta),
       stock: Number(this.nuevoProducto.stock),
+      stock_minimo: Number(this.nuevoProducto.stock_minimo),
       id_categoria: Number(this.nuevoProducto.id_categoria),
     };
     this.productosService.create(body).subscribe({
@@ -93,6 +94,7 @@ export class Productos implements OnInit {
       costo: producto.costo,
       precio_venta: producto.precio_venta,
       stock: producto.stock,
+      stock_minimo: producto.stock_minimo,
       id_categoria: producto.categoria?.id || '',
     };
     this.mostrarModalEditar = true;
@@ -112,6 +114,7 @@ export class Productos implements OnInit {
       costo: Number(this.editarProductoData.costo),
       precio_venta: Number(this.editarProductoData.precio_venta),
       stock: Number(this.editarProductoData.stock),
+      stock_minimo: Number(this.editarProductoData.stock_minimo),
       id_categoria: Number(this.editarProductoData.id_categoria),
     };
     this.productosService.update(this.editarProductoData.id, body).subscribe({

@@ -43,6 +43,10 @@
     gap: 5px;
 }
 
+.filtro:hover {
+    filter: brightness(0.9);
+}
+
 
 .nuevo {
     width: 163px;
@@ -197,4 +201,36 @@ td a {
 }
 .btn-editar:hover {
   color: #2563eb;
+}
+
+
+/*Estilos filtro*/
+.panel-filtros {
+  width: 265px;
+  position: absolute;
+  left: 760px;
+  top: 95px;
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.panel-filtros select {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.btn-aplicar {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-aplicar:hover {
+    filter: brightness(0.8);
 }
