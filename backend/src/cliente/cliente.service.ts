@@ -28,21 +28,15 @@ export class ClienteService {
   }
 
   async findAll(PaginacionDto: PaginacionDto) {
-    const { page = 1, limit = 10 } = PaginacionDto;
-    const [ data, total ] = await this.clienteRepository.findAndCount({
-      where: { deleteAt: IsNull() },
-      skip: (page - 1) * limit,
-      take: limit,
-    })
-    return {
-      data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit)
-      },
-    };
+    const { page = 1, limit = 10, search } = PaginacionDto;
+    const query = this.clienteRepository
+      .createQueryBuilder('cliente')
+      .where('cliente.deleteAt IS NULL');
+    if (search) {
+      query.andWhere('(cliente.nombre LIKE :search OR cliente.telefono LIKE :search)', { search: `%${search}%` });
+    }
+    const [data, total] = await query.skip((page - 1) * limit).take(limit).getManyAndCount();
+    return { data, meta: { total, page, limit, totalPages: Math.ceil(total / limit) } };
   }
 
   async findOne(id: number) {

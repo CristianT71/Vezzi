@@ -1,0 +1,84 @@
+<main class="clientes-container">
+    <div class="buscador-filtro">
+        <lucide-icon name="search" size="15" class="search"></lucide-icon>
+        <input type="text" placeholder="Buscar cliente..." [(ngModel)]="termino" (input)="buscar()" name="termino">
+        <button type="button" class="nuevo" (click)="abrirModal()">Nuevo cliente
+            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
+        </button>
+    </div>
+
+    <section class="tabla">
+        <table class="clientes-tabla">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Deuda</th>
+                    <th>Fecha registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (cliente of clientes; track cliente.id) {
+                  <tr>
+                    <td>{{ cliente.nombre }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>${{ cliente.saldo_deuda || '0.00' }}</td>
+                    <td>{{ cliente.fecha_registro | date:'dd/MM/yyyy' }}</td>
+                    <td><button type="button" class="btn-editar" (click)="editarCliente(cliente)">Editar</button></td>
+                  </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</main>
+
+@if (mostrarModal) {
+<div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Nuevo cliente</h2>
+            <button class="close-button" (click)="cerrarModal()">×</button>
+        </div>
+        <form (ngSubmit)="crearCliente()">
+            <div class="form-group">
+                <label for="cli-nombre">Nombre</label>
+                <input id="cli-nombre" [(ngModel)]="nuevoCliente.nombre" name="cli-nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="cli-telefono">Teléfono</label>
+                <input id="cli-telefono" [(ngModel)]="nuevoCliente.telefono" name="cli-telefono" placeholder="Ej: 3001234567">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" (click)="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn btn-submit">Crear cliente</button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+@if (mostrarModalEditar) {
+<div class="modal-overlay" (click)="cerrarModalEditar()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Editar cliente</h2>
+            <button class="close-button" (click)="cerrarModalEditar()">×</button>
+        </div>
+        <form (ngSubmit)="actualizarCliente()">
+            <div class="form-group">
+                <label for="edit-cli-nombre">Nombre</label>
+                <input id="edit-cli-nombre" [(ngModel)]="editarClienteData.nombre" name="edit-cli-nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-cli-telefono">Teléfono</label>
+                <input id="edit-cli-telefono" [(ngModel)]="editarClienteData.telefono" name="edit-cli-telefono" placeholder="Ej: 3001234567">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
+                <button type="submit" class="btn btn-submit">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+}
