@@ -22,7 +22,7 @@
                 @for (cliente of clientes; track cliente.id) {
                   <tr>
                     <td>{{ cliente.nombre }}</td>
-                    <td>{{ cliente.telefono  || 'sin teléfono' }}</td>
+                    <td>{{ cliente.telefono  || 'Sin teléfono' }}</td>
                     <td>${{ cliente.saldo_deuda || '0.00' }}</td>
                     <td>{{ cliente.fecha_registro | date:'dd/MM/yyyy' }}</td>
                     <td><button type="button" class="btn-editar" (click)="editarCliente(cliente)">Editar</button></td>
