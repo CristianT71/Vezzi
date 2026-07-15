@@ -1,0 +1,168 @@
+.ventas-container {
+    margin-left: 240px;
+    padding: 105px 25px;
+}
+
+.buscador-filtro {
+    display: flex;
+    gap: 10px;
+}
+
+.search {
+    position: absolute;
+    top: 115px;
+    left: 275px;
+    color: var(--text-secondary);
+}
+
+.buscador-filtro input {
+    width: 382px;
+    height: 39px;
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: var(--radius);
+    padding-left: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.filtro {
+    width: 70px;
+    height: 35px;
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.filtro.active {
+    background: var(--primary);
+    color: white;
+}
+
+.filtro:hover {
+    filter: brightness(0.9);
+}
+
+.tabla {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: var(--radius);
+    padding: 5px 20px;
+}
+
+.table-section {
+    width: 96%;
+    border: 1px solid rgb(223, 223, 223);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    background: var(--white);
+    margin-bottom: -70px;
+    grid-column: 1/6;
+}
+
+.table-responsive {
+    display: flex;
+}
+
+.ventas-table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+thead {
+    width: 100%;
+    height: 40px;
+    font-size: 12px;
+    text-align: left;
+    background-color: #F8FAFC;
+}
+
+tbody {
+    width: 100px;
+}
+
+tbody a {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+tbody td {
+    font-size: 14px;
+}
+
+td {
+    width: 450px;
+    height: 50px;
+    border-bottom: 1px solid whitesmoke;
+}
+
+.ventas-table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ventas-table thead {
+    width: 100%;
+    height: 40px;
+    font-size: 12px;
+    text-align: left;
+    background-color: #F8FAFC;
+}
+
+.ventas-table thead th {
+    padding: 12px 0;
+}
+
+.ventas-table tbody td {
+    font-size: 14px;
+    padding: 12px 0;
+}
+
+.ventas-table td {
+    border-bottom: 1px solid whitesmoke;
+}
+
+.price {
+    font-weight: 1000;
+}
+
+.status {
+    font-size: 12px;
+    width: 100px;
+    border: 1px solid rgb(238, 238, 238);
+    border-radius: var(--radius);
+    padding: 5px;
+}
+
+.paid {
+    color: green;
+    background-color: #ECFDF5;
+}
+
+.pending {
+    color: orange;
+    background-color: #FFFBEB;
+}
+
+.cancelled {
+    color: red;
+    background-color: #FEF2F2;
+}
+
+.table-link {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}

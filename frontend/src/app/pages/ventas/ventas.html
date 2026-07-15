@@ -1,0 +1,42 @@
+<main class="ventas-container">
+    <div class="buscador-filtro">
+        <lucide-icon name="search" size="15" class="search"></lucide-icon>
+        <input type="text" placeholder="Buscar por nombre o código..." [(ngModel)]="termino" (input)="buscar()" name="termino">
+        <button type="button" class="filtro" [class.active]="filtroEstado === ''" (click)="filtrarPorEstado('')">Todos</button>
+        <button type="button" class="filtro" [class.active]="filtroEstado === 'PAGADA'" (click)="filtrarPorEstado('PAGADA')">Pagado</button>
+        <button type="button" class="filtro" [class.active]="filtroEstado === 'PENDIENTE'" (click)="filtrarPorEstado('PENDIENTE')">Pendientes</button>
+        <button type="button" class="filtro" [class.active]="filtroEstado === 'CANCELADA'" (click)="filtrarPorEstado('CANCELADA')">Cancelado</button>
+    </div>
+
+    <section class="tabla">
+        <table class="ventas-table">
+            <thead>
+                <tr>
+                    <th>Nº Venta</th>
+                    <th>Cliente</th>
+                    <th>Artículos</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (venta of ventas; track venta.id) {
+                  <tr>
+                    <td><a routerLink="/ventas/{{ venta.numero_venta }}" class="table-link">{{ venta.numero_venta }}</a></td>
+                    <td>{{ venta.cliente?.nombre || 'Sin cliente' }}</td>
+                    <td>{{ venta.cantidad_items || 0 }} items</td>
+                    <td class="price">${{ venta.total }}</td>
+                    <td>
+                      <span class="status"
+                        [ngClass]="venta.estado === 'PAGADA' ? 'paid' : venta.estado === 'PENDIENTE' ? 'pending' : 'cancelled'">
+                        {{ venta.estado }}
+                      </span>
+                    </td>
+                    <td>{{ venta.fecha_venta | date:'dd/MM/yyyy' }}</td>
+                  </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</main>
