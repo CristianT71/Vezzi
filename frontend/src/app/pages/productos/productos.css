@@ -252,3 +252,10 @@ td a {
 .btn-aplicar:hover {
     filter: brightness(0.8);
 }
+
+.total-registros {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: right;
+}

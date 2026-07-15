@@ -29,7 +29,7 @@
                     <td>{{ producto.codigo }}</td>
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.categoria?.nombre }}</td>
-                    <td style="font-weight: 1000; font-size: 14px;">${{ producto.precio_venta }}</td>
+                    <td style="font-weight: 1000; font-size: 14px;">${{ producto.precio_venta | number:'1.2-2' }}</td>
                     <td>{{ producto.stock }}</td>
                     <td>
                       @if (producto.stock <= 0) {
@@ -46,6 +46,7 @@
             </tbody>
         </table>
     </section>
+    <div class="total-registros">Mostrando {{ productos.length }} producto(s)</div>
 </main>
 
 
