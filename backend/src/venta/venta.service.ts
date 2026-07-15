@@ -63,21 +63,24 @@ export class VentaService {
   }
 
   async findAll(PaginacionDto: PaginacionDto) {
-    const { page = 1, limit = 10 } = PaginacionDto;
-    const [data, total] = await this.ventaRepository.findAndCount({
-      where: { deletedAt: IsNull() },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-    return {
-      data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
+    const { page = 1, limit = 10, search } = PaginacionDto;
+    const query = this.ventaRepository
+      .createQueryBuilder('venta')
+      .leftJoinAndSelect('venta.cliente', 'cliente')
+      .where('venta.deletedAt IS NULL');
+
+
+    if (search) {
+      query.andWhere('(venta.numero_venta LIKE :search OR cliente.nombre LIKE :search)', { search: `%${search}%` });
+    }
+
+    const [data, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('venta.id', 'DESC')
+      .getManyAndCount();
+  
+    return { data, meta: { total, page, limit, totalPages: Math.ceil(total / limit), } };
   }
 
   async findOne(id: number) {

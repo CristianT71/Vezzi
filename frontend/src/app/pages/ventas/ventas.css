@@ -42,7 +42,7 @@
 }
 
 .filtro.active {
-    background: var(--primary);
+    background: black;
     color: white;
 }
 
