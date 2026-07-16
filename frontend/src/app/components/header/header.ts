@@ -37,6 +37,7 @@ export class Header implements OnDestroy {
     '/productos': { titulo: 'Productos', info: 'Gestión de productos' },
     '/clientes': { titulo: 'Clientes', info: 'Gestión de clientes' },
     '/ventas': { titulo: 'Ventas', info: 'Historial de ventas' },
+    'nueva_venta': { titulo: 'Nueva Venta', info: 'Punto de venta' },
     '/categorias': { titulo: 'Categorías', info: 'Gestión de categorías' },
     '/usuarios': { titulo: 'Usuarios', info: 'Usuarios del sistema' },
     '/roles': { titulo: 'Roles', info: 'Define qué puede hacer cada tipo de usuario' },

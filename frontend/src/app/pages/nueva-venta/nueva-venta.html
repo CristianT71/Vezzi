@@ -1,0 +1,72 @@
+<main class="pos-container">
+  <div class="pos-left">
+    <div class="buscador-productos">
+      <lucide-icon name="search" size="18"></lucide-icon>
+      <input type="text" placeholder="Buscar producto por nombre o código..." [(ngModel)]="termino" (input)="buscarProductos()" name="termino">
+    </div>
+    <div class="productos-grid">
+      @for (prod of productos; track prod.id) {
+        <div class="producto-card" (click)="agregarAlCarrito(prod)">
+          <h4>{{ prod.nombre }}</h4>
+          <p class="codigo">{{ prod.codigo }}</p>
+          <p class="precio">${{ prod.precio_venta }}</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="pos-right">
+    <div class="cart-panel">
+      <h3>Nueva venta</h3>
+
+      <div class="form-group">
+        <label>Cliente</label>
+        <select [(ngModel)]="clienteSeleccionado" name="cliente">
+          <option value="">Seleccionar cliente</option>
+          @for (cli of clientes; track cli.id) {
+            <option [value]="cli.id">{{ cli.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="cart-items">
+        @for (item of carrito; track item.id) {
+          <div class="cart-item">
+            <div class="item-info">
+              <span class="item-nombre">{{ item.nombre }}</span>
+              <span class="item-precio">${{ item.precio_venta }}</span>
+            </div>
+            <div class="item-cantidad">
+              <button (click)="disminuirCantidad(item)">-</button>
+              <span>{{ item.cantidad }}</span>
+              <button (click)="aumentarCantidad(item)">+</button>
+            </div>
+            <div class="item-subtotal">${{ item.cantidad * item.precio_venta }}</div>
+            <button class="btn-eliminar" (click)="eliminarDelCarrito(item)">×</button>
+          </div>
+        } @empty {
+          <p class="carrito-vacio">Agrega productos del panel izquierdo</p>
+        }
+      </div>
+
+      <div class="cart-resumen">
+        <div class="resumen-linea">
+          <span>Subtotal</span>
+          <span>${{ subtotal }}</span>
+        </div>
+        <div class="resumen-linea">
+          <span>IVA (19%)</span>
+          <span>${{ iva }}</span>
+        </div>
+        <div class="resumen-linea total">
+          <span>TOTAL</span>
+          <span>${{ total }}</span>
+        </div>
+      </div>
+
+      <button class="btn-cobrar" (click)="cobrar()" [disabled]="carrito.length === 0 || !clienteSeleccionado">
+        Cobrar ${{ total }}
+      </button>
+    </div>
+  </div>
+</main>
