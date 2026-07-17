@@ -4,6 +4,7 @@
       <lucide-icon name="search" size="18"></lucide-icon>
       <input type="text" placeholder="Buscar producto por nombre o código..." [(ngModel)]="termino" (input)="buscarProductos()" name="termino">
     </div>
+    <div class="total-productos">{{ productos.length }} producto(s)</div>
     <div class="productos-grid">
       @for (prod of productos; track prod.id) {
         <div class="producto-card" (click)="agregarAlCarrito(prod)">

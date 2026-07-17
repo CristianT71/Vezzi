@@ -50,7 +50,7 @@ export class VentaService {
         usuario,
         fecha_venta: createVentaDto.fecha_venta ? new Date(createVentaDto.fecha_venta) : new Date(),
         impuesto: createVentaDto.impuesto,
-        total: 0,
+        total: createVentaDto.total || 0,
         estado: createVentaDto.estado ?? 'EMITIDA',
         activo: createVentaDto.activo ?? true,
       } as any);
