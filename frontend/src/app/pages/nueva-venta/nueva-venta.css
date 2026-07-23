@@ -1,0 +1,293 @@
+.pos-container {
+    margin-left: 240px;
+    padding: 105px 25px 25px;
+    display: flex;
+    gap: 24px;
+    height: calc(100vh - 130px);
+}
+
+.pos-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.buscador-productos {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.buscador-productos input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 14px;
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.buscador-productos lucide-icon {
+    color: var(--text-secondary);
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 8px;
+}
+
+.producto-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.producto-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(59,130,246,0.12);
+    transform: translateY(-2px);
+}
+
+.producto-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 2px;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.producto-card .codigo {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin: 0 0 10px;
+}
+
+.producto-card .precio {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--success);
+    margin: 0;
+}
+
+.pos-right {
+    width: 380px;
+    flex-shrink: 0;
+}
+
+.cart-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-panel h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: var(--text-primary);
+}
+
+.cart-panel .form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.cart-panel .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    background: var(--white);
+    outline: none;
+    color: var(--text-primary);
+}
+
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    transition: background 0.15s;
+}
+
+.cart-item:hover {
+    background: var(--bg);
+}
+
+.item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.item-nombre {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-precio {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.item-cantidad {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.item-cantidad button {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--white);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    transition: all 0.15s;
+}
+
+.item-cantidad button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.item-cantidad span {
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 22px;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.item-subtotal {
+    font-weight: 700;
+    font-size: 13px;
+    min-width: 65px;
+    text-align: right;
+    color: var(--success);
+}
+
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: #f87171;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 6px;
+    transition: all 0.15s;
+}
+
+.btn-eliminar:hover {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.carrito-vacio {
+    text-align: center;
+    color: var(--border);
+    font-size: 14px;
+    padding: 50px 0;
+}
+
+.cart-resumen {
+    border-top: 2px solid var(--border);
+    padding-top: 14px;
+    margin-top: 4px;
+}
+
+.resumen-linea {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    padding: 5px 0;
+    color: var(--text-secondary);
+}
+
+.resumen-linea.total {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: 6px;
+}
+
+.btn-cobrar {
+    width: 100%;
+    padding: 16px;
+    background: var(--success);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 18px;
+    transition: all 0.2s;
+}
+
+.btn-cobrar:hover:not(:disabled) {
+    filter: brightness(0.9);
+}
+
+.btn-cobrar:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.total-productos {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.producto-card .stock {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 6px 0 0;
+}

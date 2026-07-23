@@ -12,6 +12,7 @@ export const routes: Routes = [
             { path: 'productos', loadComponent: () => import('./pages/productos/productos').then(m => m.Productos) },
             { path: 'clientes', loadComponent: () => import('./pages/clientes/clientes').then(m => m.Clientes ) },
             { path: 'ventas', loadComponent: () => import('./pages/ventas/ventas').then(m => m.Ventas) },
+            { path: 'nueva_venta', loadComponent: () => import('./pages/nueva-venta/nueva-venta').then(m => m.NuevaVenta) },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
     },
