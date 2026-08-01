@@ -3,45 +3,53 @@
 
     <section class="roles-grid">
         @for (rol of roles; track rol.id) {
-        <div class="role-card">
+        <article class="role-card" [class.admin-card]="esAdmin(rol)" [class.vendedor-card]="!esAdmin(rol)">
             <div class="role-card-header">
                 <div class="role-title-row">
-                    <div class="role-icon" [class]="rol.nombre === 'Administrador' ? 'admin' : 'vendedor'">
-                        @if (rol.nombre === 'Administrador') {
-                            <lucide-icon name="shield-check" size="22"></lucide-icon>
+                    <div class="role-icon" [class.admin]="esAdmin(rol)" [class.vendedor]="!esAdmin(rol)">
+                        @if (esAdmin(rol)) {
+                            <lucide-icon name="shield" size="22" strokeWidth="2.2"></lucide-icon>
                         } @else {
-                            <lucide-icon name="store" size="22"></lucide-icon>
+                            <lucide-icon name="store" size="22" strokeWidth="2.2"></lucide-icon>
                         }
                     </div>
+
                     <div class="role-title-info">
-                        <h2>{{ rol.nombre }}</h2>
+                        <h2>{{ rol.nombreVisual }}</h2>
                         <span class="user-count">{{ rol.totalUsuarios }} usuario{{ rol.totalUsuarios !== 1 ? 's' : '' }}</span>
                     </div>
-                    <span class="permisos-badge" [class]="rol.nombre === 'Administrador' ? 'admin' : 'vendedor'">
+
+                    <span class="permisos-badge" [class.admin]="esAdmin(rol)" [class.vendedor]="!esAdmin(rol)">
                         {{ totalPermisos(rol) }}/{{ permisos.length }} permisos
                     </span>
                 </div>
+                
                 <p class="role-desc">{{ rol.descripcion }}</p>
             </div>
 
             <div class="permisos-list">
                 @for (permiso of permisos; track permiso.id) {
                 <div class="permiso-item" [class.asignado]="tienePermiso(rol, permiso.id)" [class.no-asignado]="!tienePermiso(rol, permiso.id)">
+                    
                     <div class="permiso-icon">
                         @if (tienePermiso(rol, permiso.id)) {
-                            <lucide-icon name="circle-check" size="18" color="#10B981"></lucide-icon>
+                            <!-- Check dentro de círculo delineado -->
+                            <lucide-icon name="circle-check" size="18" color="#059669" strokeWidth="1.8"></lucide-icon>
                         } @else {
-                            <lucide-icon name="x" size="18" color="#CBD5E1"></lucide-icon>
+                            <!-- Equis tenue -->
+                            <lucide-icon name="x" size="14" color="#E2E8F0" strokeWidth="2"></lucide-icon>
                         }
                     </div>
+
                     <div class="permiso-text">
                         <strong>{{ permiso.nombre }}</strong>
                         <span>{{ permiso.desc }}</span>
                     </div>
+                    
                 </div>
                 }
             </div>
-        </div>
+        </article>
         }
     </section>
 </main>

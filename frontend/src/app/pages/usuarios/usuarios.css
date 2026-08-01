@@ -1,8 +1,16 @@
 .usuarios-container {
     margin-left: 240px;
-    padding: 105px 40px 40px;
-    background: #F8FAFC;
+    padding: 105px 24px 40px;
+    background: linear-gradient(180deg, #F8FAFF 0%, #F5F7FB 100%);
     min-height: 100vh;
+}
+
+.page-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 
 .page-desc {
@@ -14,46 +22,52 @@
 .page-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 16px;
+    margin-top: 0;
 }
 
 .btn-nuevo {
-    background: #3B82F6;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(180deg, #4F83FF 0%, #3B82F6 100%);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 22px;
+    border-radius: 12px;
+    padding: 12px 20px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    box-shadow: 0 10px 24px rgba(59, 130, 246, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-nuevo:hover {
-    background: #2563EB;
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(59, 130, 246, 0.28);
 }
 
 .cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 18px;
     margin: 24px 0;
 }
 
 .card {
     background: #fff;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    padding: 20px 24px;
+    border: 1px solid #DCE4F1;
+    border-radius: 16px;
+    padding: 20px 22px;
     display: flex;
     align-items: center;
     gap: 16px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
 .card-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -61,24 +75,24 @@
 }
 
 .card-icon.blue {
-    background: #EFF6FF;
+    background: #EEF4FF;
     color: #3B82F6;
 }
 
 .card-icon.green {
-    background: #ECFDF5;
+    background: #EAFBF2;
     color: #10B981;
 }
 
 .card-icon.purple {
-    background: #F5F3FF;
+    background: #F2EDFF;
     color: #8B5CF6;
 }
 
 .card-body h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1E293B;
+    font-size: 26px;
+    font-weight: 800;
+    color: #0F172A;
     margin: 0;
     line-height: 1;
 }
@@ -91,9 +105,10 @@
 
 .tabla-container {
     background: #fff;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
+    border: 1px solid #DCE4F1;
+    border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
 .admin-table {
@@ -117,10 +132,10 @@
 }
 
 .admin-table tbody td {
-    padding: 16px 24px;
+    padding: 18px 24px;
     font-size: 14px;
     color: #1E293B;
-    border-bottom: 1px solid #F1F5F9;
+    border-bottom: 1px solid #EEF2F7;
 }
 
 .admin-table tbody tr:last-child td {
@@ -155,11 +170,11 @@
 }
 
 .avatar.admin {
-    background: #4F46E5;
+    background: #4338CA;
 }
 
 .avatar.vendedor {
-    background: #3B82F6;
+    background: #2563EB;
 }
 
 .td-email {
@@ -171,30 +186,35 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 4px 12px;
+    padding: 5px 12px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 600;
 }
 
 .rol-badge.admin {
-    background: #F5F3FF;
+    background: #F4EEFF;
     color: #7C3AED;
 }
 
 .rol-badge.vendedor {
-    background: #EFF6FF;
+    background: #EEF4FF;
     color: #3B82F6;
 }
 
 .estado-texto {
-    font-size: 13px;
-    font-weight: 500;
-    color: #1E293B;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748B;
+    background: #F1F5F9;
 }
 
 .estado-texto.inactivo {
-    color: #94A3B8;
+    color: #64748B;
 }
 
 .td-acciones {
@@ -225,6 +245,64 @@
 
 .btn-link.red:hover {
     color: #DC2626;
+}
+
+@media (max-width: 1100px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .page-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 768px) {
+    .usuarios-container {
+        margin-left: 0;
+        padding: 88px 16px 28px;
+    }
+
+    .page-actions {
+        justify-content: stretch;
+    }
+
+    .btn-nuevo {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table,
+    .admin-table tbody,
+    .admin-table tr,
+    .admin-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-table tr {
+        padding: 16px 0;
+        border-bottom: 1px solid #EEF2F7;
+    }
+
+    .admin-table tbody td {
+        padding: 8px 16px;
+        border-bottom: none;
+    }
+
+    .td-acciones {
+        padding-top: 6px;
+    }
+
+    .modal {
+        width: calc(100% - 32px);
+        padding: 22px 18px;
+    }
 }
 
 /* Modal */
@@ -349,6 +427,10 @@
     background: #3B82F6;
     color: #fff;
     cursor: pointer;
+}
+
+.btn-submit:hover {
+    background: #2563EB;
 }
 
 .btn-submit:hover {

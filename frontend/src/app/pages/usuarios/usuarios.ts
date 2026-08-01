@@ -5,6 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { UsuariosService } from '../../services/usuarios';
 import { RolesService } from '../../services/roles';
 
+function normalizarRol(nombre: string): string {
+  return (nombre || '').trim().toLowerCase();
+}
+
 @Component({
   selector: 'app-usuarios',
   imports: [CommonModule, LucideAngularModule, FormsModule],
@@ -45,7 +49,7 @@ export class Usuarios implements OnInit {
   }
 
   get totalUsuarios(): number { return this.usuarios.length; }
-  get totalAdmin(): number { return this.usuarios.filter(u => u.rol?.nombre === 'Administrador').length; }
+  get totalAdmin(): number { return this.usuarios.filter(u => normalizarRol(u.rol?.nombre) === 'admin' || normalizarRol(u.rol?.nombre) === 'administrador').length; }
   get totalActivos(): number { return this.usuarios.filter(u => u.activo).length; }
 
   iniciales(nombre: string): string {
@@ -56,8 +60,12 @@ export class Usuarios implements OnInit {
   }
 
   claseRol(nombre: string): string {
-    if (nombre === 'Administrador') return 'admin';
+    if (normalizarRol(nombre) === 'admin' || normalizarRol(nombre) === 'administrador') return 'admin';
     return 'vendedor';
+  }
+
+  esAdmin(nombre: string): boolean {
+    return normalizarRol(nombre) === 'admin' || normalizarRol(nombre) === 'administrador';
   }
 
   abrirModal() {

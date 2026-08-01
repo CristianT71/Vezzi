@@ -17,12 +17,20 @@ const PERMISOS = [
 
 const PERMISOS_POR_ROL: Record<string, string[]> = {
   Administrador: PERMISOS.map(p => p.id),
+  admin: PERMISOS.map(p => p.id),
   Vendedor: ['dashboard', 'productos', 'clientes', 'ventas', 'nueva_venta'],
+  vendedor: ['dashboard', 'productos', 'clientes', 'ventas', 'nueva_venta'],
 };
 
 const DESCRIPCIONES: Record<string, string> = {
   Administrador: 'Acceso completo al sistema. Puede gestionar usuarios, roles, configuraciones y todas las operaciones.',
   Vendedor: 'Acceso operativo. Puede realizar ventas, consultar productos y clientes, pero sin acceso a configuraciones del sistema.',
+};
+
+const ETIQUETA_ROL: Record<string, string> = {
+  admin: 'Administrador',
+  administrador: 'Administrador',
+  vendedor: 'Vendedor',
 };
 
 @Component({
@@ -47,9 +55,12 @@ export class Roles implements OnInit {
         const usuarios = resUsuarios.data || [];
         this.roles = rolesBase.map((rol: any) => ({
           ...rol,
-          id_permisos: PERMISOS_POR_ROL[rol.nombre] || [],
-          totalUsuarios: usuarios.filter((u: any) => u.rol?.nombre === rol.nombre).length,
-          descripcion: DESCRIPCIONES[rol.nombre] || rol.descripcion || '',
+          nombreOriginal: rol.nombre,
+          nombreVisual: this.obtenerNombreVisual(rol.nombre),
+          variante: this.obtenerVariante(rol.nombre),
+          id_permisos: PERMISOS_POR_ROL[this.normalizarNombreRol(rol.nombre)] || PERMISOS_POR_ROL[this.obtenerNombreVisual(rol.nombre)] || [],
+          totalUsuarios: usuarios.filter((u: any) => this.normalizarNombreRol(u.rol?.nombre) === this.normalizarNombreRol(rol.nombre)).length,
+          descripcion: DESCRIPCIONES[this.obtenerNombreVisual(rol.nombre)] || rol.descripcion || '',
         }));
         this.cdr.detectChanges();
       });
@@ -57,6 +68,24 @@ export class Roles implements OnInit {
   }
 
   get permisos() { return PERMISOS; }
+
+  private normalizarNombreRol(nombre: string): string {
+    return (nombre || '').trim().toLowerCase();
+  }
+
+  private obtenerNombreVisual(nombre: string): string {
+    return ETIQUETA_ROL[this.normalizarNombreRol(nombre)] || nombre || '';
+  }
+
+  private obtenerVariante(nombre: string): 'admin' | 'vendedor' {
+    return this.normalizarNombreRol(nombre) === 'admin' || this.normalizarNombreRol(nombre) === 'administrador'
+      ? 'admin'
+      : 'vendedor';
+  }
+
+  esAdmin(rol: any): boolean {
+    return rol?.variante === 'admin';
+  }
 
   tienePermiso(rol: any, idPermiso: string): boolean {
     return (rol.id_permisos || []).includes(idPermiso);

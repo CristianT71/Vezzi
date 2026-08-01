@@ -1,8 +1,10 @@
 <main class="usuarios-container">
-    <p class="page-desc">Gestiona quién tiene acceso al sistema y con qué permisos.</p>
+    <div class="page-top">
+        <p class="page-desc">Gestiona quién tiene acceso al sistema y con qué permisos.</p>
 
-    <div class="page-actions">
-        <button type="button" class="btn-nuevo" (click)="abrirModal()">+ Nuevo usuario</button>
+        <div class="page-actions">
+            <button type="button" class="btn-nuevo" (click)="abrirModal()">+ Nuevo usuario</button>
+        </div>
     </div>
 
     <section class="cards">
@@ -58,7 +60,7 @@
                     <td class="td-email">{{ usuario.nombre_usuario }}</td>
                     <td>
                         <span class="rol-badge" [class]="claseRol(usuario.rol?.nombre)">
-                            @if (usuario.rol?.nombre === 'Administrador') {
+                            @if (esAdmin(usuario.rol?.nombre)) {
                                 <lucide-icon name="shield-check" size="12"></lucide-icon>
                             } @else {
                                 <lucide-icon name="user-check" size="12"></lucide-icon>
