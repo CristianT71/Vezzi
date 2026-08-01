@@ -5,23 +5,10 @@
     min-height: 100vh;
 }
 
-.page-header h1 {
-    font-size: 26px;
-    font-weight: 700;
-    color: #1E293B;
+.page-desc {
+    font-size: 14px;
+    color: #64748B;
     margin: 0;
-}
-
-.subtitle {
-    font-size: 14px;
-    color: #64748B;
-    margin: 4px 0 0;
-}
-
-.page-description {
-    font-size: 14px;
-    color: #64748B;
-    margin: 20px 0 0;
 }
 
 .roles-grid {
@@ -49,9 +36,9 @@
 }
 
 .role-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,7 +60,7 @@
 }
 
 .role-title-info h2 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: #1E293B;
     margin: 0;

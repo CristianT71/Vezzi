@@ -1,4 +1,6 @@
 <main class="categorias-container">
+    <p class="page-desc">Organiza tus productos por categoría para facilitar la búsqueda.</p>
+
     <div class="page-actions">
         <button type="button" class="btn-nuevo" (click)="abrirModal()">+ Nueva categoría</button>
     </div>
@@ -15,7 +17,7 @@
         </div>
         <div class="card">
             <div class="card-icon green">
-                <lucide-icon name="check-circle" size="20"></lucide-icon>
+                <lucide-icon name="circle-check" size="20"></lucide-icon>
             </div>
             <div class="card-body">
                 <h2>{{ totalActivas }}</h2>
@@ -24,7 +26,7 @@
         </div>
         <div class="card">
             <div class="card-icon purple">
-                <lucide-icon name="tag" size="20"></lucide-icon>
+                <lucide-icon name="package" size="20"></lucide-icon>
             </div>
             <div class="card-body">
                 <h2>{{ totalProductos }}</h2>

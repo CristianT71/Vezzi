@@ -1,4 +1,6 @@
 <main class="usuarios-container">
+    <p class="page-desc">Gestiona quién tiene acceso al sistema y con qué permisos.</p>
+
     <div class="page-actions">
         <button type="button" class="btn-nuevo" (click)="abrirModal()">+ Nuevo usuario</button>
     </div>
@@ -24,7 +26,7 @@
         </div>
         <div class="card">
             <div class="card-icon green">
-                <lucide-icon name="check-circle" size="20"></lucide-icon>
+                <lucide-icon name="circle-check" size="20"></lucide-icon>
             </div>
             <div class="card-body">
                 <h2>{{ totalActivos }}</h2>
