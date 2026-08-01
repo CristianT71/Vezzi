@@ -133,6 +133,22 @@ td a {
     color: rgb(6, 6, 184);
 }
 
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    margin-left: 10px;
+}
+
+.btn-eliminar:hover {
+    color: #dc2626;
+}
+
 
 /*Estilos agregar producto y editar producto*/
 .modal-overlay {

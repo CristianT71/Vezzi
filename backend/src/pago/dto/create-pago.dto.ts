@@ -2,8 +2,8 @@ import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, MaxLe
 
 export class CreatePagoDto {
 	@IsNumber()
-	@IsNotEmpty()
-	id_venta: number;
+	@IsOptional()
+	id_venta?: number;
 
 	@IsNumber()
 	@IsNotEmpty()

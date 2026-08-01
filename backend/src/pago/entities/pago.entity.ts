@@ -8,9 +8,9 @@ export class Pago {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(() => Venta, { nullable: false, eager: true })
+	@ManyToOne(() => Venta, { nullable: true, eager: true })
 	@JoinColumn({ name: 'id_venta' })
-	venta: Venta;
+	venta?: Venta;
 
 	@ManyToOne(() => Cliente, { nullable: false, eager: true })
 	@JoinColumn({ name: 'id_cliente' })

@@ -93,6 +93,63 @@ td {
     color: #2563eb;
 }
 
+.btn-pagar {
+    background: none;
+    border: none;
+    color: #059669;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    margin-left: 10px;
+}
+
+.btn-pagar:hover {
+    color: #047857;
+}
+
+.btn-pagar:disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+.btn-eliminar {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    margin-left: 10px;
+}
+
+.btn-eliminar:hover {
+    color: #dc2626;
+}
+
+.pago-info {
+    background: #F8FAFC;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pago-info span {
+    font-size: 13px;
+    color: #64748B;
+}
+
+.pago-info b {
+    color: #1E293B;
+}
+
 .modal-overlay {
     position: fixed;
     inset: 0;

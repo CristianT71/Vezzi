@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 import { VentasService } from '../../services/ventas';
 
 @Component({
   selector: 'app-ventas',
-  imports: [CommonModule, LucideAngularModule, FormsModule, RouterLink],
+  imports: [CommonModule, LucideAngularModule, FormsModule],
   templateUrl: './ventas.html',
   styleUrl: './ventas.css',
 })
@@ -44,5 +43,24 @@ export class Ventas {
   filtrarPorEstado(estado: string) {
     this.filtroEstado = estado;
     this.cargarVentas();
+  }
+
+  mostrarDetalle: boolean = false;
+  detalleVenta: any = null;
+
+  verDetalle(venta: any) {
+    this.VentasService.findOne(venta.id).subscribe({
+      next: res => {
+        this.detalleVenta = res;
+        this.mostrarDetalle = true;
+        this.cdr.detectChanges();
+      },
+      error: (err) => { console.error(err); alert('Error al cargar detalle de venta'); },
+    });
+  }
+  cerrarDetalle() {
+    this.mostrarDetalle = false;
+    this.detalleVenta = null;
+    this.cdr.detectChanges();
   }
 }

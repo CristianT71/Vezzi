@@ -40,7 +40,10 @@
                         <span class="disponible">Disponible</span>
                       }
                     </td>
-                    <td><button type="button" class="btn-editar" (click)="editarProducto(producto)">Editar</button></td>
+                    <td>
+                      <button type="button" class="btn-editar" (click)="editarProducto(producto)">Editar</button>
+                      <button type="button" class="btn-eliminar" (click)="eliminarProducto(producto)">Eliminar</button>
+                    </td>
                   </tr>
                 }
             </tbody>

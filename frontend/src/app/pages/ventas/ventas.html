@@ -23,7 +23,7 @@
             <tbody>
                 @for (venta of ventas; track venta.id) {
                   <tr>
-                    <td><a routerLink="/ventas/{{ venta.numero_venta }}" class="table-link">{{ venta.numero_venta }}</a></td>
+                    <td><button type="button" class="table-link btn-detalle" (click)="verDetalle(venta)">{{ venta.numero_venta }}</button></td>
                     <td>{{ venta.cliente?.nombre || 'Sin cliente' }}</td>
                     <td>{{ venta.cantidad_items || 0 }} items</td>
                     <td class="price">${{ venta.total }}</td>
@@ -40,3 +40,48 @@
         </table>
     </section>
 </main>
+
+@if (mostrarDetalle && detalleVenta) {
+<div class="modal-overlay" (click)="cerrarDetalle()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Venta {{ detalleVenta.numero_venta }}</h2>
+            <button class="close-button" (click)="cerrarDetalle()">×</button>
+        </div>
+        <div class="detalle-info">
+            <div class="info-linea"><span>Cliente:</span> <b>{{ detalleVenta.cliente?.nombre || 'Sin cliente' }}</b></div>
+            <div class="info-linea"><span>Fecha:</span> {{ detalleVenta.fecha_venta | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div class="info-linea"><span>Estado:</span>
+              <span class="status"
+                [ngClass]="detalleVenta.estado === 'PAGADA' ? 'paid' : detalleVenta.estado === 'PENDIENTE' ? 'pending' : 'cancelled'">
+                {{ detalleVenta.estado }}
+              </span>
+            </div>
+        </div>
+        <table class="detalle-tabla">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cant.</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (det of detalleVenta.detalles_venta; track det.id) {
+                  <tr>
+                    <td>{{ det.producto?.nombre }}</td>
+                    <td>{{ det.cantidad }}</td>
+                    <td>${{ det.precio_unitario }}</td>
+                    <td>${{ det.subtotal }}</td>
+                  </tr>
+                }
+            </tbody>
+        </table>
+        <div class="detalle-total">
+            <div class="info-linea"><span>Impuesto:</span> ${{ detalleVenta.impuesto }}</div>
+            <div class="info-linea total"><span>TOTAL:</span> <b>${{ detalleVenta.total }}</b></div>
+        </div>
+    </div>
+</div>
+}
