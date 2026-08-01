@@ -1,0 +1,89 @@
+<main class="categorias-container">
+    <div class="buscador-filtro">
+        <lucide-icon name="search" size="15" class="search"></lucide-icon>
+        <input type="text" placeholder="Buscar categoría..." [(ngModel)]="termino" name="termino">
+        <button type="button" class="nuevo" (click)="abrirModal()">Nueva categoría
+            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
+        </button>
+    </div>
+
+    <section class="tabla">
+        <table class="categorias-tabla">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (categoria of filtradas; track categoria.id) {
+                  <tr>
+                    <td>{{ categoria.nombre }}</td>
+                    <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
+                    <td>
+                        <span class="estado" [class.inactivo]="!categoria.activo">
+                            {{ categoria.activo ? 'Activa' : 'Inactiva' }}
+                        </span>
+                    </td>
+                    <td>
+                      <button type="button" class="btn-editar" (click)="editarCategoria(categoria)">Editar</button>
+                      <button type="button" class="btn-eliminar" (click)="eliminarCategoria(categoria)">Eliminar</button>
+                    </td>
+                  </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</main>
+
+@if (mostrarModal) {
+<div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Nueva categoría</h2>
+            <button class="close-button" (click)="cerrarModal()">×</button>
+        </div>
+        <form (ngSubmit)="crearCategoria()">
+            <div class="form-group">
+                <label for="cat-nombre">Nombre</label>
+                <input id="cat-nombre" [(ngModel)]="nuevaCategoria.nombre" name="cat-nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="cat-descripcion">Descripción (opcional)</label>
+                <textarea id="cat-descripcion" [(ngModel)]="nuevaCategoria.descripcion" name="cat-descripcion" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" (click)="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn btn-submit">Crear categoría</button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+@if (mostrarModalEditar) {
+<div class="modal-overlay" (click)="cerrarModalEditar()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Editar categoría</h2>
+            <button class="close-button" (click)="cerrarModalEditar()">×</button>
+        </div>
+        <form (ngSubmit)="actualizarCategoria()">
+            <div class="form-group">
+                <label for="edit-cat-nombre">Nombre</label>
+                <input id="edit-cat-nombre" [(ngModel)]="editarCategoriaData.nombre" name="edit-cat-nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-cat-descripcion">Descripción</label>
+                <textarea id="edit-cat-descripcion" [(ngModel)]="editarCategoriaData.descripcion" name="edit-cat-descripcion" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
+                <button type="submit" class="btn btn-submit">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+}
