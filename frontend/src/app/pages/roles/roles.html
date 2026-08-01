@@ -1,0 +1,55 @@
+<main class="roles-container">
+    <p class="page-desc">Los roles son fijos en el sistema. Puedes ver los permisos asignados a cada rol y cuántos usuarios los tienen.</p>
+
+    <section class="roles-grid">
+        @for (rol of roles; track rol.id) {
+        <article class="role-card" [class.admin-card]="esAdmin(rol)" [class.vendedor-card]="!esAdmin(rol)">
+            <div class="role-card-header">
+                <div class="role-title-row">
+                    <div class="role-icon" [class.admin]="esAdmin(rol)" [class.vendedor]="!esAdmin(rol)">
+                        @if (esAdmin(rol)) {
+                            <lucide-icon name="shield" size="22" strokeWidth="2.2"></lucide-icon>
+                        } @else {
+                            <lucide-icon name="store" size="22" strokeWidth="2.2"></lucide-icon>
+                        }
+                    </div>
+
+                    <div class="role-title-info">
+                        <h2>{{ rol.nombreVisual }}</h2>
+                        <span class="user-count">{{ rol.totalUsuarios }} usuario{{ rol.totalUsuarios !== 1 ? 's' : '' }}</span>
+                    </div>
+
+                    <span class="permisos-badge" [class.admin]="esAdmin(rol)" [class.vendedor]="!esAdmin(rol)">
+                        {{ totalPermisos(rol) }}/{{ permisos.length }} permisos
+                    </span>
+                </div>
+                
+                <p class="role-desc">{{ rol.descripcion }}</p>
+            </div>
+
+            <div class="permisos-list">
+                @for (permiso of permisos; track permiso.id) {
+                <div class="permiso-item" [class.asignado]="tienePermiso(rol, permiso.id)" [class.no-asignado]="!tienePermiso(rol, permiso.id)">
+                    
+                    <div class="permiso-icon">
+                        @if (tienePermiso(rol, permiso.id)) {
+                            <!-- Check dentro de círculo delineado -->
+                            <lucide-icon name="circle-check" size="18" color="#059669" strokeWidth="1.8"></lucide-icon>
+                        } @else {
+                            <!-- Equis tenue -->
+                            <lucide-icon name="x" size="14" color="#E2E8F0" strokeWidth="2"></lucide-icon>
+                        }
+                    </div>
+
+                    <div class="permiso-text">
+                        <strong>{{ permiso.nombre }}</strong>
+                        <span>{{ permiso.desc }}</span>
+                    </div>
+                    
+                </div>
+                }
+            </div>
+        </article>
+        }
+    </section>
+</main>

@@ -1,0 +1,202 @@
+.roles-container {
+    margin-left: 240px;
+    padding: 105px 24px 40px;
+    background: linear-gradient(180deg, #F8FAFF 0%, #F5F7FB 100%);
+    min-height: 100vh;
+}
+
+.page-desc {
+    font-size: 14px;
+    color: #64748B;
+    margin: 0 0 24px 0;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+.role-card.admin-card {
+    background: linear-gradient(180deg, #F6F0FF 0%, #FFFFFF 34%);
+    border: 1px solid #E7DCF8;
+}
+
+.role-card.vendedor-card {
+    background: linear-gradient(180deg, #EDF5FF 0%, #FFFFFF 34%);
+    border: 1px solid #DCE8F8;
+}
+
+.role-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.role-card-header {
+    padding: 22px 22px 18px;
+}
+
+.role-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.role-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.role-icon.admin {
+    background: #6D28D9;
+    color: #FFFFFF;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.role-icon.vendedor {
+    background: #1D4ED8;
+    color: #FFFFFF;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.role-title-info {
+    flex: 1;
+    min-width: 180px;
+}
+
+.role-title-info h2 {
+    font-size: 21px;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0;
+    line-height: 1.1;
+}
+
+.user-count {
+    font-size: 13px;
+    color: #64748B;
+    margin-top: 3px;
+    display: block;
+}
+
+.permisos-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #FFFFFF;
+    margin-left: auto;
+}
+
+.permisos-badge.admin {
+    color: #7C3AED;
+    border: 1px solid #E9D5FF;
+}
+
+.permisos-badge.vendedor {
+    color: #2563EB;
+    border: 1px solid #BAE6FD;
+}
+
+.role-desc {
+    font-size: 13.5px;
+    color: #64748B;
+    margin: 16px 0 0;
+    line-height: 1.5;
+}
+
+.permisos-list {
+    padding: 12px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.permiso-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #FFFFFF; /* Cajas blancas puras sobre el fondo claro */
+    border: 1px solid rgba(226, 232, 240, 0.7);
+}
+
+.permiso-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.permiso-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.permiso-text strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.permiso-text span {
+    font-size: 12.5px;
+    color: #94A3B8;
+}
+
+/* ESTADO DESHABILITADO / NO ASIGNADO */
+.permiso-item.no-asignado {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.permiso-item.no-asignado .permiso-text strong {
+    color: #CBD5E1;
+}
+
+.permiso-item.no-asignado .permiso-text span {
+    color: #E2E8F0;
+}
+
+.permiso-item.no-asignado .permiso-icon {
+    opacity: 0.3;
+}
+
+@media (max-width: 1100px) {
+    .roles-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .permisos-badge {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .roles-container {
+        margin-left: 0;
+        padding: 88px 16px 28px;
+    }
+
+    .role-title-row {
+        align-items: flex-start;
+    }
+
+    .role-card-header {
+        padding: 18px 16px 14px;
+    }
+
+    .permisos-list {
+        padding: 10px 12px 16px;
+    }
+}

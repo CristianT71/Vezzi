@@ -1,15 +1,18 @@
 <main class="productos-container">
+  <div class="toolbar-top">
     <div class="buscador-filtro">
+      <div class="search-field">
         <lucide-icon name="search" size="15" class="search"></lucide-icon>
         <input type="text" placeholder="Buscar por nombre o código..." [(ngModel)]="termino" (input)="buscar()" name="termino">
-        <button type="button" class="filtro" (click)="toggleFiltros()">Filtrar
-            <lucide-icon name="funnel" size="14" class="funnel"></lucide-icon>
-        </button>
-        <button type="button" class="nuevo" (click)="abrirModal()">Nuevo producto
-            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
-        </button>
+      </div>
+      <button type="button" class="filtro" (click)="toggleFiltros()">Filtrar
+        <lucide-icon name="funnel" size="14" class="funnel"></lucide-icon>
+      </button>
     </div>
-
+    <button type="button" class="nuevo" (click)="abrirModal()">Nuevo producto
+      <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
+    </button>
+  </div>
     <section class="tabla">
         <table class="productos-tabla">
             <thead>

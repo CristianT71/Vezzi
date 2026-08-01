@@ -1,0 +1,131 @@
+<main class="categorias-container">
+    <div class="page-top">
+        <p class="page-desc">Organiza tus productos por categoría para facilitar la búsqueda.</p>
+
+        <div class="page-actions">
+            <button type="button" class="btn-nuevo" (click)="abrirModal()">+ Nueva categoría</button>
+        </div>
+    </div>
+
+    <section class="cards">
+        <div class="card">
+            <div class="card-icon blue">
+                <lucide-icon name="tag" size="20"></lucide-icon>
+            </div>
+            <div class="card-body">
+                <h2>{{ totalCategorias }}</h2>
+                <p>Total categorías</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon green">
+                <lucide-icon name="circle-check" size="20"></lucide-icon>
+            </div>
+            <div class="card-body">
+                <h2>{{ totalActivas }}</h2>
+                <p>Activas</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon purple">
+                <lucide-icon name="package" size="20"></lucide-icon>
+            </div>
+            <div class="card-body">
+                <h2>{{ totalProductos }}</h2>
+                <p>Total productos</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="tabla-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Productos</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (categoria of categorias; track categoria.id) {
+                <tr>
+                    <td class="td-nombre">
+                        <span class="nombre-icon">
+                            <lucide-icon name="tag" size="15"></lucide-icon>
+                        </span>
+                        <strong>{{ categoria.nombre }}</strong>
+                    </td>
+                    <td class="td-descripcion">{{ categoria.descripcion || 'Sin descripción' }}</td>
+                    <td class="td-productos">
+                        <span class="producto-count">
+                            <lucide-icon name="package" size="13"></lucide-icon>
+                            {{ contarProductos(categoria) }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="estado-texto" [class.inactivo]="!categoria.activo">
+                            {{ categoria.activo ? 'Activa' : 'Inactiva' }}
+                        </span>
+                    </td>
+                    <td class="td-acciones">
+                        <button type="button" class="btn-link blue" (click)="editarCategoria(categoria)">Editar</button>
+                        <button type="button" class="btn-link red" (click)="eliminarCategoria(categoria)">Eliminar</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</main>
+
+@if (mostrarModal) {
+<div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Nueva categoría</h2>
+            <button class="close-btn" (click)="cerrarModal()">×</button>
+        </div>
+        <form (ngSubmit)="crearCategoria()">
+            <div class="form-group">
+                <label for="cat-nombre">Nombre</label>
+                <input id="cat-nombre" [(ngModel)]="nuevaCategoria.nombre" name="cat-nombre" placeholder="Nombre de la categoría" required>
+            </div>
+            <div class="form-group">
+                <label for="cat-desc">Descripción</label>
+                <textarea id="cat-desc" [(ngModel)]="nuevaCategoria.descripcion" name="cat-desc" rows="3" placeholder="Descripción opcional"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-submit">Crear categoría</button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+@if (mostrarModalEditar) {
+<div class="modal-overlay" (click)="cerrarModalEditar()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Editar categoría</h2>
+            <button class="close-btn" (click)="cerrarModalEditar()">×</button>
+        </div>
+        <form (ngSubmit)="actualizarCategoria()">
+            <div class="form-group">
+                <label for="edit-nombre">Nombre</label>
+                <input id="edit-nombre" [(ngModel)]="editarCategoriaData.nombre" name="edit-nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-desc">Descripción</label>
+                <textarea id="edit-desc" [(ngModel)]="editarCategoriaData.descripcion" name="edit-desc" rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
+                <button type="submit" class="btn-submit">Guardar cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+}
