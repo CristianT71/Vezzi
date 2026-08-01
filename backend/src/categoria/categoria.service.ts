@@ -35,6 +35,7 @@ export class CategoriaService {
     const { page = 1, limit = 10 } = PaginacionDto;
     const [ data, total ] = await this.categoriaRepository.findAndCount({
       where: { deleteAt: IsNull() },
+      relations: { productos: true },
       skip: (page - 1) * limit,
       take: limit,
     })

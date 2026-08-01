@@ -5,19 +5,24 @@ import { RolesService } from '../../services/roles';
 import { UsuariosService } from '../../services/usuarios';
 
 const PERMISOS = [
-  { id: 'dashboard', nombre: 'Ver dashboard' },
-  { id: 'productos', nombre: 'Gestionar productos' },
-  { id: 'clientes', nombre: 'Gestionar clientes' },
-  { id: 'ventas', nombre: 'Ver ventas' },
-  { id: 'nueva_venta', nombre: 'Realizar ventas (POS)' },
-  { id: 'categorias', nombre: 'Gestionar categorías' },
-  { id: 'usuarios', nombre: 'Gestionar usuarios' },
-  { id: 'roles', nombre: 'Gestionar roles' },
+  { id: 'dashboard', nombre: 'Ver Dashboard', desc: 'Estadísticas y gráficos generales' },
+  { id: 'productos', nombre: 'Gestionar Productos', desc: 'Crear, editar y ver productos' },
+  { id: 'clientes', nombre: 'Gestionar Clientes', desc: 'Crear, editar y ver clientes' },
+  { id: 'ventas', nombre: 'Ver Ventas', desc: 'Consultar historial de ventas' },
+  { id: 'nueva_venta', nombre: 'Realizar Ventas (POS)', desc: 'Operar el punto de venta' },
+  { id: 'categorias', nombre: 'Gestionar Categorías', desc: 'Crear y editar categorías' },
+  { id: 'usuarios', nombre: 'Gestionar Usuarios', desc: 'Crear y editar usuarios del sistema' },
+  { id: 'roles', nombre: 'Gestionar Roles', desc: 'Ver y modificar permisos de roles' },
 ];
 
 const PERMISOS_POR_ROL: Record<string, string[]> = {
   Administrador: PERMISOS.map(p => p.id),
   Vendedor: ['dashboard', 'productos', 'clientes', 'ventas', 'nueva_venta'],
+};
+
+const DESCRIPCIONES: Record<string, string> = {
+  Administrador: 'Acceso completo al sistema. Puede gestionar usuarios, roles, configuraciones y todas las operaciones.',
+  Vendedor: 'Acceso operativo. Puede realizar ventas, consultar productos y clientes, pero sin acceso a configuraciones del sistema.',
 };
 
 @Component({
@@ -44,6 +49,7 @@ export class Roles implements OnInit {
           ...rol,
           id_permisos: PERMISOS_POR_ROL[rol.nombre] || [],
           totalUsuarios: usuarios.filter((u: any) => u.rol?.nombre === rol.nombre).length,
+          descripcion: DESCRIPCIONES[rol.nombre] || rol.descripcion || '',
         }));
         this.cdr.detectChanges();
       });

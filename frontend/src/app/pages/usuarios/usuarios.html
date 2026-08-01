@@ -1,86 +1,88 @@
 <main class="usuarios-container">
+    <div class="page-header">
+        <div class="page-header-text">
+            <h1>Usuarios</h1>
+            <p class="subtitle">{{ totalUsuarios }} usuarios del sistema</p>
+        </div>
+    </div>
+
+    <p class="page-description">Gestiona quién tiene acceso al sistema y con qué permisos.</p>
+
+    <div class="page-actions">
+        <button type="button" class="btn-nuevo" (click)="abrirModal()">+ Nuevo usuario</button>
+    </div>
 
     <section class="cards">
         <div class="card">
-            <div class="card-header">
-                <lucide-icon name="users" size="18" color="#3B82F6" style="background-color: #EFF6FF;" class="card-icon"></lucide-icon>
+            <div class="card-icon blue">
+                <lucide-icon name="users" size="20"></lucide-icon>
             </div>
             <div class="card-body">
-                <h2 class="card-valor">{{ totalUsuarios }}</h2>
-                <p class="card-titulo">Total usuarios</p>
+                <h2>{{ totalUsuarios }}</h2>
+                <p>Total usuarios</p>
             </div>
         </div>
-
         <div class="card">
-            <div class="card-header">
-                <lucide-icon name="shield-check" size="18" color="#B597FA" style="background-color: #F5F3FF;" class="card-icon"></lucide-icon>
+            <div class="card-icon purple">
+                <lucide-icon name="shield-check" size="20"></lucide-icon>
             </div>
             <div class="card-body">
-                <h2 class="card-valor">{{ totalAdmin }}</h2>
-                <p class="card-titulo">Administradores</p>
+                <h2>{{ totalAdmin }}</h2>
+                <p>Administradores</p>
             </div>
         </div>
-
         <div class="card">
-            <div class="card-header">
-                <lucide-icon name="user-check" size="18" color="#43C99C" style="background-color: #ECFDF5;" class="card-icon"></lucide-icon>
+            <div class="card-icon green">
+                <lucide-icon name="check-circle" size="20"></lucide-icon>
             </div>
             <div class="card-body">
-                <h2 class="card-valor">{{ totalVendedores }}</h2>
-                <p class="card-titulo">Vendedores</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <lucide-icon name="activity" size="18" color="#F8BB50" style="background-color: #FFFBEB;" class="card-icon"></lucide-icon>
-            </div>
-            <div class="card-body">
-                <h2 class="card-valor">{{ totalActivos }}</h2>
-                <p class="card-titulo">Usuarios activos</p>
+                <h2>{{ totalActivos }}</h2>
+                <p>Activos hoy</p>
             </div>
         </div>
     </section>
 
-    <div class="buscador-filtro">
-        <lucide-icon name="search" size="15" class="search"></lucide-icon>
-        <input type="text" placeholder="Buscar usuario..." [(ngModel)]="termino" name="termino">
-        <button type="button" class="nuevo" (click)="abrirModal()">Nuevo usuario
-            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
-        </button>
-    </div>
-
-    <section class="tabla">
-        <table class="usuarios-tabla">
+    <section class="tabla-container">
+        <table class="admin-table">
             <thead>
                 <tr>
                     <th>Usuario</th>
-                    <th>Nombre completo</th>
+                    <th>Email</th>
                     <th>Rol</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @for (usuario of filtrados; track usuario.id) {
-                  <tr>
-                    <td>{{ usuario.nombre_usuario }}</td>
-                    <td>{{ usuario.nombre_completo }}</td>
+                @for (usuario of usuarios; track usuario.id) {
+                <tr>
+                    <td class="td-usuario">
+                        <div class="avatar" [class]="claseRol(usuario.rol?.nombre)">
+                            {{ iniciales(usuario.nombre_completo) }}
+                        </div>
+                        <strong>{{ usuario.nombre_completo }}</strong>
+                    </td>
+                    <td class="td-email">{{ usuario.nombre_usuario }}</td>
                     <td>
-                        <span class="rol-badge" [class.admin]="usuario.rol?.nombre === 'Administrador'">
-                            {{ nombreRol(usuario) }}
+                        <span class="rol-badge" [class]="claseRol(usuario.rol?.nombre)">
+                            @if (usuario.rol?.nombre === 'Administrador') {
+                                <lucide-icon name="shield-check" size="12"></lucide-icon>
+                            } @else {
+                                <lucide-icon name="user-check" size="12"></lucide-icon>
+                            }
+                            {{ usuario.rol?.nombre || 'Sin rol' }}
                         </span>
                     </td>
                     <td>
-                        <span class="estado" [class.inactivo]="!usuario.activo">
+                        <span class="estado-texto" [class.inactivo]="!usuario.activo">
                             {{ usuario.activo ? 'Activo' : 'Inactivo' }}
                         </span>
                     </td>
-                    <td>
-                      <button type="button" class="btn-editar" (click)="editarUsuario(usuario)">Editar</button>
-                      <button type="button" class="btn-eliminar" (click)="eliminarUsuario(usuario)">Eliminar</button>
+                    <td class="td-acciones">
+                        <button type="button" class="btn-link blue" (click)="editarUsuario(usuario)">Editar</button>
+                        <button type="button" class="btn-link red" (click)="eliminarUsuario(usuario)">Eliminar</button>
                     </td>
-                  </tr>
+                </tr>
                 }
             </tbody>
         </table>
@@ -92,20 +94,20 @@
     <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <h2>Nuevo usuario</h2>
-            <button class="close-button" (click)="cerrarModal()">×</button>
+            <button class="close-btn" (click)="cerrarModal()">×</button>
         </div>
         <form (ngSubmit)="crearUsuario()">
             <div class="form-group">
-                <label for="usu-nombre-usuario">Nombre de usuario</label>
-                <input id="usu-nombre-usuario" [(ngModel)]="nuevoUsuario.nombre_usuario" name="usu-nombre-usuario" required>
+                <label for="usu-nombre-comp">Nombre completo</label>
+                <input id="usu-nombre-comp" [(ngModel)]="nuevoUsuario.nombre_completo" name="usu-nombre-comp" placeholder="Ej: Juan Pérez" required>
             </div>
             <div class="form-group">
-                <label for="usu-nombre-completo">Nombre completo</label>
-                <input id="usu-nombre-completo" [(ngModel)]="nuevoUsuario.nombre_completo" name="usu-nombre-completo" required>
+                <label for="usu-nombre-user">Nombre de usuario</label>
+                <input id="usu-nombre-user" [(ngModel)]="nuevoUsuario.nombre_usuario" name="usu-nombre-user" placeholder="Ej: juan" required>
             </div>
             <div class="form-group">
-                <label for="usu-password">Contraseña</label>
-                <input type="password" id="usu-password" [(ngModel)]="nuevoUsuario.password" name="usu-password" required minlength="8">
+                <label for="usu-pass">Contraseña</label>
+                <input type="password" id="usu-pass" [(ngModel)]="nuevoUsuario.password" name="usu-pass" placeholder="Mínimo 8 caracteres" required minlength="8">
             </div>
             <div class="form-group">
                 <label for="usu-rol">Rol</label>
@@ -116,9 +118,9 @@
                     }
                 </select>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" (click)="cerrarModal()">Cancelar</button>
-                <button type="submit" class="btn btn-submit">Crear usuario</button>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-submit">Crear usuario</button>
             </div>
         </form>
     </div>
@@ -130,38 +132,38 @@
     <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <h2>Editar usuario</h2>
-            <button class="close-button" (click)="cerrarModalEditar()">×</button>
+            <button class="close-btn" (click)="cerrarModalEditar()">×</button>
         </div>
         <form (ngSubmit)="actualizarUsuario()">
             <div class="form-group">
-                <label for="edit-usu-nombre-usuario">Nombre de usuario</label>
-                <input id="edit-usu-nombre-usuario" [(ngModel)]="editarUsuarioData.nombre_usuario" name="edit-usu-nombre-usuario" required>
+                <label for="edit-nombre-comp">Nombre completo</label>
+                <input id="edit-nombre-comp" [(ngModel)]="editarUsuarioData.nombre_completo" name="edit-nombre-comp" required>
             </div>
             <div class="form-group">
-                <label for="edit-usu-nombre-completo">Nombre completo</label>
-                <input id="edit-usu-nombre-completo" [(ngModel)]="editarUsuarioData.nombre_completo" name="edit-usu-nombre-completo" required>
+                <label for="edit-nombre-user">Nombre de usuario</label>
+                <input id="edit-nombre-user" [(ngModel)]="editarUsuarioData.nombre_usuario" name="edit-nombre-user" required>
             </div>
             <div class="form-group">
-                <label for="edit-usu-password">Nueva contraseña (dejar vacío para no cambiar)</label>
-                <input type="password" id="edit-usu-password" [(ngModel)]="editarUsuarioData.password" name="edit-usu-password">
+                <label for="edit-pass">Nueva contraseña (dejar vacío para no cambiar)</label>
+                <input type="password" id="edit-pass" [(ngModel)]="editarUsuarioData.password" name="edit-pass">
             </div>
             <div class="form-group">
-                <label for="edit-usu-rol">Rol</label>
-                <select id="edit-usu-rol" [(ngModel)]="editarUsuarioData.id_rol" name="edit-usu-rol" required>
+                <label for="edit-rol">Rol</label>
+                <select id="edit-rol" [(ngModel)]="editarUsuarioData.id_rol" name="edit-rol" required>
                     @for (rol of roles; track rol.id) {
                       <option [value]="rol.id">{{ rol.nombre }}</option>
                     }
                 </select>
             </div>
-            <div class="form-group checkbox">
+            <div class="form-group checkbox-group">
                 <label>
-                    <input type="checkbox" [(ngModel)]="editarUsuarioData.activo" name="edit-usu-activo">
-                    Usuario activo
+                    <input type="checkbox" [(ngModel)]="editarUsuarioData.activo" name="edit-activo">
+                    <span>Usuario activo</span>
                 </label>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
-                <button type="submit" class="btn btn-submit">Guardar cambios</button>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
+                <button type="submit" class="btn-submit">Guardar cambios</button>
             </div>
         </form>
     </div>

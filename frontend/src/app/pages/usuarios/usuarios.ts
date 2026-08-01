@@ -14,7 +14,6 @@ import { RolesService } from '../../services/roles';
 export class Usuarios implements OnInit {
   usuarios: any[] = [];
   roles: any[] = [];
-  termino: string = '';
   mostrarModal: boolean = false;
   mostrarModalEditar: boolean = false;
   nuevoUsuario: any = { nombre_usuario: '', password: '', nombre_completo: '', id_rol: '', activo: true };
@@ -45,20 +44,21 @@ export class Usuarios implements OnInit {
     });
   }
 
-  get filtrados(): any[] {
-    if (!this.termino) return this.usuarios;
-    const t = this.termino.toLowerCase();
-    return this.usuarios.filter(u =>
-      u.nombre_usuario?.toLowerCase().includes(t) ||
-      u.nombre_completo?.toLowerCase().includes(t) ||
-      u.rol?.nombre?.toLowerCase().includes(t)
-    );
-  }
-
   get totalUsuarios(): number { return this.usuarios.length; }
   get totalAdmin(): number { return this.usuarios.filter(u => u.rol?.nombre === 'Administrador').length; }
-  get totalVendedores(): number { return this.usuarios.filter(u => u.rol?.nombre === 'Vendedor').length; }
   get totalActivos(): number { return this.usuarios.filter(u => u.activo).length; }
+
+  iniciales(nombre: string): string {
+    if (!nombre) return '?';
+    const partes = nombre.trim().split(' ');
+    if (partes.length >= 2) return (partes[0][0] + partes[1][0]).toUpperCase();
+    return partes[0].substring(0, 2).toUpperCase();
+  }
+
+  claseRol(nombre: string): string {
+    if (nombre === 'Administrador') return 'admin';
+    return 'vendedor';
+  }
 
   abrirModal() {
     this.nuevoUsuario = { nombre_usuario: '', password: '', nombre_completo: '', id_rol: '', activo: true };
@@ -73,10 +73,7 @@ export class Usuarios implements OnInit {
   crearUsuario() {
     this.usuariosService.create(this.nuevoUsuario).subscribe({
       next: () => { this.cerrarModal(); this.cargarUsuarios(); },
-      error: (err) => {
-        console.error(err);
-        alert(err.error?.message || 'Error al crear usuario');
-      },
+      error: (err) => { console.error(err); alert(err.error?.message || 'Error al crear usuario'); },
     });
   }
 
@@ -114,9 +111,5 @@ export class Usuarios implements OnInit {
       next: () => this.cargarUsuarios(),
       error: (err) => { console.error(err); alert('Error al eliminar usuario'); },
     });
-  }
-
-  nombreRol(usuario: any): string {
-    return usuario.rol?.nombre || 'Sin rol';
   }
 }

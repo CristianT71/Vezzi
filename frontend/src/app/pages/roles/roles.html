@@ -1,57 +1,54 @@
 <main class="roles-container">
-
-    <section class="cards">
-        <div class="card">
-            <div class="card-header">
-                <lucide-icon name="shield" size="18" color="#3B82F6" style="background-color: #EFF6FF;" class="card-icon"></lucide-icon>
-            </div>
-            <div class="card-body">
-                <h2 class="card-valor">{{ roles.length }}</h2>
-                <p class="card-titulo">Roles del sistema</p>
-            </div>
+    <div class="page-header">
+        <div class="page-header-text">
+            <h1>Roles y Permisos</h1>
+            <p class="subtitle">Define qué puede hacer cada tipo de usuario</p>
         </div>
+    </div>
 
-        <div class="card">
-            <div class="card-header">
-                <lucide-icon name="shield-check" size="18" color="#43C99C" style="background-color: #ECFDF5;" class="card-icon"></lucide-icon>
-            </div>
-            <div class="card-body">
-                <h2 class="card-valor">{{ permisos.length }}</h2>
-                <p class="card-titulo">Permisos definidos</p>
-            </div>
-        </div>
-    </section>
+    <p class="page-description">Los roles son fijos en el sistema. Puedes ver los permisos asignados a cada rol y cuántos usuarios los tienen.</p>
 
     <section class="roles-grid">
         @for (rol of roles; track rol.id) {
         <div class="role-card">
-            <div class="role-header">
-                <div class="role-info">
-                    <h3>{{ rol.nombre }}</h3>
-                    <p>{{ rol.descripcion || 'Sin descripción' }}</p>
+            <div class="role-card-header">
+                <div class="role-title-row">
+                    <div class="role-icon" [class]="rol.nombre === 'Administrador' ? 'admin' : 'vendedor'">
+                        @if (rol.nombre === 'Administrador') {
+                            <lucide-icon name="shield-check" size="22"></lucide-icon>
+                        } @else {
+                            <lucide-icon name="users" size="22"></lucide-icon>
+                        }
+                    </div>
+                    <div class="role-title-info">
+                        <h2>{{ rol.nombre }}</h2>
+                        <span class="user-count">{{ rol.totalUsuarios }} usuario{{ rol.totalUsuarios !== 1 ? 's' : '' }}</span>
+                    </div>
+                    <span class="permisos-badge" [class]="rol.nombre === 'Administrador' ? 'admin' : 'vendedor'">
+                        {{ totalPermisos(rol) }}/{{ permisos.length }} permisos
+                    </span>
                 </div>
-                <span class="role-badge">{{ totalPermisos(rol) }}/{{ permisos.length }} permisos</span>
+                <p class="role-desc">{{ rol.descripcion }}</p>
             </div>
 
-            <div class="role-stats">
-                <lucide-icon name="users" size="15"></lucide-icon>
-                <span>{{ rol.totalUsuarios }} usuarios</span>
-            </div>
-
-            <div class="role-permisos">
+            <div class="permisos-list">
                 @for (permiso of permisos; track permiso.id) {
-                <div class="permiso" [class.asignado]="tienePermiso(rol, permiso.id)">
-                    @if (tienePermiso(rol, permiso.id)) {
-                        <lucide-icon name="check" size="15" color="#059669"></lucide-icon>
-                    } @else {
-                        <lucide-icon name="x" size="15" color="#DC2626"></lucide-icon>
-                    }
-                    <span>{{ permiso.nombre }}</span>
+                <div class="permiso-item" [class.asignado]="tienePermiso(rol, permiso.id)" [class.no-asignado]="!tienePermiso(rol, permiso.id)">
+                    <div class="permiso-icon">
+                        @if (tienePermiso(rol, permiso.id)) {
+                            <lucide-icon name="check-circle-2" size="18" color="#10B981"></lucide-icon>
+                        } @else {
+                            <lucide-icon name="x" size="18" color="#CBD5E1"></lucide-icon>
+                        }
+                    </div>
+                    <div class="permiso-text">
+                        <strong>{{ permiso.nombre }}</strong>
+                        <span>{{ permiso.desc }}</span>
+                    </div>
                 </div>
                 }
             </div>
         </div>
         }
     </section>
-
 </main>

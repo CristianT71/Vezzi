@@ -12,7 +12,6 @@ import { CategoriasService } from '../../services/categorias';
 })
 export class Categorias implements OnInit {
   categorias: any[] = [];
-  termino: string = '';
   mostrarModal: boolean = false;
   mostrarModalEditar: boolean = false;
   nuevaCategoria: any = { nombre: '', descripcion: '' };
@@ -32,12 +31,14 @@ export class Categorias implements OnInit {
     });
   }
 
-  get filtradas(): any[] {
-    if (!this.termino) return this.categorias;
-    return this.categorias.filter(c =>
-      c.nombre?.toLowerCase().includes(this.termino.toLowerCase()) ||
-      c.descripcion?.toLowerCase().includes(this.termino.toLowerCase())
-    );
+  get totalCategorias(): number { return this.categorias.length; }
+  get totalActivas(): number { return this.categorias.filter(c => c.activo).length; }
+  get totalProductos(): number {
+    return this.categorias.reduce((sum, c) => sum + (c.productos?.length || 0), 0);
+  }
+
+  contarProductos(categoria: any): number {
+    return categoria.productos?.length || 0;
   }
 
   abrirModal() {
@@ -53,7 +54,7 @@ export class Categorias implements OnInit {
   crearCategoria() {
     this.categoriasService.create(this.nuevaCategoria).subscribe({
       next: () => { this.cerrarModal(); this.cargarCategorias(); },
-      error: (err) => { console.error(err); alert('Error al crear categoría'); },
+      error: (err) => { console.error(err); alert(err.error?.message || 'Error al crear categoría'); },
     });
   }
 
