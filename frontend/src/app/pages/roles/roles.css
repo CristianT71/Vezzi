@@ -1,0 +1,120 @@
+.roles-container {
+    margin-left: 240px;
+    padding: 105px 25px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+    max-width: 500px;
+}
+
+.card {
+    background: var(--white);
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: 16px;
+    padding: 18px 20px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.card-icon {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.card-valor {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.card-titulo {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+}
+
+.role-card {
+    background: var(--white);
+    border: 1px solid rgb(232, 232, 232);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.role-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.role-info h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.role-info p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #EFF6FF;
+    color: #3B82F6;
+    white-space: nowrap;
+}
+
+.role-stats {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    margin: 14px 0;
+}
+
+.role-permisos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.permiso {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #FEF2F2;
+    color: #DC2626;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.permiso.asignado {
+    background: #ECFDF5;
+    color: #047857;
+}

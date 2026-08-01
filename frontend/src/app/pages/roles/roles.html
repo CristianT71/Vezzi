@@ -1,0 +1,57 @@
+<main class="roles-container">
+
+    <section class="cards">
+        <div class="card">
+            <div class="card-header">
+                <lucide-icon name="shield" size="18" color="#3B82F6" style="background-color: #EFF6FF;" class="card-icon"></lucide-icon>
+            </div>
+            <div class="card-body">
+                <h2 class="card-valor">{{ roles.length }}</h2>
+                <p class="card-titulo">Roles del sistema</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <lucide-icon name="shield-check" size="18" color="#43C99C" style="background-color: #ECFDF5;" class="card-icon"></lucide-icon>
+            </div>
+            <div class="card-body">
+                <h2 class="card-valor">{{ permisos.length }}</h2>
+                <p class="card-titulo">Permisos definidos</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="roles-grid">
+        @for (rol of roles; track rol.id) {
+        <div class="role-card">
+            <div class="role-header">
+                <div class="role-info">
+                    <h3>{{ rol.nombre }}</h3>
+                    <p>{{ rol.descripcion || 'Sin descripción' }}</p>
+                </div>
+                <span class="role-badge">{{ totalPermisos(rol) }}/{{ permisos.length }} permisos</span>
+            </div>
+
+            <div class="role-stats">
+                <lucide-icon name="users" size="15"></lucide-icon>
+                <span>{{ rol.totalUsuarios }} usuarios</span>
+            </div>
+
+            <div class="role-permisos">
+                @for (permiso of permisos; track permiso.id) {
+                <div class="permiso" [class.asignado]="tienePermiso(rol, permiso.id)">
+                    @if (tienePermiso(rol, permiso.id)) {
+                        <lucide-icon name="check" size="15" color="#059669"></lucide-icon>
+                    } @else {
+                        <lucide-icon name="x" size="15" color="#DC2626"></lucide-icon>
+                    }
+                    <span>{{ permiso.nombre }}</span>
+                </div>
+                }
+            </div>
+        </div>
+        }
+    </section>
+
+</main>
