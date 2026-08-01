@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
-import { FormsModule } from '@angular/forms';
 import { RolesService } from '../../services/roles';
 import { UsuariosService } from '../../services/usuarios';
 
@@ -22,20 +21,18 @@ const PERMISOS_POR_ROL: Record<string, string[]> = {
 };
 
 const DESCRIPCIONES: Record<string, string> = {
-  Administrador: 'Acceso completo al sistema. Gestiona usuarios, roles y configuraciones.',
-  Vendedor: 'Acceso operativo. Realiza ventas y consulta productos y clientes.',
+  Administrador: 'Acceso completo al sistema. Puede gestionar usuarios, roles, configuraciones y todas las operaciones.',
+  Vendedor: 'Acceso operativo. Puede realizar ventas, consultar productos y clientes, pero sin acceso a configuraciones del sistema.',
 };
 
 @Component({
   selector: 'app-roles',
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './roles.html',
   styleUrl: './roles.css',
 })
 export class Roles implements OnInit {
   roles: any[] = [];
-  termino: string = '';
-  rolSeleccionado: any = null;
 
   constructor(
     private rolesService: RolesService,
@@ -61,34 +58,11 @@ export class Roles implements OnInit {
 
   get permisos() { return PERMISOS; }
 
-  buscar() {
-    this.cdr.detectChanges();
-  }
-
-  get filtrados(): any[] {
-    if (!this.termino) return this.roles;
-    const t = this.termino.toLowerCase();
-    return this.roles.filter(r =>
-      r.nombre?.toLowerCase().includes(t) ||
-      r.descripcion?.toLowerCase().includes(t)
-    );
-  }
-
   tienePermiso(rol: any, idPermiso: string): boolean {
     return (rol.id_permisos || []).includes(idPermiso);
   }
 
   totalPermisos(rol: any): number {
     return (rol.id_permisos || []).length;
-  }
-
-  verPermisos(rol: any) {
-    this.rolSeleccionado = rol;
-    this.cdr.detectChanges();
-  }
-
-  cerrarPermisos() {
-    this.rolSeleccionado = null;
-    this.cdr.detectChanges();
   }
 }
