@@ -84,7 +84,10 @@ export class VentaService {
   }
 
   async findOne(id: number) {
-    const venta = await this.ventaRepository.findOneBy({ id, deletedAt: IsNull() });
+    const venta = await this.ventaRepository.findOne({
+      where: { id, deletedAt: IsNull() },
+      relations: { detalles_venta: { producto: true } },
+    });
     if (!venta) {
       throw new NotFoundException(`Venta con id ${id} no existe`);
     }

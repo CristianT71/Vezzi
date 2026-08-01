@@ -24,9 +24,12 @@ export class PagoService {
 
   async create(createPagoDto: CreatePagoDto) {
     try {
-      const venta = await this.ventaRepository.findOneBy({ id: createPagoDto.id_venta });
-      if (!venta) {
-        throw new NotFoundException(`Venta con id ${createPagoDto.id_venta} no existe`);
+      let venta;
+      if (createPagoDto.id_venta) {
+        venta = await this.ventaRepository.findOneBy({ id: createPagoDto.id_venta });
+        if (!venta) {
+          throw new NotFoundException(`Venta con id ${createPagoDto.id_venta} no existe`);
+        }
       }
 
       const cliente = await this.clienteRepository.findOneBy({ id: createPagoDto.id_cliente });
@@ -40,7 +43,7 @@ export class PagoService {
       }
 
       const pago = this.pagoRepository.create({
-        venta,
+        ...(venta && { venta }),
         cliente,
         usuario,
         monto: createPagoDto.monto,

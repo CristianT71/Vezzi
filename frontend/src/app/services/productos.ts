@@ -16,6 +16,9 @@ export class Productos {
   update(id: number, data: any): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${id}`, data);
   }
+  remove(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 
   findAll(page: number = 1, limit: number = 10, search: string = '', categoria: string = ''): Observable<any> {
     let url = `${this.apiUrl}?page=${page}&limit=${limit}`;

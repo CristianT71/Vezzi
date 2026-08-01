@@ -12,4 +12,8 @@ export class VentasService {
     if (search) url += `&search=${encodeURIComponent(search)}`;
     return this.http.get(url);
   }
+
+  findOne(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
 }

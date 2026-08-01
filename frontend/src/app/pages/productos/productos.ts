@@ -129,6 +129,14 @@ export class Productos implements OnInit {
     });
   }
 
+  eliminarProducto(producto: any) {
+    if (!confirm(`¿Eliminar el producto "${producto.nombre}"?`)) return;
+    this.productosService.remove(producto.id).subscribe({
+      next: () => this.ngOnInit(),
+      error: (err) => { console.error(err); alert('Error al eliminar producto'); },
+    });
+  }
+
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
   }

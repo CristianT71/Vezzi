@@ -70,4 +70,51 @@ export class Clientes implements OnInit {
       error: (err) => { console.error(err); alert('Error al actualizar cliente'); },
     });
   }
+
+  tieneDeuda(cliente: any): boolean {
+    return Number(cliente.saldo_deuda || 0) > 0;
+  }
+
+  eliminarCliente(cliente: any) {
+    if (!confirm(`¿Eliminar el cliente "${cliente.nombre}"?`)) return;
+    this.clientesService.remove(cliente.id).subscribe({
+      next: () => this.cargarClientes(),
+      error: (err) => { console.error(err); alert('Error al eliminar cliente'); },
+    });
+  }
+
+  mostrarModalPago: boolean = false;
+  pagoData: any = { monto: '', metodo_pago: 'EFECTIVO', referencia: '' };
+
+  abrirPago(cliente: any) {
+    this.pagoData = {
+      id_cliente: cliente.id,
+      cliente_nombre: cliente.nombre,
+      saldo_deuda: cliente.saldo_deuda,
+      monto: '',
+      metodo_pago: 'EFECTIVO',
+      referencia: '',
+    };
+    this.mostrarModalPago = true;
+    this.cdr.detectChanges();
+  }
+  cerrarModalPago() {
+    this.mostrarModalPago = false;
+    this.cdr.detectChanges();
+  }
+
+  registrarPago() {
+    const id_usuario = JSON.parse(localStorage.getItem('usuario') || '{}').id;
+    const body = {
+      id_cliente: Number(this.pagoData.id_cliente),
+      id_usuario,
+      monto: Number(this.pagoData.monto),
+      metodo_pago: this.pagoData.metodo_pago,
+      referencia: this.pagoData.referencia || undefined,
+    };
+    this.http.post('http://localhost:3000/api/pago', body).subscribe({
+      next: () => { this.cerrarModalPago(); this.cargarClientes(); alert('Pago registrado'); },
+      error: (err) => { console.error(err); alert('Error al registrar pago'); },
+    });
+  }
 }
