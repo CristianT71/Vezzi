@@ -12,6 +12,7 @@ import { CategoriasService } from '../../services/categorias';
 })
 export class Categorias implements OnInit {
   categorias: any[] = [];
+  termino: string = '';
   mostrarModal: boolean = false;
   mostrarModalEditar: boolean = false;
   nuevaCategoria: any = { nombre: '', descripcion: '' };
@@ -31,10 +32,17 @@ export class Categorias implements OnInit {
     });
   }
 
-  get totalCategorias(): number { return this.categorias.length; }
-  get totalActivas(): number { return this.categorias.filter(c => c.activo).length; }
-  get totalProductos(): number {
-    return this.categorias.reduce((sum, c) => sum + (c.productos?.length || 0), 0);
+  buscar() {
+    this.cdr.detectChanges();
+  }
+
+  get filtradas(): any[] {
+    if (!this.termino) return this.categorias;
+    const t = this.termino.toLowerCase();
+    return this.categorias.filter(c =>
+      c.nombre?.toLowerCase().includes(t) ||
+      c.descripcion?.toLowerCase().includes(t)
+    );
   }
 
   contarProductos(categoria: any): number {

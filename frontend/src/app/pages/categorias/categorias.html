@@ -1,49 +1,14 @@
 <main class="categorias-container">
-    <div class="page-header">
-        <div class="page-header-text">
-            <h1>Categorías</h1>
-            <p class="subtitle">{{ totalCategorias }} categorías registradas</p>
-        </div>
+    <div class="buscador-filtro">
+        <lucide-icon name="search" size="15" class="search"></lucide-icon>
+        <input type="text" placeholder="Buscar categoría..." [(ngModel)]="termino" (input)="buscar()" name="termino">
+        <button type="button" class="nuevo" (click)="abrirModal()">Nueva categoría
+            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
+        </button>
     </div>
 
-    <p class="page-description">Organiza tus productos por categoría para facilitar la búsqueda.</p>
-
-    <div class="page-actions">
-        <button type="button" class="btn-nuevo" (click)="abrirModal()">+ Nueva categoría</button>
-    </div>
-
-    <section class="cards">
-        <div class="card">
-            <div class="card-icon blue">
-                <lucide-icon name="tag" size="20"></lucide-icon>
-            </div>
-            <div class="card-body">
-                <h2>{{ totalCategorias }}</h2>
-                <p>Total categorías</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon green">
-                <lucide-icon name="check-circle" size="20"></lucide-icon>
-            </div>
-            <div class="card-body">
-                <h2>{{ totalActivas }}</h2>
-                <p>Activas</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-icon purple">
-                <lucide-icon name="tag" size="20"></lucide-icon>
-            </div>
-            <div class="card-body">
-                <h2>{{ totalProductos }}</h2>
-                <p>Total productos</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="tabla-container">
-        <table class="admin-table">
+    <section class="tabla">
+        <table class="categorias-tabla">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -54,35 +19,28 @@
                 </tr>
             </thead>
             <tbody>
-                @for (categoria of categorias; track categoria.id) {
-                <tr>
-                    <td class="td-nombre">
-                        <span class="nombre-icon">
-                            <lucide-icon name="tag" size="15"></lucide-icon>
-                        </span>
-                        <strong>{{ categoria.nombre }}</strong>
-                    </td>
-                    <td class="td-descripcion">{{ categoria.descripcion || 'Sin descripción' }}</td>
-                    <td class="td-productos">
-                        <span class="producto-count">
-                            <lucide-icon name="package" size="13"></lucide-icon>
-                            {{ contarProductos(categoria) }}
-                        </span>
+                @for (categoria of filtradas; track categoria.id) {
+                  <tr>
+                    <td>{{ categoria.nombre }}</td>
+                    <td>{{ categoria.descripcion || 'Sin descripción' }}</td>
+                    <td>{{ contarProductos(categoria) }} producto(s)</td>
+                    <td>
+                      @if (categoria.activo) {
+                        <span class="disponible">Activa</span>
+                      } @else {
+                        <span class="agotado">Inactiva</span>
+                      }
                     </td>
                     <td>
-                        <span class="estado-texto" [class.inactivo]="!categoria.activo">
-                            {{ categoria.activo ? 'Activa' : 'Inactiva' }}
-                        </span>
+                      <button type="button" class="btn-editar" (click)="editarCategoria(categoria)">Editar</button>
+                      <button type="button" class="btn-eliminar" (click)="eliminarCategoria(categoria)">Eliminar</button>
                     </td>
-                    <td class="td-acciones">
-                        <button type="button" class="btn-link blue" (click)="editarCategoria(categoria)">Editar</button>
-                        <button type="button" class="btn-link red" (click)="eliminarCategoria(categoria)">Eliminar</button>
-                    </td>
-                </tr>
+                  </tr>
                 }
             </tbody>
         </table>
     </section>
+    <div class="total-registros">Mostrando {{ filtradas.length }} categoría(s)</div>
 </main>
 
 @if (mostrarModal) {
@@ -90,20 +48,20 @@
     <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <h2>Nueva categoría</h2>
-            <button class="close-btn" (click)="cerrarModal()">×</button>
+            <button class="close-button" (click)="cerrarModal()">×</button>
         </div>
         <form (ngSubmit)="crearCategoria()">
             <div class="form-group">
                 <label for="cat-nombre">Nombre</label>
-                <input id="cat-nombre" [(ngModel)]="nuevaCategoria.nombre" name="cat-nombre" placeholder="Nombre de la categoría" required>
+                <input id="cat-nombre" [(ngModel)]="nuevaCategoria.nombre" name="cat-nombre" placeholder="Ej: Lácteos" required>
             </div>
             <div class="form-group">
                 <label for="cat-desc">Descripción</label>
                 <textarea id="cat-desc" [(ngModel)]="nuevaCategoria.descripcion" name="cat-desc" rows="3" placeholder="Descripción opcional"></textarea>
             </div>
-            <div class="modal-actions">
-                <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
-                <button type="submit" class="btn-submit">Crear categoría</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" (click)="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn btn-submit">Crear categoría</button>
             </div>
         </form>
     </div>
@@ -115,20 +73,20 @@
     <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <h2>Editar categoría</h2>
-            <button class="close-btn" (click)="cerrarModalEditar()">×</button>
+            <button class="close-button" (click)="cerrarModalEditar()">×</button>
         </div>
         <form (ngSubmit)="actualizarCategoria()">
             <div class="form-group">
-                <label for="edit-nombre">Nombre</label>
-                <input id="edit-nombre" [(ngModel)]="editarCategoriaData.nombre" name="edit-nombre" required>
+                <label for="edit-cat-nombre">Nombre</label>
+                <input id="edit-cat-nombre" [(ngModel)]="editarCategoriaData.nombre" name="edit-cat-nombre" required>
             </div>
             <div class="form-group">
-                <label for="edit-desc">Descripción</label>
-                <textarea id="edit-desc" [(ngModel)]="editarCategoriaData.descripcion" name="edit-desc" rows="3"></textarea>
+                <label for="edit-cat-desc">Descripción</label>
+                <textarea id="edit-cat-desc" [(ngModel)]="editarCategoriaData.descripcion" name="edit-cat-desc" rows="3"></textarea>
             </div>
-            <div class="modal-actions">
-                <button type="button" class="btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
-                <button type="submit" class="btn-submit">Guardar cambios</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>
+                <button type="submit" class="btn btn-submit">Guardar cambios</button>
             </div>
         </form>
     </div>

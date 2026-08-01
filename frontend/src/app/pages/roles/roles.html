@@ -1,54 +1,60 @@
 <main class="roles-container">
-    <div class="page-header">
-        <div class="page-header-text">
-            <h1>Roles y Permisos</h1>
-            <p class="subtitle">Define qué puede hacer cada tipo de usuario</p>
-        </div>
+    <div class="buscador-filtro">
+        <lucide-icon name="search" size="15" class="search"></lucide-icon>
+        <input type="text" placeholder="Buscar rol..." [(ngModel)]="termino" (input)="buscar()" name="termino">
     </div>
 
-    <p class="page-description">Los roles son fijos en el sistema. Puedes ver los permisos asignados a cada rol y cuántos usuarios los tienen.</p>
-
-    <section class="roles-grid">
-        @for (rol of roles; track rol.id) {
-        <div class="role-card">
-            <div class="role-card-header">
-                <div class="role-title-row">
-                    <div class="role-icon" [class]="rol.nombre === 'Administrador' ? 'admin' : 'vendedor'">
-                        @if (rol.nombre === 'Administrador') {
-                            <lucide-icon name="shield-check" size="22"></lucide-icon>
-                        } @else {
-                            <lucide-icon name="users" size="22"></lucide-icon>
-                        }
-                    </div>
-                    <div class="role-title-info">
-                        <h2>{{ rol.nombre }}</h2>
-                        <span class="user-count">{{ rol.totalUsuarios }} usuario{{ rol.totalUsuarios !== 1 ? 's' : '' }}</span>
-                    </div>
-                    <span class="permisos-badge" [class]="rol.nombre === 'Administrador' ? 'admin' : 'vendedor'">
-                        {{ totalPermisos(rol) }}/{{ permisos.length }} permisos
-                    </span>
-                </div>
-                <p class="role-desc">{{ rol.descripcion }}</p>
-            </div>
-
-            <div class="permisos-list">
-                @for (permiso of permisos; track permiso.id) {
-                <div class="permiso-item" [class.asignado]="tienePermiso(rol, permiso.id)" [class.no-asignado]="!tienePermiso(rol, permiso.id)">
-                    <div class="permiso-icon">
-                        @if (tienePermiso(rol, permiso.id)) {
-                            <lucide-icon name="check-circle-2" size="18" color="#10B981"></lucide-icon>
-                        } @else {
-                            <lucide-icon name="x" size="18" color="#CBD5E1"></lucide-icon>
-                        }
-                    </div>
-                    <div class="permiso-text">
-                        <strong>{{ permiso.nombre }}</strong>
-                        <span>{{ permiso.desc }}</span>
-                    </div>
-                </div>
+    <section class="tabla">
+        <table class="roles-tabla">
+            <thead>
+                <tr>
+                    <th>Rol</th>
+                    <th>Descripción</th>
+                    <th>Permisos</th>
+                    <th>Usuarios</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (rol of filtrados; track rol.id) {
+                  <tr>
+                    <td>{{ rol.nombre }}</td>
+                    <td>{{ rol.descripcion || 'Sin descripción' }}</td>
+                    <td>
+                      <button type="button" class="btn-ver-permisos" (click)="verPermisos(rol)">Ver permisos ({{ totalPermisos(rol) }}/{{ permisos.length }})</button>
+                    </td>
+                    <td>{{ rol.totalUsuarios }} usuario(s)</td>
+                  </tr>
                 }
-            </div>
-        </div>
-        }
+            </tbody>
+        </table>
     </section>
+    <div class="total-registros">Mostrando {{ filtrados.length }} rol(es)</div>
 </main>
+
+@if (rolSeleccionado) {
+<div class="modal-overlay" (click)="cerrarPermisos()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Permisos de {{ rolSeleccionado.nombre }}</h2>
+            <button class="close-button" (click)="cerrarPermisos()">×</button>
+        </div>
+        <div class="permisos-lista">
+            @for (permiso of permisos; track permiso.id) {
+            <div class="permiso-item" [class.si]="tienePermiso(rolSeleccionado, permiso.id)" [class.no]="!tienePermiso(rolSeleccionado, permiso.id)">
+                <div class="permiso-icon">
+                    @if (tienePermiso(rolSeleccionado, permiso.id)) {
+                        <lucide-icon name="check" size="16" color="#059669"></lucide-icon>
+                    } @else {
+                        <lucide-icon name="x" size="16" color="#ef4444"></lucide-icon>
+                    }
+                </div>
+                <div class="permiso-text">
+                    <strong>{{ permiso.nombre }}</strong>
+                    <span>{{ permiso.desc }}</span>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+}

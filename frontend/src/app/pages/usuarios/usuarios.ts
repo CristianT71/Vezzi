@@ -14,9 +14,10 @@ import { RolesService } from '../../services/roles';
 export class Usuarios implements OnInit {
   usuarios: any[] = [];
   roles: any[] = [];
+  termino: string = '';
   mostrarModal: boolean = false;
   mostrarModalEditar: boolean = false;
-  nuevoUsuario: any = { nombre_usuario: '', password: '', nombre_completo: '', id_rol: '', activo: true };
+  nuevoUsuario: any = { nombre_usuario: '', password: '', nombre_completo: '', id_rol: '' };
   editarUsuarioData: any = {};
 
   constructor(
@@ -44,24 +45,22 @@ export class Usuarios implements OnInit {
     });
   }
 
-  get totalUsuarios(): number { return this.usuarios.length; }
-  get totalAdmin(): number { return this.usuarios.filter(u => u.rol?.nombre === 'Administrador').length; }
-  get totalActivos(): number { return this.usuarios.filter(u => u.activo).length; }
-
-  iniciales(nombre: string): string {
-    if (!nombre) return '?';
-    const partes = nombre.trim().split(' ');
-    if (partes.length >= 2) return (partes[0][0] + partes[1][0]).toUpperCase();
-    return partes[0].substring(0, 2).toUpperCase();
+  buscar() {
+    this.cdr.detectChanges();
   }
 
-  claseRol(nombre: string): string {
-    if (nombre === 'Administrador') return 'admin';
-    return 'vendedor';
+  get filtrados(): any[] {
+    if (!this.termino) return this.usuarios;
+    const t = this.termino.toLowerCase();
+    return this.usuarios.filter(u =>
+      u.nombre_usuario?.toLowerCase().includes(t) ||
+      u.nombre_completo?.toLowerCase().includes(t) ||
+      u.rol?.nombre?.toLowerCase().includes(t)
+    );
   }
 
   abrirModal() {
-    this.nuevoUsuario = { nombre_usuario: '', password: '', nombre_completo: '', id_rol: '', activo: true };
+    this.nuevoUsuario = { nombre_usuario: '', password: '', nombre_completo: '', id_rol: '' };
     this.mostrarModal = true;
     this.cdr.detectChanges();
   }
