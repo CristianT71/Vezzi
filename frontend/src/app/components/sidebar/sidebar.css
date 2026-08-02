@@ -16,16 +16,9 @@
 }
 
 .sidebar-header .logo {
-    display: flex;
-    background: var(--primary);
-    font-size: 13px;
-    color: var(--white);
-    width: 33px;
-    height: 33px;
-    border-radius: var(--radius);
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
 }
 
 .sidebar-header h2 {
@@ -48,6 +41,7 @@
 .menu-principal p {
     font-size: 11px;
     font-weight: 600;
+    color: var(--text-secondary);
     position: relative;
     left: 10px;
 }
@@ -80,19 +74,53 @@
     content: "";
 }
 
+.menu-principal ul li.disabled {
+    opacity: 0.4;
+    filter: grayscale(0.6);
+    pointer-events: none;
+}
+
+.menu-principal ul li.disabled:hover {
+    filter: grayscale(0.6);
+    background-color: transparent;
+}
+
+.menu-principal ul li .lock-icon {
+    margin-left: auto;
+    color: var(--text-secondary);
+}
+
+.menu-principal p.admin-locked {
+    padding-right: 20px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.menu-principal p .lock-icon-titulo {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
 .sidebar-footer {
     width: 240px;
     height: 66px;
     display: flex;
+    align-items: center;
+    gap: 10px;
     position: fixed;
     bottom: 0;
     border-top: 1px solid;
-    padding: 20px 20px 25px;
+    padding: 0 15px;
     left: -2px;
+    box-sizing: border-box;
 }
 
 .sidebar-footer .icono-admin {
     display: flex;
+    flex-shrink: 0;
     font-size: 12px;
     color: var(--text-secondary);
     width: 32px;
@@ -104,25 +132,43 @@
     font-weight: 700;
 }
 
+.content-s-fooder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 .content-s-fooder p {
     font-size: 12px;
     color: var(--white);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content-s-fooder .rol-usuario {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .content-s-fooder span {
     font-size: 11px;
     color: var(--text-secondary);
-    margin-left: 5px;
 }
 
-.content-s-fooder .log-out {
-    position: relative;
-    left: 105px;
-    top: -5px;
-    color: red;
+.sidebar-footer > .log-out {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
     transition: filter 0.3s ease-in-out;
 }
 
-.content-s-fooder .log-out:hover {
+.sidebar-footer > .log-out:hover {
     filter: brightness(1.6);
 }

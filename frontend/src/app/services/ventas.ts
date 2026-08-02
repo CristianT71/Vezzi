@@ -16,4 +16,8 @@ export class VentasService {
   findOne(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
+
+  descargarFactura(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/factura`, { responseType: 'blob' });
+  }
 }

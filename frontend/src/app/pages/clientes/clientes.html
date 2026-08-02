@@ -53,6 +53,18 @@
                 <label for="cli-telefono">Teléfono</label>
                 <input id="cli-telefono" [(ngModel)]="nuevoCliente.telefono" name="cli-telefono" placeholder="Ej: 3001234567">
             </div>
+            <div class="form-group">
+                <label for="cli-nit">NIT/RUC</label>
+                <input id="cli-nit" [(ngModel)]="nuevoCliente.nit" name="cli-nit" placeholder="Ej: 900123456-7">
+            </div>
+            <div class="form-group">
+                <label for="cli-direccion">Dirección</label>
+                <input id="cli-direccion" [(ngModel)]="nuevoCliente.direccion" name="cli-direccion" placeholder="Ej: Calle 10 # 5-20">
+            </div>
+            <div class="form-group">
+                <label for="cli-email">Email</label>
+                <input type="email" id="cli-email" [(ngModel)]="nuevoCliente.email" name="cli-email" placeholder="Ej: cliente@correo.com">
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-cancel" (click)="cerrarModal()">Cancelar</button>
                 <button type="submit" class="btn btn-submit">Crear cliente</button>
@@ -77,6 +89,18 @@
             <div class="form-group">
                 <label for="edit-cli-telefono">Teléfono</label>
                 <input id="edit-cli-telefono" [(ngModel)]="editarClienteData.telefono" name="edit-cli-telefono" placeholder="Ej: 3001234567">
+            </div>
+            <div class="form-group">
+                <label for="edit-cli-nit">NIT/RUC</label>
+                <input id="edit-cli-nit" [(ngModel)]="editarClienteData.nit" name="edit-cli-nit" placeholder="Ej: 900123456-7">
+            </div>
+            <div class="form-group">
+                <label for="edit-cli-direccion">Dirección</label>
+                <input id="edit-cli-direccion" [(ngModel)]="editarClienteData.direccion" name="edit-cli-direccion" placeholder="Ej: Calle 10 # 5-20">
+            </div>
+            <div class="form-group">
+                <label for="edit-cli-email">Email</label>
+                <input type="email" id="edit-cli-email" [(ngModel)]="editarClienteData.email" name="edit-cli-email" placeholder="Ej: cliente@correo.com">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-cancel" (click)="cerrarModalEditar()">Cancelar</button>

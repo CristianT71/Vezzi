@@ -267,3 +267,32 @@ td {
     flex-direction: column;
     gap: 6px;
 }
+
+.detalle-acciones {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-factura {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-factura:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-factura:hover:not(:disabled) {
+    filter: brightness(1.1);
+}

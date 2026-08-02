@@ -82,6 +82,12 @@
             <div class="info-linea"><span>Impuesto:</span> ${{ detalleVenta.impuesto }}</div>
             <div class="info-linea total"><span>TOTAL:</span> <b>${{ detalleVenta.total }}</b></div>
         </div>
+        <div class="detalle-acciones">
+            <button type="button" class="btn-factura" (click)="descargarFactura(detalleVenta)" [disabled]="descargandoFactura">
+                <lucide-icon name="download" size="15"></lucide-icon>
+                {{ descargandoFactura ? 'Generando...' : 'Descargar factura (PDF)' }}
+            </button>
+        </div>
     </div>
 </div>
 }

@@ -1,6 +1,6 @@
 <aside class="sidebar">
     <div class="sidebar-header">
-        <div class="logo">VZ</div>
+        <img src="/logo.png" alt="VEZZI" class="logo">
         <h2>VEZZI</h2>
         <span>Tienda Local</span>
     </div>
@@ -25,27 +25,37 @@
                     <lucide-icon name="dollar-sign" size="17"></lucide-icon>Nueva Venta
                 </li>
             </ul>
-            <p style="margin-top: 20px;">ADMINISTRACIÓN</p>
+            <p style="margin-top: 20px;" [class.admin-locked]="!esAdmin">
+                ADMINISTRACIÓN
+                <lucide-icon *ngIf="!esAdmin" name="lock" size="14" class="lock-icon-titulo"></lucide-icon>
+            </p>
             <ul>
-                <li routerLink="/categorias" routerLinkActive="active" style="cursor: pointer;">
+                <li [routerLink]="esAdmin ? '/categorias' : null" routerLinkActive="active" [class.disabled]="!esAdmin" [style.cursor]="esAdmin ? 'pointer' : 'not-allowed'">
                     <lucide-icon name="tag" size="17"></lucide-icon>Categorías
+                    <lucide-icon *ngIf="!esAdmin" name="lock" size="14" class="lock-icon"></lucide-icon>
                 </li>
-                <li routerLink="/usuarios" routerLinkActive="active" style="cursor: pointer;">
+                <li [routerLink]="esAdmin ? '/usuarios' : null" routerLinkActive="active" [class.disabled]="!esAdmin" [style.cursor]="esAdmin ? 'pointer' : 'not-allowed'">
                     <lucide-icon name="user-check" size="17"></lucide-icon>Usuarios
+                    <lucide-icon *ngIf="!esAdmin" name="lock" size="14" class="lock-icon"></lucide-icon>
                 </li>
-                <li routerLink="/roles" routerLinkActive="active" style="cursor: pointer;">
+                <li [routerLink]="esAdmin ? '/roles' : null" routerLinkActive="active" [class.disabled]="!esAdmin" [style.cursor]="esAdmin ? 'pointer' : 'not-allowed'">
                     <lucide-icon name="shield" size="17"></lucide-icon>Roles
+                    <lucide-icon *ngIf="!esAdmin" name="lock" size="14" class="lock-icon"></lucide-icon>
                 </li>
             </ul>
         </nav>
         <div class="sidebar-footer">
             <div class="icono-admin">{{ usuario.nombre_completo?.charAt(0) }}</div>
             <div class="content-s-fooder">
-                <p>{{ usuario.nombre_completo }}</p>
-                <lucide-icon name="shield-check" size="10" color="#3B82F6" style="margin-left: 10px;"></lucide-icon>
-                <span>{{ usuario.rol.nombre }}</span>
-                <a (click)="logout()"><lucide-icon name="log-out" size="15" color="#657185" class="log-out"></lucide-icon></a>
+                <p [title]="usuario.nombre_completo">{{ usuario.nombre_completo }}</p>
+                <div class="rol-usuario">
+                    <lucide-icon name="shield-check" size="10" color="#3B82F6"></lucide-icon>
+                    <span>{{ usuario.rol.nombre }}</span>
+                </div>
             </div>
+            <a (click)="logout()" class="log-out" title="Cerrar sesión">
+                <lucide-icon name="log-out" size="15" color="#657185"></lucide-icon>
+            </a>
         </div>
     </div>
 

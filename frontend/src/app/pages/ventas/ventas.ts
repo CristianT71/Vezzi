@@ -63,4 +63,28 @@ export class Ventas {
     this.detalleVenta = null;
     this.cdr.detectChanges();
   }
+
+  descargandoFactura: boolean = false;
+
+  descargarFactura(venta: any) {
+    this.descargandoFactura = true;
+    this.VentasService.descargarFactura(venta.id).subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `factura-${venta.numero_venta}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.descargandoFactura = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al descargar la factura');
+        this.descargandoFactura = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
 }
