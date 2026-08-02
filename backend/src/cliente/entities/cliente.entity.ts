@@ -13,6 +13,15 @@ export class Cliente {
   @Column({ type: 'varchar', length: 20 })
   telefono: string;
 
+  @Column({ type: 'varchar', length: 30, nullable: true })
+  nit?: string;
+
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  direccion?: string;
+
+  @Column({ type: 'varchar', length: 150, nullable: true })
+  email?: string;
+
   @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
   saldo_deuda: string;
 

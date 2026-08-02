@@ -16,7 +16,7 @@ export class Clientes implements OnInit {
   termino: string = '';
   mostrarModal: boolean = false;
   mostrarModalEditar: boolean = false;
-  nuevoCliente: any = { nombre: '', telefono: '' };
+  nuevoCliente: any = { nombre: '', telefono: '', nit: '', direccion: '', email: '' };
   editarClienteData: any = {};
 
   constructor(
@@ -37,7 +37,7 @@ export class Clientes implements OnInit {
   buscar() { this.cargarClientes(); }
 
   abrirModal() {
-    this.nuevoCliente = { nombre: '', telefono: '' };
+    this.nuevoCliente = { nombre: '', telefono: '', nit: '', direccion: '', email: '' };
     this.mostrarModal = true;
     this.cdr.detectChanges();
   }
@@ -64,7 +64,13 @@ export class Clientes implements OnInit {
   }
 
   actualizarCliente() {
-    const body = { nombre: this.editarClienteData.nombre, telefono: this.editarClienteData.telefono };
+    const body = {
+      nombre: this.editarClienteData.nombre,
+      telefono: this.editarClienteData.telefono,
+      nit: this.editarClienteData.nit,
+      direccion: this.editarClienteData.direccion,
+      email: this.editarClienteData.email,
+    };
     this.clientesService.update(this.editarClienteData.id, body).subscribe({
       next: () => { this.cerrarModalEditar(); this.cargarClientes(); },
       error: (err) => { console.error(err); alert('Error al actualizar cliente'); },

@@ -8,6 +8,7 @@ import { CreateVentaDto } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
+import { generarFacturaPdf } from './factura-pdf';
 
 @Injectable()
 export class VentaService {
@@ -92,6 +93,11 @@ export class VentaService {
       throw new NotFoundException(`Venta con id ${id} no existe`);
     }
     return venta;
+  }
+
+  async generarFacturaPdf(id: number, baseUrl: string): Promise<Buffer> {
+    const venta = await this.findOne(id);
+    return generarFacturaPdf(venta, baseUrl);
   }
 
   async update(id: number, updateVentaDto: UpdateVentaDto) {

@@ -25,16 +25,9 @@
 }
 
 .brand-logo {
-    width: 55px;
-    height: 55px;
-    background-color: var(--primary-dark);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 20px;
-    font-weight: 700;
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
     margin: auto;
 }
 

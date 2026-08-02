@@ -18,6 +18,9 @@ export class ClienteService {
       const cliente = this.clienteRepository.create({
         nombre: createClienteDto.nombre,
         telefono: createClienteDto.telefono,
+        nit: createClienteDto.nit,
+        direccion: createClienteDto.direccion,
+        email: createClienteDto.email,
         activo: createClienteDto.activo ?? true,
       });
       return await this.clienteRepository.save(cliente);

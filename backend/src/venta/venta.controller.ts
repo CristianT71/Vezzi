@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query, Res, Req } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { VentaService } from './venta.service';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
@@ -53,6 +54,17 @@ export class VentaController {
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.findOne(id);
+  }
+
+  @Get(':id/factura')
+  async descargarFactura(@Param('id', ParseIntPipe) id: number, @Req() req: Request, @Res() res: Response) {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const buffer = await this.ventaService.generarFacturaPdf(id, baseUrl);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="factura-${id}.pdf"`,
+    });
+    res.end(buffer);
   }
 
   @Patch(':id')
