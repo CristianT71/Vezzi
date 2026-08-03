@@ -17,6 +17,7 @@ export class NuevaVenta implements OnInit {
   carrito: any[] = [];
   termino: string = '';
   clienteSeleccionado: string = '';
+  metodoPago: 'CONTADO' | 'CREDITO' = 'CONTADO';
 
   constructor(
     private http: HttpClient, 
@@ -73,6 +74,7 @@ export class NuevaVenta implements OnInit {
       id_usuario,
       impuesto: Number(this.iva.toFixed(2)),
       total: 0,
+      estado: this.metodoPago === 'CREDITO' ? 'PENDIENTE' : 'PAGADA',
     }).subscribe({
       next: (venta) => {
         let pendientes = this.carrito.length;
@@ -91,7 +93,10 @@ export class NuevaVenta implements OnInit {
               pendientes--;
               if (pendientes === 0) {
                 this.http.post(`http://localhost:3000/api/venta/${venta.id}/calcular-total`, {}).subscribe(() => {
-                  alert(`Venta ${venta.numero_venta} creada exitosamente`);
+                  const mensaje = this.metodoPago === 'CREDITO'
+                    ? `Venta ${venta.numero_venta} registrada a crédito. Se sumó al saldo pendiente del cliente.`
+                    : `Venta ${venta.numero_venta} creada exitosamente`;
+                  alert(mensaje);
                   this.router.navigate(['/ventas']);
                 });
               }
