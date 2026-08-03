@@ -9,6 +9,7 @@ import { UpdateVentaDto } from './dto/update-venta.dto';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
 import { generarFacturaPdf } from './factura-pdf';
+import { FacturaEmailService } from './factura-email.service';
 
 @Injectable()
 export class VentaService {
@@ -21,6 +22,7 @@ export class VentaService {
     private readonly usuarioRepository: Repository<Usuario>,
     @InjectRepository(DetalleVenta)
     private readonly detalleVentaRepository: Repository<DetalleVenta>,
+    private readonly facturaEmailService: FacturaEmailService,
   ) {}
 
   async create(createVentaDto: CreateVentaDto) {
@@ -164,7 +166,16 @@ export class VentaService {
 
     await this.ventaRepository.update(id, { total: total.toFixed(2) });
 
+    this.enviarFacturaPorCorreoSilencioso(id);
+
     return total.toFixed(2);
+  }
+
+  private enviarFacturaPorCorreoSilencioso(id: number) {
+    const baseUrl = process.env.APP_BASE_URL || 'http://localhost:3000';
+    this.findOne(id)
+      .then((venta) => generarFacturaPdf(venta, baseUrl).then((buffer) => this.facturaEmailService.enviarFactura(venta, buffer)))
+      .catch((error) => console.error('Error generando/enviando factura por correo:', error));
   }
 
 
