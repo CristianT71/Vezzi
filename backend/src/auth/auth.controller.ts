@@ -14,7 +14,7 @@ export class AuthController {
 
   @Get('perfil')
   @UseGuards(JwtAuthGuard)
-  getPerfil(@CurrentUser() user: { id: string; id_rol: string }) {
+  getPerfil(@CurrentUser() user: { id: string; rol: string }) {
     return user;
   }
 }
