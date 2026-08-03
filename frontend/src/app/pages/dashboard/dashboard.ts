@@ -50,6 +50,14 @@ export class Dashboard implements OnInit {
       this.variacionVentas = (varVentas >= 0 ? '+' : '') + varVentas.toFixed(1) + '%';
     }
     this.nuevosClientes = '+' + (this.data.clientesNuevos || 0) + ' nuevos';
-    this.variacionIngresos = '+8.2%';
+
+    const mesActual = this.ingresosMensualesData[this.ingresosMensualesData.length - 1];
+    const mesAnterior = this.ingresosMensualesData[this.ingresosMensualesData.length - 2];
+    if (mesActual && mesAnterior && mesAnterior.value > 0) {
+      const varIngresos = ((mesActual.value - mesAnterior.value) / mesAnterior.value * 100);
+      this.variacionIngresos = (varIngresos >= 0 ? '+' : '') + varIngresos.toFixed(1) + '%';
+    } else {
+      this.variacionIngresos = '+0%';
+    }
   }
 }
