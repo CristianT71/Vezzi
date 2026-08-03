@@ -32,6 +32,12 @@ export class Venta {
 	@Column({ type: 'varchar', length: 20, default: 'EMITIDA' })
 	estado: string;
 
+	@Column({ type: 'varchar', length: 255, nullable: true })
+	motivo_cancelacion?: string;
+
+	@Column({ type: 'timestamp', nullable: true })
+	fecha_cancelacion?: Date;
+
 	@Column({ type: 'boolean', default: true })
 	activo: boolean;
 
