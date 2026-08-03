@@ -1,14 +1,27 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
+import { DeudaReminderService } from './deuda-reminder.service';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 
 @Controller('cliente')
 @UseGuards(JwtAuthGuard)
 export class ClienteController {
-  constructor(private readonly clienteService: ClienteService) {}
+  constructor(
+    private readonly clienteService: ClienteService,
+    private readonly deudaReminderService: DeudaReminderService,
+  ) {}
+
+  @Post('enviar-recordatorios')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  enviarRecordatorios() {
+    return this.deudaReminderService.enviarRecordatorios();
+  }
 
   @Post()
   create(@Body() createClienteDto: CreateClienteDto) {
