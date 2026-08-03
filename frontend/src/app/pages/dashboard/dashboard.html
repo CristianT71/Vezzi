@@ -124,7 +124,7 @@
                       <td>{{ venta.cliente?.nombre || 'Sin cliente' }}</td>
                       <td>{{ venta.cantidad_items || 0 }} items</td>
                       <td class="price">${{ venta.total }}</td>
-                      <td><span class="status" [ngClass]="venta.estado === 'PAGADA' ? 'paid' : venta.estado === 'PENDIENTE' ? 'pending' : 'cancelled'">{{ venta.estado }}</span></td>
+                      <td><span class="status" [ngClass]="venta.estado === 'PAGADA' ? 'paid' : venta.estado === 'CANCELADA' ? 'cancelled' : 'pending'">{{ venta.estado }}</span></td>
                       <td>{{ venta.fecha_venta | date:'dd/MM/yyyy' }}</td>
                     </tr>
                 </tbody>
