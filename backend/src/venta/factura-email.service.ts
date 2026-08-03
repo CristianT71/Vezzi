@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { MailerService } from 'src/common/mailer/mailer.service';
 import { Venta } from './entities/venta.entity';
 
 function money(value: string | number): string {
@@ -33,43 +33,27 @@ function construirCuerpoCorreo(venta: Venta): string {
 @Injectable()
 export class FacturaEmailService {
   private readonly logger = new Logger(FacturaEmailService.name);
-  private transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_APP_PASSWORD,
-    },
-  });
+
+  constructor(private readonly mailerService: MailerService) {}
 
   async enviarFactura(venta: Venta, pdfBuffer: Buffer): Promise<void> {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
-      this.logger.warn('EMAIL_USER/EMAIL_APP_PASSWORD no configurados; no se envió la factura por correo.');
-      return;
-    }
-
     const destinatario = venta.cliente?.email;
     if (!destinatario) {
       this.logger.warn(`Venta ${venta.numero_venta}: el cliente no tiene email registrado, no se envía factura.`);
       return;
     }
 
-    try {
-      await this.transporter.sendMail({
-        from: `"VEZZI" <${process.env.EMAIL_USER}>`,
-        to: destinatario,
-        subject: `Tu factura ${venta.numero_venta} - VEZZI`,
-        html: construirCuerpoCorreo(venta),
-        attachments: [
-          {
-            filename: `factura-${venta.numero_venta}.pdf`,
-            content: pdfBuffer,
-            contentType: 'application/pdf',
-          },
-        ],
-      });
-      this.logger.log(`Factura ${venta.numero_venta} enviada por correo a ${destinatario}`);
-    } catch (error) {
-      this.logger.error(`Error enviando factura ${venta.numero_venta} por correo: ${(error as Error).message}`);
-    }
+    await this.mailerService.enviarCorreo({
+      to: destinatario,
+      subject: `Tu factura ${venta.numero_venta} - VEZZI`,
+      html: construirCuerpoCorreo(venta),
+      attachments: [
+        {
+          filename: `factura-${venta.numero_venta}.pdf`,
+          content: pdfBuffer,
+          contentType: 'application/pdf',
+        },
+      ],
+    });
   }
 }
