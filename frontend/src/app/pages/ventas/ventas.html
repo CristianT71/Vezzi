@@ -6,6 +6,10 @@
         <button type="button" class="filtro" [class.active]="filtroEstado === 'PAGADA'" (click)="filtrarPorEstado('PAGADA')">Pagado</button>
         <button type="button" class="filtro" [class.active]="filtroEstado === 'PENDIENTE'" (click)="filtrarPorEstado('PENDIENTE')">Pendientes</button>
         <button type="button" class="filtro" [class.active]="filtroEstado === 'CANCELADA'" (click)="filtrarPorEstado('CANCELADA')">Cancelado</button>
+        <button type="button" class="btn-exportar" (click)="exportarExcel()" [disabled]="exportandoExcel">
+            <lucide-icon name="file-spreadsheet" size="15"></lucide-icon>
+            {{ exportandoExcel ? 'Exportando...' : 'Exportar a Excel' }}
+        </button>
     </div>
 
     <section class="tabla">
@@ -29,7 +33,7 @@
                     <td class="price">${{ venta.total }}</td>
                     <td>
                       <span class="status"
-                        [ngClass]="venta.estado === 'PAGADA' ? 'paid' : venta.estado === 'PENDIENTE' ? 'pending' : 'cancelled'">
+                        [ngClass]="venta.estado === 'PAGADA' ? 'paid' : venta.estado === 'CANCELADA' ? 'cancelled' : 'pending'">
                         {{ venta.estado }}
                       </span>
                     </td>
@@ -53,10 +57,13 @@
             <div class="info-linea"><span>Fecha:</span> {{ detalleVenta.fecha_venta | date:'dd/MM/yyyy HH:mm' }}</div>
             <div class="info-linea"><span>Estado:</span>
               <span class="status"
-                [ngClass]="detalleVenta.estado === 'PAGADA' ? 'paid' : detalleVenta.estado === 'PENDIENTE' ? 'pending' : 'cancelled'">
+                [ngClass]="detalleVenta.estado === 'PAGADA' ? 'paid' : detalleVenta.estado === 'CANCELADA' ? 'cancelled' : 'pending'">
                 {{ detalleVenta.estado }}
               </span>
             </div>
+            @if (detalleVenta.estado === 'CANCELADA') {
+              <div class="info-linea"><span>Motivo de cancelación:</span> {{ detalleVenta.motivo_cancelacion || 'No especificado' }}</div>
+            }
         </div>
         <table class="detalle-tabla">
             <thead>
@@ -87,6 +94,17 @@
                 <lucide-icon name="download" size="15"></lucide-icon>
                 {{ descargandoFactura ? 'Generando...' : 'Descargar factura (PDF)' }}
             </button>
+            @if (detalleVenta.estado !== 'CANCELADA') {
+              <button type="button" class="btn-cancelar" (click)="cancelarVenta(detalleVenta)" [disabled]="cancelandoVenta">
+                  <lucide-icon name="undo-2" size="15"></lucide-icon>
+                  {{ cancelandoVenta ? 'Cancelando...' : 'Cancelar venta' }}
+              </button>
+            } @else {
+              <button type="button" class="btn-nota-credito" (click)="descargarNotaCredito(detalleVenta)" [disabled]="descargandoNotaCredito">
+                  <lucide-icon name="file-text" size="15"></lucide-icon>
+                  {{ descargandoNotaCredito ? 'Generando...' : 'Descargar nota de crédito' }}
+              </button>
+            }
         </div>
     </div>
 </div>

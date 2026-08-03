@@ -51,6 +51,17 @@ export class VentaController {
     return this.ventaService.findUltimasVentas(5);
   }
 
+  @Get('exportar/excel')
+  async exportarExcel(@Query('estado') estado: string, @Query('search') search: string, @Res() res: Response) {
+    const buffer = await this.ventaService.generarReporteExcel({ estado, search });
+    const fecha = new Date().toISOString().slice(0, 10);
+    res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': `attachment; filename="reporte-ventas-${fecha}.xlsx"`,
+    });
+    res.end(buffer);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ventaService.findOne(id);
@@ -65,6 +76,22 @@ export class VentaController {
       'Content-Disposition': `attachment; filename="factura-${id}.pdf"`,
     });
     res.end(buffer);
+  }
+
+  @Get(':id/nota-credito')
+  async descargarNotaCredito(@Param('id', ParseIntPipe) id: number, @Req() req: Request, @Res() res: Response) {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const buffer = await this.ventaService.generarNotaCreditoPdf(id, baseUrl);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="nota-credito-${id}.pdf"`,
+    });
+    res.end(buffer);
+  }
+
+  @Post(':id/cancelar')
+  cancelarVenta(@Param('id', ParseIntPipe) id: number, @Body('motivo') motivo?: string) {
+    return this.ventaService.cancelarVenta(id, motivo);
   }
 
   @Patch(':id')

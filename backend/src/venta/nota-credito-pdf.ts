@@ -2,6 +2,7 @@ import PDFDocument from 'pdfkit';
 import * as QRCode from 'qrcode';
 import * as path from 'path';
 import { Venta } from './entities/venta.entity';
+import { money, fechaCorta } from './factura-pdf';
 
 const LOGO_PATH = path.join(process.cwd(), 'src', 'assets', 'logo.png');
 
@@ -12,28 +13,11 @@ const COLORS = {
   border: '#E2E8F0',
   bg: '#F8FAFC',
   white: '#FFFFFF',
+  danger: '#DC2626',
+  dangerBg: '#FEF2F2',
 };
 
-const ESTADO_COLORS: Record<string, { bg: string; color: string }> = {
-  PAGADA: { bg: '#ECFDF5', color: '#059669' },
-  PENDIENTE: { bg: '#FFFBEB', color: '#D97706' },
-  CANCELADA: { bg: '#FEF2F2', color: '#DC2626' },
-};
-
-function estadoColor(estado: string) {
-  return ESTADO_COLORS[estado] ?? { bg: '#EFF6FF', color: '#2563EB' };
-}
-
-export function money(value: string | number): string {
-  const num = Number(value) || 0;
-  return `$ ${num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-export function fechaCorta(fecha: Date | string): string {
-  return new Date(fecha).toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
-}
-
-export async function generarFacturaPdf(venta: Venta, baseUrl: string): Promise<Buffer> {
+export async function generarNotaCreditoPdf(venta: Venta, baseUrl: string): Promise<Buffer> {
   const qrUrl = `${baseUrl}/api/venta/${venta.id}/verificar`;
   const qrBuffer = await QRCode.toBuffer(qrUrl, {
     type: 'png',
@@ -61,19 +45,19 @@ export async function generarFacturaPdf(venta: Venta, baseUrl: string): Promise<
 
     // ---------- Título con barras ----------
     let y = margin;
-    doc.font('Helvetica-Bold').fontSize(22).fillColor(COLORS.primaryDark);
-    const title = 'FACTURA';
+    doc.font('Helvetica-Bold').fontSize(20).fillColor(COLORS.danger);
+    const title = 'NOTA DE CRÉDITO';
     const titleWidth = doc.widthOfString(title);
     const barGap = 18;
     const barsWidth = (contentWidth - titleWidth - barGap * 2) / 2;
-    const barY = y + 9;
-    doc.rect(margin, barY, barsWidth, 5).fill(COLORS.primaryDark);
-    doc.rect(margin + barsWidth + barGap + titleWidth + barGap, barY, barsWidth, 5).fill(COLORS.primaryDark);
-    doc.fillColor(COLORS.primaryDark).text(title, margin + barsWidth + barGap, y, { width: titleWidth, align: 'center' });
+    const barY = y + 8;
+    doc.rect(margin, barY, barsWidth, 5).fill(COLORS.danger);
+    doc.rect(margin + barsWidth + barGap + titleWidth + barGap, barY, barsWidth, 5).fill(COLORS.danger);
+    doc.fillColor(COLORS.danger).text(title, margin + barsWidth + barGap, y, { width: titleWidth, align: 'center' });
 
     y += 34;
     doc.font('Helvetica-Bold').fontSize(9).fillColor(COLORS.textSecondary)
-      .text(`FECHA:  ${fechaCorta(venta.fecha_venta)}      •      NÚMERO:  ${venta.numero_venta}`, margin, y, {
+      .text(`ANULA LA FACTURA:  ${venta.numero_venta}      •      FECHA DE ANULACIÓN:  ${venta.fecha_cancelacion ? fechaCorta(venta.fecha_cancelacion) : '-'}`, margin, y, {
         width: contentWidth,
         align: 'center',
       });
@@ -105,13 +89,18 @@ export async function generarFacturaPdf(venta: Venta, baseUrl: string): Promise<
       .text(`Atendido por: ${venta.usuario?.nombre_completo ?? '-'}`, margin, leftY);
     leftY += 16;
 
-    const estado = estadoColor(venta.estado);
     doc.font('Helvetica').fontSize(9.5).fillColor(COLORS.textSecondary).text('Estado:', margin, leftY + 2);
-    const badgeText = venta.estado;
+    const badgeText = 'CANCELADA';
     const badgeWidth = doc.font('Helvetica-Bold').fontSize(9).widthOfString(badgeText) + 16;
-    doc.roundedRect(margin + 48, leftY - 2, badgeWidth, 16, 8).fill(estado.bg);
-    doc.fillColor(estado.color).font('Helvetica-Bold').fontSize(9)
+    doc.roundedRect(margin + 48, leftY - 2, badgeWidth, 16, 8).fill(COLORS.dangerBg);
+    doc.fillColor(COLORS.danger).font('Helvetica-Bold').fontSize(9)
       .text(badgeText, margin + 48, leftY + 2, { width: badgeWidth, align: 'center' });
+    leftY += 24;
+
+    doc.font('Helvetica-Bold').fontSize(9).fillColor(COLORS.textSecondary).text('MOTIVO DE LA ANULACIÓN', margin, leftY);
+    leftY += 14;
+    doc.font('Helvetica').fontSize(9.5).fillColor(COLORS.textPrimary)
+      .text(venta.motivo_cancelacion || 'No especificado', margin, leftY, { width: leftWidth });
     leftY += 20;
 
     const qrSize = 80;
@@ -147,7 +136,7 @@ export async function generarFacturaPdf(venta: Venta, baseUrl: string): Promise<
     doc.moveTo(margin, y).lineTo(margin + contentWidth, y).strokeColor(COLORS.border).lineWidth(1).stroke();
     y += 20;
 
-    // ---------- Tabla de productos ----------
+    // ---------- Tabla de productos devueltos ----------
     const colX = {
       producto: margin,
       cantidad: margin + contentWidth - 260,
@@ -159,7 +148,7 @@ export async function generarFacturaPdf(venta: Venta, baseUrl: string): Promise<
     const drawTableHeader = (headerY: number) => {
       doc.rect(margin, headerY, contentWidth, rowHeight).fill(COLORS.primaryDark);
       doc.fillColor(COLORS.white).font('Helvetica-Bold').fontSize(9.5);
-      doc.text('PRODUCTO', colX.producto + 12, headerY + 7);
+      doc.text('PRODUCTO DEVUELTO', colX.producto + 12, headerY + 7);
       doc.text('CANT.', colX.cantidad, headerY + 7, { width: 60, align: 'right' });
       doc.text('PRECIO UNIT.', colX.precio, headerY + 7, { width: 80, align: 'right' });
       doc.text('SUBTOTAL', colX.subtotal, headerY + 7, { width: 90 - 12, align: 'right' });
@@ -220,8 +209,8 @@ export async function generarFacturaPdf(venta: Venta, baseUrl: string): Promise<
     doc.moveTo(totalsLabelX, y).lineTo(margin + contentWidth, y).strokeColor(COLORS.textPrimary).lineWidth(1).stroke();
     y += 10;
 
-    doc.font('Helvetica-Bold').fontSize(13).fillColor(COLORS.textPrimary);
-    doc.text('TOTAL FACTURA', totalsLabelX, y, { width: totalsWidth - 100 });
+    doc.font('Helvetica-Bold').fontSize(13).fillColor(COLORS.danger);
+    doc.text('TOTAL ANULADO', totalsLabelX, y, { width: totalsWidth - 100 });
     doc.text(money(total), totalsValueX, y, { width: 100, align: 'right' });
 
     // ---------- Pie de página (todas las páginas) ----------
@@ -233,7 +222,7 @@ export async function generarFacturaPdf(venta: Venta, baseUrl: string): Promise<
       doc.moveTo(margin, bottomY).lineTo(pageWidth - margin, bottomY)
         .strokeColor(COLORS.border).lineWidth(0.5).stroke();
       doc.font('Helvetica').fontSize(8.5).fillColor(COLORS.textSecondary)
-        .text('Gracias por su compra en VEZZI', margin, bottomY + 8, { width: contentWidth, align: 'center', lineBreak: false });
+        .text('Nota de crédito generada por VEZZI', margin, bottomY + 8, { width: contentWidth, align: 'center', lineBreak: false });
       doc.fontSize(7.5).fillColor('#94A3B8')
         .text(
           `Generado el ${new Date().toLocaleString('es-CO')}  ·  Página ${i - range.start + 1} de ${totalPages}`,

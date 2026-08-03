@@ -50,6 +50,31 @@
     filter: brightness(0.9);
 }
 
+.btn-exportar {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 39px;
+    padding: 0 16px;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--success);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-exportar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-exportar:hover:not(:disabled) {
+    filter: brightness(1.1);
+}
+
 .tabla {
     width: 100%;
     height: auto;
@@ -272,14 +297,15 @@ td {
     margin-top: 16px;
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
 }
 
-.btn-factura {
+.btn-factura,
+.btn-cancelar,
+.btn-nota-credito {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--primary);
-    color: white;
     border: none;
     border-radius: var(--radius);
     padding: 10px 16px;
@@ -288,11 +314,30 @@ td {
     cursor: pointer;
 }
 
-.btn-factura:disabled {
+.btn-factura {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-cancelar {
+    background: #FEF2F2;
+    color: #DC2626;
+}
+
+.btn-nota-credito {
+    background: #DC2626;
+    color: white;
+}
+
+.btn-factura:disabled,
+.btn-cancelar:disabled,
+.btn-nota-credito:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.btn-factura:hover:not(:disabled) {
+.btn-factura:hover:not(:disabled),
+.btn-cancelar:hover:not(:disabled),
+.btn-nota-credito:hover:not(:disabled) {
     filter: brightness(1.1);
 }

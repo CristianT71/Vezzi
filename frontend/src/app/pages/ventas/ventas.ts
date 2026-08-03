@@ -87,4 +87,76 @@ export class Ventas {
       },
     });
   }
+
+  exportandoExcel: boolean = false;
+
+  exportarExcel() {
+    this.exportandoExcel = true;
+    this.VentasService.exportarExcel(this.filtroEstado, this.termino).subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reporte-ventas-${new Date().toISOString().slice(0, 10)}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.exportandoExcel = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al exportar a Excel');
+        this.exportandoExcel = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  cancelandoVenta: boolean = false;
+
+  cancelarVenta(venta: any) {
+    const motivo = prompt('Motivo de la cancelación/devolución:');
+    if (motivo === null) return;
+    if (!confirm(`¿Cancelar la venta ${venta.numero_venta}? Esto repondrá el stock de los productos.`)) return;
+
+    this.cancelandoVenta = true;
+    this.VentasService.cancelarVenta(venta.id, motivo).subscribe({
+      next: (ventaActualizada) => {
+        this.detalleVenta = ventaActualizada;
+        this.cancelandoVenta = false;
+        this.cargarVentas();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        alert(err?.error?.message || 'Error al cancelar la venta');
+        this.cancelandoVenta = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  descargandoNotaCredito: boolean = false;
+
+  descargarNotaCredito(venta: any) {
+    this.descargandoNotaCredito = true;
+    this.VentasService.descargarNotaCredito(venta.id).subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `nota-credito-${venta.numero_venta}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.descargandoNotaCredito = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al descargar la nota de crédito');
+        this.descargandoNotaCredito = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
 }

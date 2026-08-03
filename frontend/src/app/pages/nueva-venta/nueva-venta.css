@@ -271,6 +271,10 @@
     transition: all 0.2s;
 }
 
+.btn-cobrar.credito {
+    background: #D97706;
+}
+
 .btn-cobrar:hover:not(:disabled) {
     filter: brightness(0.9);
 }
@@ -278,6 +282,45 @@
 .btn-cobrar:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.metodo-pago-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.metodo-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 8px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.metodo-btn.active {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--white);
+}
+
+.metodo-btn.credito.active {
+    background: #D97706;
+    border-color: #D97706;
+}
+
+.aviso-credito {
+    font-size: 12px;
+    color: #D97706;
+    margin: 8px 0 0;
 }
 
 .total-productos {

@@ -1,14 +1,19 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { Venta } from './entities/venta.entity';
 import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { Producto } from 'src/producto/entities/producto.entity';
+import { HistorialStock } from 'src/historial-stock/entities/historial-stock.entity';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
 import { PaginacionDto } from 'src/common/dto/paginacion.dto';
 import { DetalleVenta } from 'src/detalle-venta/entities/detalle-venta.entity';
 import { generarFacturaPdf } from './factura-pdf';
+import { generarNotaCreditoPdf } from './nota-credito-pdf';
+import { FacturaEmailService } from './factura-email.service';
+import { generarReporteExcel } from './venta-excel';
 
 @Injectable()
 export class VentaService {
@@ -21,6 +26,11 @@ export class VentaService {
     private readonly usuarioRepository: Repository<Usuario>,
     @InjectRepository(DetalleVenta)
     private readonly detalleVentaRepository: Repository<DetalleVenta>,
+    @InjectRepository(Producto)
+    private readonly productoRepository: Repository<Producto>,
+    @InjectRepository(HistorialStock)
+    private readonly historialStockRepository: Repository<HistorialStock>,
+    private readonly facturaEmailService: FacturaEmailService,
   ) {}
 
   async create(createVentaDto: CreateVentaDto) {
@@ -38,6 +48,7 @@ export class VentaService {
       const ultimaVenta = await this.ventaRepository.findOne({
         where: {},
         order: { id: 'DESC' },
+        withDeleted: true,
       });
 
       const siguienteNumero = ultimaVenta
@@ -52,7 +63,7 @@ export class VentaService {
         fecha_venta: createVentaDto.fecha_venta ? new Date(createVentaDto.fecha_venta) : new Date(),
         impuesto: createVentaDto.impuesto,
         total: createVentaDto.total || 0,
-        estado: createVentaDto.estado ?? 'EMITIDA',
+        estado: createVentaDto.estado ?? 'PAGADA',
         activo: createVentaDto.activo ?? true,
       } as any);
 
@@ -98,6 +109,70 @@ export class VentaService {
   async generarFacturaPdf(id: number, baseUrl: string): Promise<Buffer> {
     const venta = await this.findOne(id);
     return generarFacturaPdf(venta, baseUrl);
+  }
+
+  async generarReporteExcel(filtros: { estado?: string; search?: string }): Promise<Buffer> {
+    const query = this.ventaRepository
+      .createQueryBuilder('venta')
+      .leftJoinAndSelect('venta.cliente', 'cliente')
+      .leftJoinAndSelect('venta.usuario', 'usuario')
+      .leftJoinAndSelect('venta.detalles_venta', 'detalle')
+      .leftJoinAndSelect('detalle.producto', 'producto')
+      .where('venta.deletedAt IS NULL')
+      .orderBy('venta.id', 'DESC');
+
+    if (filtros.estado) {
+      query.andWhere('venta.estado = :estado', { estado: filtros.estado });
+    }
+    if (filtros.search) {
+      query.andWhere('(venta.numero_venta LIKE :search OR cliente.nombre LIKE :search)', {
+        search: `%${filtros.search}%`,
+      });
+    }
+
+    const ventas = await query.getMany();
+    return generarReporteExcel(ventas);
+  }
+
+  async cancelarVenta(id: number, motivo?: string) {
+    const venta = await this.findOne(id);
+
+    if (venta.estado === 'CANCELADA') {
+      throw new BadRequestException('La venta ya está cancelada');
+    }
+
+    for (const detalle of venta.detalles_venta ?? []) {
+      const producto = detalle.producto;
+      if (!producto) continue;
+
+      const stockAnterior = producto.stock;
+      producto.stock = stockAnterior + detalle.cantidad;
+      await this.productoRepository.save(producto);
+
+      await this.historialStockRepository.save({
+        producto,
+        tipo_movimiento: 'entrada_devolucion',
+        cantidad: detalle.cantidad,
+        stock_anterior: stockAnterior,
+        stock_nuevo: producto.stock,
+        observacion: `Devolución venta ${venta.numero_venta}`,
+      } as any);
+    }
+
+    venta.estado = 'CANCELADA';
+    venta.motivo_cancelacion = motivo;
+    venta.fecha_cancelacion = new Date();
+    await this.ventaRepository.save(venta);
+
+    return venta;
+  }
+
+  async generarNotaCreditoPdf(id: number, baseUrl: string): Promise<Buffer> {
+    const venta = await this.findOne(id);
+    if (venta.estado !== 'CANCELADA') {
+      throw new BadRequestException('Solo se puede generar la nota de crédito de una venta cancelada');
+    }
+    return generarNotaCreditoPdf(venta, baseUrl);
   }
 
   async update(id: number, updateVentaDto: UpdateVentaDto) {
@@ -161,10 +236,26 @@ export class VentaService {
     });
 
     const total = detalles.reduce((sum, det) => sum + Number(det.subtotal), 0);
+    const totalFormateado = total.toFixed(2);
 
-    await this.ventaRepository.update(id, { total: total.toFixed(2) });
+    await this.ventaRepository.update(id, { total: totalFormateado });
 
-    return total.toFixed(2);
+    const venta = await this.ventaRepository.findOneBy({ id });
+    if (venta?.estado === 'PENDIENTE' && venta.cliente) {
+      const nuevaDeuda = (Number(venta.cliente.saldo_deuda) + total).toFixed(2);
+      await this.clienteRepository.update(venta.cliente.id, { saldo_deuda: nuevaDeuda });
+    }
+
+    this.enviarFacturaPorCorreoSilencioso(id);
+
+    return totalFormateado;
+  }
+
+  private enviarFacturaPorCorreoSilencioso(id: number) {
+    const baseUrl = process.env.APP_BASE_URL || 'http://localhost:3000';
+    this.findOne(id)
+      .then((venta) => generarFacturaPdf(venta, baseUrl).then((buffer) => this.facturaEmailService.enviarFactura(venta, buffer)))
+      .catch((error) => console.error('Error generando/enviando factura por correo:', error));
   }
 
 
