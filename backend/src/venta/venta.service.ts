@@ -218,7 +218,7 @@ export class VentaService {
   async remove(id: number) {
     await this.findOne(id);
     await this.ventaRepository.softDelete(id);
-    return 'Venta eliminada exitosamente';
+    return { message: 'Venta eliminada exitosamente' };
   }
 
   async restaurar(id: number) {
@@ -227,7 +227,7 @@ export class VentaService {
       throw new NotFoundException(`Venta con id ${id} no existe`);
     }
     await this.ventaRepository.restore(id);
-    return 'Venta restaurada exitosamente';
+    return { message: 'Venta restaurada exitosamente' };
   }
 
   async calcularTotal(id: number) {

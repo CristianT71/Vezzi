@@ -146,7 +146,7 @@ export class PagoService {
   async remove(id: number) {
     await this.findOne(id);
     await this.pagoRepository.softDelete(id);
-    return 'Pago eliminado exitosamente';
+    return { message: 'Pago eliminado exitosamente' };
   }
 
   async restaurar(id: number) {
@@ -155,6 +155,6 @@ export class PagoService {
       throw new NotFoundException(`Pago con id ${id} no existe`);
     }
     await this.pagoRepository.restore(id);
-    return 'Pago restaurado exitosamente';
+    return { message: 'Pago restaurado exitosamente' };
   }
 }

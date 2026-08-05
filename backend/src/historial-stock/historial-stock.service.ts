@@ -104,7 +104,7 @@ export class HistorialStockService {
   async remove(id: number) {
     await this.findOne(id);
     await this.historialRepository.softDelete(id);
-    return 'HistorialStock eliminado exitosamente';
+    return { message: 'HistorialStock eliminado exitosamente' };
   }
 
   async restaurar(id: number) {
@@ -113,6 +113,6 @@ export class HistorialStockService {
       throw new NotFoundException(`HistorialStock con id ${id} no existe`);
     }
     await this.historialRepository.restore(id);
-    return 'HistorialStock restaurado exitosamente';
+    return { message: 'HistorialStock restaurado exitosamente' };
   }
 }

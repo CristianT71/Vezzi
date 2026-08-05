@@ -121,7 +121,7 @@ export class DetalleVentaService {
   async remove(id: number) {
     await this.findOne(id);
     await this.detalleRepo.softDelete(id);
-    return 'DetalleVenta eliminado exitosamente';
+    return { message: 'DetalleVenta eliminado exitosamente' };
   }
 
   async restaurar(id: number) {
@@ -130,6 +130,6 @@ export class DetalleVentaService {
       throw new NotFoundException(`DetalleVenta con id ${id} no existe`);
     }
     await this.detalleRepo.restore(id);
-    return 'DetalleVenta restaurado exitosamente';
+    return { message: 'DetalleVenta restaurado exitosamente' };
   }
 }
