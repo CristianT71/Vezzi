@@ -96,8 +96,8 @@ export class ProductoService {
   }
 
   async remove(id: number) {
-    const producto = await this.findOne(id);
-    await this.productoRepository.softDelete(producto);
+    await this.findOne(id);
+    await this.productoRepository.softDelete(id);
     return 'Producto eliminado exitosamente';
   }
 

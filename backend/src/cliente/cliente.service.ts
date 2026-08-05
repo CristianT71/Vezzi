@@ -65,8 +65,8 @@ export class ClienteService {
   }
 
   async remove(id: number) {
-    const cliente = await this.findOne(id);
-    await this.clienteRepository.softDelete(cliente);
+    await this.findOne(id);
+    await this.clienteRepository.softDelete(id);
     return 'Cliente eliminado exitosamente';
   }
 

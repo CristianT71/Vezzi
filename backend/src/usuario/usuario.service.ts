@@ -102,8 +102,8 @@ export class UsuarioService {
   }
 
   async remove(id: string) {
-    const usuario = await this.findOne(id);
-    await this.usuarioRepository.softDelete(usuario);
+    await this.findOne(id);
+    await this.usuarioRepository.softDelete(id);
     return 'Usuario eliminado exitosamente'
   }
   
