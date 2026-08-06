@@ -65,6 +65,27 @@ DB_NAME=vezzi
 | `npm run build`        | Compilar                                 |
 | `npm run lint`         | Linter                                   |
 
+## Despliegue a producción
+
+El backend + base de datos se despliegan en **Render** y el frontend en **Netlify**.
+
+### Backend y base de datos (Render)
+
+1. En Render: **New → Blueprint**, selecciona este repositorio (rama `main`). Detecta `render.yaml` en la raíz y crea el servicio web `vezzi-backend` y la base de datos `vezzi-db` automáticamente.
+2. Completa las variables marcadas como secretas en el Blueprint:
+   - `JWT_SECRET`: cadena aleatoria larga (ej. `openssl rand -hex 32`).
+   - `EMAIL_USER` / `EMAIL_APP_PASSWORD`: credenciales de Gmail para el envío de facturas y recordatorios de deuda.
+   - `ALLOWED_ORIGINS`: URL del frontend en Netlify (se completa después, ver abajo).
+   - `APP_BASE_URL`: URL pública del propio backend en Render (ej. `https://vezzi-backend.onrender.com`).
+3. Al desplegar, la build corre `npm install && npm run build && npm run migration:run`, así que las migraciones se aplican solas.
+4. Base de datos nueva y sin datos: llama una vez a `POST /api/seed` (autenticado como admin) para crear los roles y el usuario admin inicial — ver [Scripts del backend](#scripts-del-backend).
+
+### Frontend (Netlify)
+
+1. En Netlify: **Add new site → Import an existing project**, selecciona el repo (rama `main`). Detecta `netlify.toml` (base `frontend`, build `npm run build`, publish `dist/frontend/browser`).
+2. La URL del backend para producción está fija en `frontend/src/environments/environment.prod.ts` (usado solo en el build de producción vía `fileReplacements` de `angular.json`) — si cambia el nombre del servicio en Render, hay que actualizar ese archivo.
+3. Una vez desplegado, vuelve a Render → `vezzi-backend` → Environment y pon `ALLOWED_ORIGINS` con la URL exacta de Netlify (sin `/` al final) para que el CORS deje pasar las peticiones del frontend.
+
 ## Estructura
 
 ```

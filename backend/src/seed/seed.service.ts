@@ -31,7 +31,8 @@ export class SeedService {
     const adminExiste = await this.usuarioRepository.findOneBy({ nombre_usuario: 'admin' });
 
     if (!adminExiste && adminRol) {
-      const passwordHash = await bcrypt.hash('admin123', 10);
+      const passwordInicial = process.env.ADMIN_DEFAULT_PASSWORD || 'admin123';
+      const passwordHash = await bcrypt.hash(passwordInicial, 10);
       await this.usuarioRepository.save({
         nombre_usuario: 'admin',
         password: passwordHash,
