@@ -3,6 +3,7 @@ import { LucideAngularModule } from 'lucide-angular';
 import { NavigationEnd, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +16,7 @@ export class Header implements OnDestroy {
   headerInfo: string = '';
   private sub?: Subscription;
 
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private router: Router, private http: HttpClient) {
     this.router.events.subscribe((event) => {

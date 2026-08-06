@@ -96,9 +96,9 @@ export class ProductoService {
   }
 
   async remove(id: number) {
-    const producto = await this.findOne(id);
-    await this.productoRepository.softDelete(producto);
-    return 'Producto eliminado exitosamente';
+    await this.findOne(id);
+    await this.productoRepository.softDelete(id);
+    return { message: 'Producto eliminado exitosamente' };
   }
 
   async restaurar(id: number) {
@@ -107,6 +107,6 @@ export class ProductoService {
       throw new NotFoundException(`Producto con id ${id} no existe`);
     }
     await this.productoRepository.restore(id);
-    return 'Producto restaurado exitosamente'
+    return { message: 'Producto restaurado exitosamente' };
   }
 }

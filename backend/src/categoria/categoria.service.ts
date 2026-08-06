@@ -75,7 +75,7 @@ export class CategoriaService {
   async remove(id: number) {
     await this.findOne(id);
     await this.categoriaRepository.softDelete(id);
-    return 'Categoria eliminada exitosamente';
+    return { message: 'Categoria eliminada exitosamente' };
   }
 
   async restaurar(id: number) {
@@ -84,6 +84,6 @@ export class CategoriaService {
       throw new NotFoundException(`Categoria con id ${id} no existe`);
     }
     await this.categoriaRepository.restore(id);
-    return 'Categoria restaurado exitosamente';
+    return { message: 'Categoria restaurada exitosamente' };
 }
 }

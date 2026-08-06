@@ -4,6 +4,7 @@ import { LucideAngularModule } from 'lucide-angular';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ClientesService } from '../../services/clientes';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-clientes',
@@ -118,7 +119,7 @@ export class Clientes implements OnInit {
       metodo_pago: this.pagoData.metodo_pago,
       referencia: this.pagoData.referencia || undefined,
     };
-    this.http.post('http://localhost:3000/api/pago', body).subscribe({
+    this.http.post(`${environment.apiUrl}/pago`, body).subscribe({
       next: () => { this.cerrarModalPago(); this.cargarClientes(); alert('Pago registrado'); },
       error: (err) => { console.error(err); alert('Error al registrar pago'); },
     });

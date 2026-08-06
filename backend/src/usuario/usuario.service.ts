@@ -102,9 +102,9 @@ export class UsuarioService {
   }
 
   async remove(id: string) {
-    const usuario = await this.findOne(id);
-    await this.usuarioRepository.softDelete(usuario);
-    return 'Usuario eliminado exitosamente'
+    await this.findOne(id);
+    await this.usuarioRepository.softDelete(id);
+    return { message: 'Usuario eliminado exitosamente' };
   }
   
   async restaurar(id: string) {
@@ -113,6 +113,6 @@ export class UsuarioService {
       throw new NotFoundException(`Usuario con id ${id} no existe`);
     }
     await this.usuarioRepository.restore(id);
-    return 'Usuario restaurado exitosamente';
+    return { message: 'Usuario restaurado exitosamente' };
 }
 }

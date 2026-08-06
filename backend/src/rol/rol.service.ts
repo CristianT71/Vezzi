@@ -73,7 +73,7 @@ export class RolService {
   async remove(id: string) {
     await this.findOne(id)
     await this.rolRepository.softDelete(id)
-    return 'Rol eliminado con exito'
+    return { message: 'Rol eliminado con exito' };
   }
 
   async restaurar(id: string) {
@@ -82,6 +82,6 @@ export class RolService {
       throw new NotFoundException(`Rol con id ${id} no existe`)
     }
     await this.rolRepository.restore(id)
-    return 'Rol restaurado exitosamente'
+    return { message: 'Rol restaurado exitosamente' };
   }
 }

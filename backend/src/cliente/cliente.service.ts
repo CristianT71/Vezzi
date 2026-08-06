@@ -65,9 +65,9 @@ export class ClienteService {
   }
 
   async remove(id: number) {
-    const cliente = await this.findOne(id);
-    await this.clienteRepository.softDelete(cliente);
-    return 'Cliente eliminado exitosamente';
+    await this.findOne(id);
+    await this.clienteRepository.softDelete(id);
+    return { message: 'Cliente eliminado exitosamente' };
   }
 
   async restaurar(id: number) {
@@ -76,7 +76,7 @@ export class ClienteService {
       throw new NotFoundException(`Cliente con id ${id} no existe`);
     }
     await this.clienteRepository.restore(id);
-    return 'Cliente restaurado exitosamente';
+    return { message: 'Cliente restaurado exitosamente' };
   }
 
   async countClientesNuevos(): Promise<number> {

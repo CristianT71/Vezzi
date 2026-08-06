@@ -9,8 +9,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
+  const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+    : ['http://localhost:4200', 'http://localhost:3000'];
   app.enableCors({
-    origin: ['http://localhost:4200', 'http://localhost:3000'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   })
