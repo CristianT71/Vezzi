@@ -1,0 +1,47 @@
+databases:
+  - name: vezzi-db
+    plan: free
+    databaseName: vezzi
+    user: vezzi
+
+services:
+  - type: web
+    name: vezzi-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build && npm run migration:run
+    startCommand: npm run start:prod
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: vezzi-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: vezzi-db
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: vezzi-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: vezzi-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: vezzi-db
+          property: database
+      - key: DB_SSL
+        value: 'true'
+      - key: JWT_SECRET
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: APP_BASE_URL
+        sync: false
