@@ -4,6 +4,7 @@ import { LucideAngularModule } from 'lucide-angular';
 import { Productos as ProductosService } from '../../services/productos';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   imports: [CommonModule, LucideAngularModule, FormsModule],
@@ -39,14 +40,14 @@ export class Productos implements OnInit {
         this.cdr.detectChanges();
       },
     });
-    this.http.get<any>('http://localhost:3000/api/categoria?limit=50').subscribe(res => {
+    this.http.get<any>(`${environment.apiUrl}/categoria?limit=50`).subscribe(res => {
       this.categorias = res.data || [];
     });
   }
 
   abrirModal() {
     this.mostrarModal = true;
-    this.http.get<any>('http://localhost:3000/api/categoria?limit=50').subscribe(res => {
+    this.http.get<any>(`${environment.apiUrl}/categoria?limit=50`).subscribe(res => {
       this.categorias = res.data || [];
     });
   }
@@ -98,7 +99,7 @@ export class Productos implements OnInit {
       id_categoria: producto.categoria?.id || '',
     };
     this.mostrarModalEditar = true;
-    this.http.get<any>('http://localhost:3000/api/categoria?limit=50').subscribe(res => {
+    this.http.get<any>(`${environment.apiUrl}/categoria?limit=50`).subscribe(res => {
       this.categorias = res.data || [];
     });
   }

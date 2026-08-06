@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-nueva-venta',
@@ -26,12 +27,12 @@ export class NuevaVenta implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.http.get<any>('http://localhost:3000/api/producto?limit=100').subscribe(res => {
+    this.http.get<any>(`${environment.apiUrl}/producto?limit=100`).subscribe(res => {
       this.productos = res.data || [];
       this.cdr.detectChanges();
     });
 
-    this.http.get<any>('http://localhost:3000/api/cliente?limit=100').subscribe(res => { 
+    this.http.get<any>(`${environment.apiUrl}/cliente?limit=100`).subscribe(res => {
       this.clientes = res.data || [];
       this.cdr.detectChanges();
     });
@@ -39,7 +40,7 @@ export class NuevaVenta implements OnInit {
   }
 
   buscarProductos() {
-    this.http.get<any>(`http://localhost:3000/api/producto?limit=100&search=${this.termino}`)
+    this.http.get<any>(`${environment.apiUrl}/producto?limit=100&search=${this.termino}`)
       .subscribe(res => this.productos = res.data || []);
   }
 
@@ -69,7 +70,7 @@ export class NuevaVenta implements OnInit {
 
   cobrar() {
     const id_usuario = JSON.parse(localStorage.getItem('usuario') || '{}').id;
-    this.http.post<any>('http://localhost:3000/api/venta', {
+    this.http.post<any>(`${environment.apiUrl}/venta`, {
       id_cliente: Number(this.clienteSeleccionado),
       id_usuario,
       impuesto: Number(this.iva.toFixed(2)),
@@ -79,7 +80,7 @@ export class NuevaVenta implements OnInit {
       next: (venta) => {
         let pendientes = this.carrito.length;
         for (const item of this.carrito) {
-          this.http.post('http://localhost:3000/api/detalle-venta', {
+          this.http.post(`${environment.apiUrl}/detalle-venta`, {
             id_venta: venta.id,
             id_producto: item.id,
             cantidad: item.cantidad,
@@ -92,7 +93,7 @@ export class NuevaVenta implements OnInit {
             next: () => {
               pendientes--;
               if (pendientes === 0) {
-                this.http.post(`http://localhost:3000/api/venta/${venta.id}/calcular-total`, {}).subscribe(() => {
+                this.http.post(`${environment.apiUrl}/venta/${venta.id}/calcular-total`, {}).subscribe(() => {
                   const mensaje = this.metodoPago === 'CREDITO'
                     ? `Venta ${venta.numero_venta} registrada a crédito. Se sumó al saldo pendiente del cliente.`
                     : `Venta ${venta.numero_venta} creada exitosamente`;
