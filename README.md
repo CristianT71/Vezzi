@@ -74,11 +74,13 @@ El backend + base de datos se despliegan en **Render** y el frontend en **Netlif
 1. En Render: **New → Blueprint**, selecciona este repositorio (rama `main`). Detecta `render.yaml` en la raíz y crea el servicio web `vezzi-backend` y la base de datos `vezzi-db` automáticamente.
 2. Completa las variables marcadas como secretas en el Blueprint:
    - `JWT_SECRET`: cadena aleatoria larga (ej. `openssl rand -hex 32`).
-   - `EMAIL_USER` / `EMAIL_APP_PASSWORD`: credenciales de Gmail para el envío de facturas y recordatorios de deuda.
+   - `SENDGRID_API_KEY` / `EMAIL_FROM`: credenciales de SendGrid para el envío de facturas y recordatorios de deuda (Gmail por SMTP no funciona en Render, ver nota abajo).
    - `ALLOWED_ORIGINS`: URL del frontend en Netlify (se completa después, ver abajo).
    - `APP_BASE_URL`: URL pública del propio backend en Render (ej. `https://vezzi-backend.onrender.com`).
 3. Al desplegar, la build corre `npm install && npm run build && npm run migration:run`, así que las migraciones se aplican solas.
 4. Base de datos nueva y sin datos: llama una vez a `POST /api/seed` (autenticado como admin) para crear los roles y el usuario admin inicial — ver [Scripts del backend](#scripts-del-backend).
+
+> **Nota sobre el correo**: Render bloquea los puertos SMTP salientes (25/465/587) en su plan gratuito, así que el envío de correos por Gmail/SMTP nunca conecta desde producción (aunque funcione en local). Por eso el envío usa la API HTTPS de [SendGrid](https://sendgrid.com) en vez de SMTP — crea una cuenta gratis (100 correos/día), verifica un remitente individual (Settings → Sender Authentication → Single Sender) y genera una API key (Settings → API Keys) para `SENDGRID_API_KEY`.
 
 ### Frontend (Netlify)
 
