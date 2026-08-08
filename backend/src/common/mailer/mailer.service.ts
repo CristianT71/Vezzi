@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import * as sgMail from '@sendgrid/mail';
 
 export interface EnviarCorreoOptions {
   to: string;
@@ -11,27 +11,31 @@ export interface EnviarCorreoOptions {
 @Injectable()
 export class MailerService {
   private readonly logger = new Logger(MailerService.name);
-  private transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_APP_PASSWORD,
-    },
-  });
+
+  constructor() {
+    if (process.env.SENDGRID_API_KEY) {
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    }
+  }
 
   async enviarCorreo(options: EnviarCorreoOptions): Promise<boolean> {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
-      this.logger.warn('EMAIL_USER/EMAIL_APP_PASSWORD no configurados; no se envió el correo.');
+    if (!process.env.SENDGRID_API_KEY || !process.env.EMAIL_FROM) {
+      this.logger.warn('SENDGRID_API_KEY/EMAIL_FROM no configurados; no se envió el correo.');
       return false;
     }
 
     try {
-      await this.transporter.sendMail({
-        from: `"VEZZI" <${process.env.EMAIL_USER}>`,
+      await sgMail.send({
         to: options.to,
+        from: { email: process.env.EMAIL_FROM, name: 'VEZZI' },
         subject: options.subject,
         html: options.html,
-        attachments: options.attachments,
+        attachments: options.attachments?.map((attachment) => ({
+          filename: attachment.filename,
+          content: attachment.content.toString('base64'),
+          type: attachment.contentType,
+          disposition: 'attachment',
+        })),
       });
       this.logger.log(`Correo enviado a ${options.to}: ${options.subject}`);
       return true;

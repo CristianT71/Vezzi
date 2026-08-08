@@ -37,11 +37,13 @@ services:
         value: 'true'
       - key: JWT_SECRET
         sync: false
-      - key: EMAIL_USER
+      - key: SENDGRID_API_KEY
         sync: false
-      - key: EMAIL_APP_PASSWORD
+      - key: EMAIL_FROM
         sync: false
       - key: ALLOWED_ORIGINS
         sync: false
       - key: APP_BASE_URL
+        sync: false
+      - key: ADMIN_DEFAULT_PASSWORD
         sync: false
