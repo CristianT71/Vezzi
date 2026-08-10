@@ -10,7 +10,7 @@ async function bootstrap() {
 
   app.use(helmet());
   const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+    ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim().replace(/\/+$/, ''))
     : ['http://localhost:4200', 'http://localhost:3000'];
   app.enableCors({
     origin: allowedOrigins,
