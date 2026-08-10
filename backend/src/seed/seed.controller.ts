@@ -1,12 +1,12 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { SeedService } from './seed.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { Roles } from 'src/auth/roles.decorator';
 
+// Publico e idempotente a proposito: es el unico mecanismo para crear el
+// primer admin en una base de datos nueva (no hay nadie con sesion todavia
+// para autenticarse). No crea un admin nuevo si ya existe uno, y la
+// contraseña que asigna depende de ADMIN_DEFAULT_PASSWORD -- por eso esa
+// variable debe quedar en un valor real en produccion, no en el default.
 @Controller('seed')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
 

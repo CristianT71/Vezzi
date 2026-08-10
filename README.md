@@ -77,8 +77,9 @@ El backend + base de datos se despliegan en **Render** y el frontend en **Netlif
    - `SENDGRID_API_KEY` / `EMAIL_FROM`: credenciales de SendGrid para el envío de facturas y recordatorios de deuda (Gmail por SMTP no funciona en Render, ver nota abajo).
    - `ALLOWED_ORIGINS`: URL del frontend en Netlify (se completa después, ver abajo).
    - `APP_BASE_URL`: URL pública del propio backend en Render (ej. `https://vezzi-backend.onrender.com`).
+   - `ADMIN_DEFAULT_PASSWORD`: contraseña real para el usuario admin que crea el seed (ver punto 4) — no la dejes en el valor de ejemplo.
 3. Al desplegar, la build corre `npm install && npm run build && npm run migration:run`, así que las migraciones se aplican solas.
-4. Base de datos nueva y sin datos: llama una vez a `POST /api/seed` (autenticado como admin) para crear los roles y el usuario admin inicial — ver [Scripts del backend](#scripts-del-backend).
+4. Base de datos nueva y sin datos: llama una vez a `POST /api/seed` para crear los roles y el usuario admin inicial (con la contraseña de `ADMIN_DEFAULT_PASSWORD`) — ver [Scripts del backend](#scripts-del-backend). El endpoint es público a propósito: en una base de datos nueva no existe todavía ningún admin con el que autenticarse, y es idempotente (no crea un segundo admin si ya existe uno).
 
 > **Nota sobre el correo**: Render bloquea los puertos SMTP salientes (25/465/587) en su plan gratuito, así que el envío de correos por Gmail/SMTP nunca conecta desde producción (aunque funcione en local). Por eso el envío usa la API HTTPS de [SendGrid](https://sendgrid.com) en vez de SMTP — crea una cuenta gratis (100 correos/día), verifica un remitente individual (Settings → Sender Authentication → Single Sender) y genera una API key (Settings → API Keys) para `SENDGRID_API_KEY`.
 
