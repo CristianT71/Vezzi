@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rol } from 'src/rol/entities/rol.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 import * as bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class SeedService {
+  private readonly logger = new Logger(SeedService.name);
+
   constructor(
     @InjectRepository(Rol)
     private readonly rolRepository: Repository<Rol>,
@@ -31,7 +34,13 @@ export class SeedService {
     const adminExiste = await this.usuarioRepository.findOneBy({ nombre_usuario: 'admin' });
 
     if (!adminExiste && adminRol) {
-      const passwordInicial = process.env.ADMIN_DEFAULT_PASSWORD || 'admin123';
+      let passwordInicial = process.env.ADMIN_DEFAULT_PASSWORD;
+      if (!passwordInicial) {
+        passwordInicial = randomBytes(9).toString('base64url');
+        this.logger.warn(
+          `ADMIN_DEFAULT_PASSWORD no definido: se genero una contraseña aleatoria para el usuario 'admin': ${passwordInicial} (cambiala apenas inicies sesion)`,
+        );
+      }
       const passwordHash = await bcrypt.hash(passwordInicial, 10);
       await this.usuarioRepository.save({
         nombre_usuario: 'admin',
