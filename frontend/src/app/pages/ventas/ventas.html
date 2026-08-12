@@ -94,6 +94,10 @@
                 <lucide-icon name="download" size="15"></lucide-icon>
                 {{ descargandoFactura ? 'Generando...' : 'Descargar factura (PDF)' }}
             </button>
+            <button type="button" class="btn-recibo" (click)="imprimirRecibo(detalleVenta)">
+                <lucide-icon name="printer" size="15"></lucide-icon>
+                Imprimir recibo
+            </button>
             @if (detalleVenta.estado !== 'CANCELADA') {
               <button type="button" class="btn-cancelar" (click)="cancelarVenta(detalleVenta)" [disabled]="cancelandoVenta">
                   <lucide-icon name="undo-2" size="15"></lucide-icon>
