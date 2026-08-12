@@ -301,6 +301,7 @@ td {
 }
 
 .btn-factura,
+.btn-recibo,
 .btn-cancelar,
 .btn-nota-credito {
     display: flex;
@@ -319,6 +320,11 @@ td {
     color: white;
 }
 
+.btn-recibo {
+    background: #F1F5F9;
+    color: #334155;
+}
+
 .btn-cancelar {
     background: #FEF2F2;
     color: #DC2626;
@@ -330,6 +336,7 @@ td {
 }
 
 .btn-factura:disabled,
+.btn-recibo:disabled,
 .btn-cancelar:disabled,
 .btn-nota-credito:disabled {
     opacity: 0.6;
@@ -337,6 +344,7 @@ td {
 }
 
 .btn-factura:hover:not(:disabled),
+.btn-recibo:hover:not(:disabled),
 .btn-cancelar:hover:not(:disabled),
 .btn-nota-credito:hover:not(:disabled) {
     filter: brightness(1.1);

@@ -136,6 +136,64 @@ export class Ventas {
     });
   }
 
+  imprimirRecibo(venta: any) {
+    const moneda = (valor: any) => Number(valor || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const filas = (venta.detalles_venta || []).map((det: any) => `
+      <tr>
+        <td>${det.cantidad}x ${det.producto?.nombre ?? ''}</td>
+        <td class="right">$${moneda(det.subtotal)}</td>
+      </tr>
+    `).join('');
+
+    const html = `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Recibo ${venta.numero_venta}</title>
+<style>
+  @page { size: 58mm auto; margin: 0; }
+  body { font-family: 'Courier New', monospace; font-size: 11px; width: 58mm; margin: 0; padding: 6px; color: #000; }
+  h1 { font-size: 13px; text-align: center; margin: 0 0 2px; letter-spacing: 1px; }
+  .sub { text-align: center; font-size: 10px; margin-bottom: 6px; }
+  .linea { border-top: 1px dashed #000; margin: 6px 0; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 2px 0; vertical-align: top; }
+  .right { text-align: right; white-space: nowrap; }
+  .total td { font-weight: bold; font-size: 12px; }
+  .footer { text-align: center; margin-top: 8px; font-size: 10px; }
+</style>
+</head>
+<body>
+  <h1>VEZZI</h1>
+  <div class="sub">Tienda Local</div>
+  <div class="linea"></div>
+  <div>Venta: ${venta.numero_venta}</div>
+  <div>Fecha: ${new Date(venta.fecha_venta).toLocaleString('es-CO')}</div>
+  <div>Cliente: ${venta.cliente?.nombre || 'Consumidor final'}</div>
+  <div class="linea"></div>
+  <table>${filas}</table>
+  <div class="linea"></div>
+  <table>
+    <tr><td>Impuesto</td><td class="right">$${moneda(venta.impuesto)}</td></tr>
+    <tr class="total"><td>TOTAL</td><td class="right">$${moneda(venta.total)}</td></tr>
+  </table>
+  <div class="footer">¡Gracias por su compra!</div>
+</body>
+</html>`;
+
+    const ventana = window.open('', '_blank', 'width=320,height=600');
+    if (!ventana) {
+      alert('Habilita las ventanas emergentes para imprimir el recibo');
+      return;
+    }
+    ventana.document.write(html);
+    ventana.document.close();
+    ventana.onload = () => {
+      ventana.focus();
+      ventana.print();
+    };
+  }
+
   descargandoNotaCredito: boolean = false;
 
   descargarNotaCredito(venta: any) {
