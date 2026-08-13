@@ -136,11 +136,20 @@ export class Ventas {
     });
   }
 
+  private escapeHtml(valor: any): string {
+    return String(valor ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   imprimirRecibo(venta: any) {
     const moneda = (valor: any) => Number(valor || 0).toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const filas = (venta.detalles_venta || []).map((det: any) => `
       <tr>
-        <td>${det.cantidad}x ${det.producto?.nombre ?? ''}</td>
+        <td>${det.cantidad}x ${this.escapeHtml(det.producto?.nombre)}</td>
         <td class="right">$${moneda(det.subtotal)}</td>
       </tr>
     `).join('');
@@ -149,7 +158,7 @@ export class Ventas {
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Recibo ${venta.numero_venta}</title>
+<title>Recibo ${this.escapeHtml(venta.numero_venta)}</title>
 <style>
   @page { size: 58mm auto; margin: 0; }
   body { font-family: 'Courier New', monospace; font-size: 11px; width: 58mm; margin: 0; padding: 6px; color: #000; }
@@ -167,9 +176,9 @@ export class Ventas {
   <h1>VEZZI</h1>
   <div class="sub">Tienda Local</div>
   <div class="linea"></div>
-  <div>Venta: ${venta.numero_venta}</div>
-  <div>Fecha: ${new Date(venta.fecha_venta).toLocaleString('es-CO')}</div>
-  <div>Cliente: ${venta.cliente?.nombre || 'Consumidor final'}</div>
+  <div>Venta: ${this.escapeHtml(venta.numero_venta)}</div>
+  <div>Fecha: ${this.escapeHtml(new Date(venta.fecha_venta).toLocaleString('es-CO'))}</div>
+  <div>Cliente: ${this.escapeHtml(venta.cliente?.nombre || 'Consumidor final')}</div>
   <div class="linea"></div>
   <table>${filas}</table>
   <div class="linea"></div>
@@ -188,10 +197,8 @@ export class Ventas {
     }
     ventana.document.write(html);
     ventana.document.close();
-    ventana.onload = () => {
-      ventana.focus();
-      ventana.print();
-    };
+    ventana.focus();
+    ventana.print();
   }
 
   descargandoNotaCredito: boolean = false;
