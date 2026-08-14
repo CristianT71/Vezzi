@@ -19,14 +19,19 @@ export class Clientes implements OnInit {
   mostrarModalEditar: boolean = false;
   nuevoCliente: any = { nombre: '', telefono: '', nit: '', direccion: '', email: '' };
   editarClienteData: any = {};
+  esAdmin: boolean = false;
 
   constructor(
-    private clientesService: ClientesService, 
+    private clientesService: ClientesService,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() { this.cargarClientes(); }
+  ngOnInit() {
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    this.esAdmin = (usuario?.rol?.nombre || '').trim().toLowerCase() === 'admin';
+    this.cargarClientes();
+  }
 
   cargarClientes() {
     this.clientesService.findAll(this.termino).subscribe(res => {
@@ -80,6 +85,26 @@ export class Clientes implements OnInit {
 
   tieneDeuda(cliente: any): boolean {
     return Number(cliente.saldo_deuda || 0) > 0;
+  }
+
+  enviandoRecordatorios: boolean = false;
+
+  enviarRecordatorios() {
+    if (!confirm('¿Enviar recordatorio de deuda por correo a todos los clientes con saldo pendiente?')) return;
+    this.enviandoRecordatorios = true;
+    this.clientesService.enviarRecordatorios().subscribe({
+      next: (res) => {
+        this.enviandoRecordatorios = false;
+        alert(`Recordatorios enviados: ${res.enviados} de ${res.total} clientes con deuda.`);
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.enviandoRecordatorios = false;
+        alert(err?.error?.message || 'Error al enviar los recordatorios');
+        this.cdr.detectChanges();
+      },
+    });
   }
 
   eliminarCliente(cliente: any) {
