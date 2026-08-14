@@ -2,9 +2,17 @@
     <div class="buscador-filtro">
         <lucide-icon name="search" size="15" class="search"></lucide-icon>
         <input type="text" placeholder="Buscar cliente..." [(ngModel)]="termino" (input)="buscar()" name="termino">
-        <button type="button" class="nuevo" (click)="abrirModal()">Nuevo cliente
-            <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
-        </button>
+        <div class="acciones-derecha">
+          @if (esAdmin) {
+            <button type="button" class="btn-recordatorios" (click)="enviarRecordatorios()" [disabled]="enviandoRecordatorios">
+                <lucide-icon name="mail" size="15"></lucide-icon>
+                {{ enviandoRecordatorios ? 'Enviando...' : 'Enviar recordatorios de deuda' }}
+            </button>
+          }
+          <button type="button" class="nuevo" (click)="abrirModal()">Nuevo cliente
+              <lucide-icon name="plus" size="15" class="plus"></lucide-icon>
+          </button>
+        </div>
     </div>
 
     <section class="tabla">
