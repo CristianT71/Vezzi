@@ -28,7 +28,12 @@ export class Clientes implements OnInit {
   ) {}
 
   ngOnInit() {
-    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    let usuario: any = {};
+    try {
+      usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    } catch {
+      usuario = {};
+    }
     this.esAdmin = (usuario?.rol?.nombre || '').trim().toLowerCase() === 'admin';
     this.cargarClientes();
   }
