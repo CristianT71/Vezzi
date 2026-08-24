@@ -27,13 +27,20 @@ export class Clientes implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
-    let usuario: any = {};
+  private obtenerUsuarioActual(): any {
     try {
-      usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+      return JSON.parse(localStorage.getItem('usuario') || '{}');
     } catch {
-      usuario = {};
+      return {};
     }
+  }
+
+  private obtenerIdUsuario(): string | undefined {
+    return this.obtenerUsuarioActual()?.id;
+  }
+
+  ngOnInit() {
+    const usuario = this.obtenerUsuarioActual();
     this.esAdmin = (usuario?.rol?.nombre || '').trim().toLowerCase() === 'admin';
     this.cargarClientes();
   }
@@ -141,7 +148,7 @@ export class Clientes implements OnInit {
   }
 
   registrarPago() {
-    const id_usuario = JSON.parse(localStorage.getItem('usuario') || '{}').id;
+    const id_usuario = this.obtenerIdUsuario();
     const body = {
       id_cliente: Number(this.pagoData.id_cliente),
       id_usuario,

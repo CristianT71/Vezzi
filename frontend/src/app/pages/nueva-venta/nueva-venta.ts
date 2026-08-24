@@ -68,8 +68,16 @@ export class NuevaVenta implements OnInit {
   get iva(): number { return this.subtotal * 0.19; }
   get total(): number { return this.subtotal + this.iva; }
 
+  private obtenerIdUsuario(): string | undefined {
+    try {
+      return JSON.parse(localStorage.getItem('usuario') || '{}')?.id;
+    } catch {
+      return undefined;
+    }
+  }
+
   cobrar() {
-    const id_usuario = JSON.parse(localStorage.getItem('usuario') || '{}').id;
+    const id_usuario = this.obtenerIdUsuario();
     this.http.post<any>(`${environment.apiUrl}/venta`, {
       id_cliente: Number(this.clienteSeleccionado),
       id_usuario,
