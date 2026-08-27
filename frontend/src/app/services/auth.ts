@@ -27,7 +27,12 @@ export class Auth {
 
   getUsuario() {
     const data = localStorage.getItem('usuario');
-    return data ? JSON.parse(data) : null;
+    if (!data) return null;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return null;
+    }
   }
 
 }
