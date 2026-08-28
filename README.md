@@ -33,7 +33,7 @@ cd Vezzi
 cp .env.example backend/.env
 
 # Levantar la base de datos
-docker compose up -d
+docker compose up --build -d
 
 # Backend
 cd backend
