@@ -20,7 +20,7 @@ Plataforma web para la gestión de pequeñas tiendas locales. Permite administra
 - Node.js 18+
 - Docker y Docker Compose
 - npm
-- DataGrip (opcional, para ver la base de datos)
+- DataGrip (opcional, para ver la base de datos local)
 
 ## Cómo empezar
 
