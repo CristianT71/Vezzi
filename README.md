@@ -109,5 +109,14 @@ backend/            # API con NestJS
     common/         # DTOs y filtros compartidos
     config/         # Configuración de BD
     migrations/     # Migraciones TypeORM
+    assets/         # Recursos estáticos (plantillas de correo, etc.)
 frontend/           # Aplicación Angular
+  src/
+    app/
+      components/   # Componentes UI
+      guards/       # Guardas de rutas
+      interceptors/ # Interceptores HTTP
+      pages/        # Vistas / páginas
+      services/     # Servicios de datos (Angular)
+    environments/   # Configuración por entorno (dev/prod)
 ```
