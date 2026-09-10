@@ -1,6 +1,11 @@
 
 # Vezzi
 
+![GitHub last commit](https://img.shields.io/github/last-commit/CristianT71/Vezzi?style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/CristianT71/Vezzi?style=flat-square)
+![GitHub top language](https://img.shields.io/github/languages/top/CristianT71/Vezzi?style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/CristianT71/Vezzi?style=flat-square)
+
 Plataforma web para la gestión de pequeñas tiendas locales. Permite administrar inventario, clientes, ventas y pagos desde un solo lugar.
 
 ## Stack
